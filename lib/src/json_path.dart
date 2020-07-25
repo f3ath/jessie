@@ -3,6 +3,7 @@ abstract class JsonPath {
   Iterable call(Iterable nodes);
 
   /// The string expression without leading `$`
+  @override
   String toString();
 
   /// A shortcut for `then()`

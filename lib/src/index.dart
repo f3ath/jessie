@@ -11,5 +11,5 @@ class Index extends JsonPath {
       .map((node) => node[index]);
 
   @override
-  String toString() => "[$index]";
+  String toString() => '[$index]';
 }
