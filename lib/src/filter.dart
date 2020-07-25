@@ -1,4 +1,6 @@
-abstract class JsonPath {
+abstract class Filter {
+  const Filter();
+
   /// Applies this JSONPath to the [nodes]
   Iterable call(Iterable nodes);
 
@@ -7,22 +9,18 @@ abstract class JsonPath {
   String toString();
 
   /// A shortcut for `then()`
-  JsonPath operator |(JsonPath other) => then(other);
+  Filter operator |(Filter other) => then(other);
 
   /// Combines this expression with the [other]
-  JsonPath then(JsonPath other) => _Chain(this, other);
-
-  /// Filters the given nodes.
-  /// Returns an Iterable of all elements found
-  Iterable filter(dynamic node) => call([node]);
+  Filter then(Filter other) => _Chain(this, other);
 }
 
-class _Chain extends JsonPath {
+class _Chain extends Filter {
   _Chain(this.first, this.second);
 
-  final JsonPath first;
+  final Filter first;
 
-  final JsonPath second;
+  final Filter second;
 
   @override
   Iterable call(Iterable nodes) => second(first(nodes));

@@ -1,6 +1,6 @@
-import 'package:jessie/src/json_path.dart';
+import 'package:jessie/src/filter.dart';
 
-class Field extends JsonPath {
+class Field extends Filter {
   Field(this.name);
 
   final String name;

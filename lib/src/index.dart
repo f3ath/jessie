@@ -1,6 +1,6 @@
-import 'package:jessie/src/json_path.dart';
+import 'package:jessie/src/filter.dart';
 
-class Index extends JsonPath {
+class Index extends Filter {
   Index(this.index);
 
   final int index;
