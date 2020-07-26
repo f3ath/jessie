@@ -1,4 +1,5 @@
 import 'package:jessie/src/filter.dart';
+import 'package:jessie/src/match.dart';
 
 class Field extends Filter {
   Field(this.name);
@@ -6,9 +7,9 @@ class Field extends Filter {
   final String name;
 
   @override
-  Iterable call(Iterable nodes) => nodes
-      .where((node) => node is Map && node.containsKey(name))
-      .map((node) => node[name]);
+  Iterable<PathMatch> call(Iterable<PathMatch> matches) => matches
+      .where((m) => m.value is Map && m.value.containsKey(name))
+      .map((m) => PathMatch(m.value[name], m.path + toString()));
 
   @override
   String toString() => "['$name']";

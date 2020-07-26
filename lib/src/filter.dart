@@ -1,8 +1,10 @@
+import 'package:jessie/src/match.dart';
+
 abstract class Filter {
   const Filter();
 
-  /// Applies this JSONPath to the [nodes]
-  Iterable call(Iterable nodes);
+  /// Applies this filter to the [matches]
+  Iterable<PathMatch> call(Iterable<PathMatch> matches);
 
   /// The string expression without leading `$`
   @override
@@ -23,7 +25,8 @@ class _Chain extends Filter {
   final Filter second;
 
   @override
-  Iterable call(Iterable nodes) => second(first(nodes));
+  Iterable<PathMatch> call(Iterable<PathMatch> matches) =>
+      second(first(matches));
 
   @override
   String toString() => '$first$second';
