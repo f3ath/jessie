@@ -1,10 +1,11 @@
 name: jessie
-version: 0.0.0+dev.0
-homepage: https://github.com/f3ath/jessie
+version: 0.0.0+dev.1
 description: JSONPath for Dart
-environment:
-  sdk: ">=2.8.0 <3.0.0"
+homepage: "https://github.com/f3ath/jessie"
 
 dev_dependencies:
-  test: ^1.9.0
   pedantic: ^1.9.0
+  test: ^1.9.0
+
+environment:
+  sdk: ">=2.8.0 <3.0.0"

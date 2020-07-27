@@ -1,6 +1,7 @@
 class Node {
   Node(this.value);
 
+  /// Builds the AST from the list of tokens
   static Node build(List<String> tokens) {
     final root = Node(r'$');
     if (tokens.isEmpty) {
@@ -24,7 +25,7 @@ class Node {
           children.add(stack.removeLast());
         }
         final brackets = stack.removeLast();
-        brackets.children.addAll(children);
+        brackets.children.addAll(children.reversed);
         stack.last.children.add(brackets);
         continue;
       }
@@ -35,4 +36,6 @@ class Node {
 
   final String value;
   final children = <Node>[];
+
+  bool get isNumber => RegExp(r'^-?\d+$').hasMatch(value);
 }

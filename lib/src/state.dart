@@ -1,29 +1,40 @@
 import 'package:jessie/src/ast.dart';
-import 'package:jessie/src/field.dart';
-import 'package:jessie/src/filter.dart';
-import 'package:jessie/src/index.dart';
+import 'package:jessie/src/selector/all_in_array.dart';
+import 'package:jessie/src/selector/field.dart';
+import 'package:jessie/src/selector/selector.dart';
+import 'package:jessie/src/selector/index.dart';
 
 abstract class State {
   State process(Node node);
 
-  Filter get filter;
+  Selector get filter;
 }
 
 class Ready implements State {
   Ready(this.filter);
 
   @override
-  final Filter filter;
+  final Selector filter;
 
   @override
   State process(Node node) {
     if (node.value == '[') {
-      return Ready(filter.then(Index(int.parse(node.children.first.value))));
+      return Ready(filter.then(_brackets(node.children)));
     }
     if (node.value == '.') {
       return AwaitingField(filter);
     }
     throw StateError('Got ${node.value} in $this');
+  }
+
+  Selector _brackets(List<Node> nodes) {
+    if (nodes.length == 1) {
+      final node = nodes.single;
+      final val = node.value;
+      if (val == '*') return AllInArray();
+      if (node.isNumber) return Index(int.parse(nodes.first.value));
+    }
+    throw StateError('Unexpected bracket expression');
   }
 }
 
@@ -31,7 +42,7 @@ class AwaitingField implements State {
   AwaitingField(this.filter);
 
   @override
-  final Filter filter;
+  final Selector filter;
 
   @override
   State process(Node node) {

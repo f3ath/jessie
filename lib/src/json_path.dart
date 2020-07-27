@@ -1,7 +1,7 @@
 import 'package:jessie/src/ast.dart';
-import 'package:jessie/src/filter.dart';
-import 'package:jessie/src/match.dart';
-import 'package:jessie/src/root.dart';
+import 'package:jessie/src/selector/selector.dart';
+import 'package:jessie/src/selector/root.dart';
+import 'package:jessie/src/result.dart';
 import 'package:jessie/src/state.dart';
 import 'package:jessie/src/tokenize.dart';
 
@@ -14,14 +14,14 @@ class JsonPath {
     return JsonPath._(state.filter);
   }
 
-  JsonPath._(this._filter);
+  JsonPath._(this._selector);
 
-  final Filter _filter;
+  final Selector _selector;
 
   /// Filters the given [json].
   /// Returns an Iterable of all elements found
-  Iterable<PathMatch> filter(json) => _filter.call([PathMatch(json, '')]);
+  Iterable<Result> select(json) => _selector([Result(json, '')]);
 
   @override
-  String toString() => _filter.toString();
+  String toString() => _selector.toString();
 }
