@@ -11,7 +11,7 @@ class JsonPath {
     for (final node in Node.build(tokenize(expression)).children) {
       state = state.process(node);
     }
-    return JsonPath._(state.filter);
+    return JsonPath._(state.selector);
   }
 
   JsonPath._(this._selector);

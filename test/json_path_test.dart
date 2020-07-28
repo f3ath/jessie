@@ -8,41 +8,54 @@ void main() {
   final json = jsonDecode(File('test/store.json').readAsStringSync());
   group('Basic expressions', () {
     test('Empty', () {
-      final path = JsonPath('');
-      expect(path.toString(), r'$');
-      expect(path.select(json).single.value, json);
-      expect(path.select(json).single.path, r'$');
+      final empty = JsonPath('');
+      expect(empty.toString(), r'$');
+      expect(empty.select(json).single.value, json);
+      expect(empty.select(json).single.path, r'$');
     });
 
     test('Only root', () {
-      final path = JsonPath(r'$');
-      expect(path.toString(), r'$');
-      expect(path.select(json).single.value, json);
-      expect(path.select(json).single.path, r'$');
+      final root = JsonPath(r'$');
+      expect(root.toString(), r'$');
+      expect(root.select(json).single.value, json);
+      expect(root.select(json).single.path, r'$');
     });
 
     test('Single field', () {
-      final path = JsonPath(r'$.store');
-      expect(path.toString(), r"$['store']");
-      expect(path.select(json).single.value, json['store']);
-      expect(path.select(json).single.path, r"$['store']");
+      final store = JsonPath(r'$.store');
+      expect(store.toString(), r"$['store']");
+      expect(store.select(json).single.value, json['store']);
+      expect(store.select(json).single.path, r"$['store']");
     });
 
     test('Path with an index', () {
-      final path = JsonPath(r'$.store.book[0].title');
-      expect(path.toString(), r"$['store']['book'][0]['title']");
-      expect(path.select(json).single.value, 'Sayings of the Century');
-      expect(path.select(json).single.path, r"$['store']['book'][0]['title']");
+      final firstBookTitle = JsonPath(r'$.store.book[0].title');
+      expect(firstBookTitle.toString(), r"$['store']['book'][0]['title']");
+      expect(
+          firstBookTitle.select(json).single.value, 'Sayings of the Century');
+      expect(firstBookTitle.select(json).single.path,
+          r"$['store']['book'][0]['title']");
     });
 
     test('All in array', () {
-      final path = JsonPath(r'$.store.book[*]');
-      expect(path.toString(), r"$['store']['book'][*]");
-      expect(path.select(json).length, 4);
-      expect(path.select(json).first.value, json['store']['book'][0]);
-      expect(path.select(json).first.path, r"$['store']['book'][0]");
-      expect(path.select(json).last.value, json['store']['book'][3]);
-      expect(path.select(json).last.path, r"$['store']['book'][3]");
+      final allBooksInStore = JsonPath(r'$.store.book[*]');
+      expect(allBooksInStore.toString(), r"$['store']['book'][*]");
+      expect(allBooksInStore.select(json).length, 4);
+      expect(
+          allBooksInStore.select(json).first.value, json['store']['book'][0]);
+      expect(allBooksInStore.select(json).first.path, r"$['store']['book'][0]");
+      expect(allBooksInStore.select(json).last.value, json['store']['book'][3]);
+      expect(allBooksInStore.select(json).last.path, r"$['store']['book'][3]");
+    });
+
+    test('Recursive', () {
+      final everything = JsonPath(r'$..');
+      expect(everything.toString(), r'$..');
+      expect(everything.select(json).length, 8);
+      expect(everything.select(json).first.value, json);
+      expect(everything.select(json).first.path, r'$');
+      expect(everything.select(json).last.value, json['store']['bicycle']);
+      expect(everything.select(json).last.path, r"$['store']['bicycle']");
     });
   });
 }

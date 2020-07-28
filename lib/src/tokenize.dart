@@ -10,7 +10,7 @@ List<String> tokenize(String expr) {
           break;
         }
         if (expr.length > pos + 1) {
-          final nextTwoChars = expr.substring(pos, pos + 1);
+          final nextTwoChars = expr[pos] + expr[pos + 1];
           if (_doubles.contains(nextTwoChars)) {
             token = nextTwoChars;
             pos += 2;

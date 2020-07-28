@@ -1,5 +1,6 @@
-import 'package:jessie/src/selector/selector.dart';
+import 'package:jessie/src/quote.dart';
 import 'package:jessie/src/result.dart';
+import 'package:jessie/src/selector/selector.dart';
 
 class Field extends Selector {
   Field(this.name);
@@ -12,5 +13,5 @@ class Field extends Selector {
       .map((r) => Result(r.value[name], r.path + toString()));
 
   @override
-  String get expression => "['$name']";
+  String get expression => '[${Quote(name)}]';
 }
