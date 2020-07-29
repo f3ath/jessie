@@ -1,16 +1,21 @@
 import 'package:jessie/src/ast.dart';
 import 'package:jessie/src/selector/all_in_array.dart';
+import 'package:jessie/src/selector/all_values.dart';
 import 'package:jessie/src/selector/field.dart';
 import 'package:jessie/src/selector/index.dart';
 import 'package:jessie/src/selector/recursive.dart';
 import 'package:jessie/src/selector/selector.dart';
 
+/// AST parser state
 abstract class State {
+  /// Processes the node. Returns the next state
   State process(Node node);
 
+  /// Selector made from the tree
   Selector get selector;
 }
 
+/// Ready to process the next node
 class Ready implements State {
   Ready(this.selector);
 
@@ -28,6 +33,10 @@ class Ready implements State {
     if (node.value == '..') {
       return Ready(selector.then(Recursive()));
     }
+    if (node.value == '*') {
+      return Ready(selector.then(AllValues()));
+    }
+
     throw StateError('Got ${node.value} in $this');
   }
 
@@ -49,6 +58,9 @@ class AwaitingField implements State {
 
   @override
   State process(Node node) {
+    if (node.value == '*') {
+      return Ready(selector.then(AllValues()));
+    }
     return Ready(selector.then(Field(node.value)));
   }
 }

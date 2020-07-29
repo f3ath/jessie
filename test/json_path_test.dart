@@ -48,14 +48,41 @@ void main() {
       expect(allBooksInStore.select(json).last.path, r"$['store']['book'][3]");
     });
 
+    test('All values', () {
+      final allInRoot = JsonPath(r'$.*');
+      expect(allInRoot.toString(), r'$.*');
+      expect(allInRoot.select(json).single.value, json['store']);
+      expect(allInRoot.select(json).single.path, r"$['store']");
+
+      final allInStore = JsonPath(r'$.store.*');
+      expect(allInStore.toString(), r"$['store'].*");
+      expect(allInStore.select(json).length, 2);
+      expect(allInStore.select(json).first.value, json['store']['book']);
+      expect(allInStore.select(json).first.path, r"$['store']['book']");
+      expect(allInStore.select(json).last.value, json['store']['bicycle']);
+      expect(allInStore.select(json).last.path, r"$['store']['bicycle']");
+    });
+
     test('Recursive', () {
-      final everything = JsonPath(r'$..');
-      expect(everything.toString(), r'$..');
-      expect(everything.select(json).length, 8);
-      expect(everything.select(json).first.value, json);
-      expect(everything.select(json).first.path, r'$');
-      expect(everything.select(json).last.value, json['store']['bicycle']);
-      expect(everything.select(json).last.path, r"$['store']['bicycle']");
+      final allNode = JsonPath(r'$..');
+      expect(allNode.toString(), r'$..');
+      expect(allNode.select(json).length, 8);
+      expect(allNode.select(json).first.value, json);
+      expect(allNode.select(json).first.path, r'$');
+      expect(allNode.select(json).last.value, json['store']['bicycle']);
+      expect(allNode.select(json).last.path, r"$['store']['bicycle']");
+    });
+
+    test('Recursive with all fields', () {
+      final allValues = JsonPath(r'$..*');
+      expect(allValues.toString(), r'$..*');
+      expect(allValues.select(json).length, 27);
+      expect(allValues.select(json).first.value, json['store']);
+      expect(allValues.select(json).first.path, r"$['store']");
+      expect(
+          allValues.select(json).last.value, json['store']['bicycle']['price']);
+      expect(
+          allValues.select(json).last.path, r"$['store']['bicycle']['price']");
     });
   });
 }
