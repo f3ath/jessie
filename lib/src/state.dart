@@ -42,8 +42,11 @@ class Ready implements State {
     final node = nodes.single;
     if (node.value == '*') return AllInArray();
     if (node.isNumber) return Index(int.parse(nodes.first.value));
+    if (node.value.startsWith("'")) return Field(_unquote(node.value));
     throw StateError('Unexpected bracket expression');
   }
+
+  String _unquote(String s) => s.substring(1, s.length - 1);
 }
 
 class AwaitingField implements State {

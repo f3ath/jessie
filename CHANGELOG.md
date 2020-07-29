@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [0.0.0+dev.3] - 2020-07-28
+### Added
+- Partial implementation of bracket field notation
+
 ## [0.0.0+dev.2] - 2020-07-28
 ### Added
 - Recursive selector
@@ -13,6 +17,7 @@
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.0+dev.2...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.0+dev.3...HEAD
+[0.0.0+dev.3]: https://github.com/f3ath/jessie/compare/0.0.0+dev.2...0.0.0+dev.3
 [0.0.0+dev.2]: https://github.com/f3ath/jessie/compare/0.0.0+dev.1...0.0.0+dev.2
 [0.0.0+dev.1]: https://github.com/f3ath/jessie/compare/0.0.0+dev.0...0.0.0+dev.1

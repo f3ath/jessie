@@ -27,6 +27,20 @@ void main() {
       expect(store.select(json).single.value, json['store']);
       expect(store.select(json).single.path, r"$['store']");
     });
+
+    test('Single field in bracket notation', () {
+      final store = JsonPath(r"$['store']");
+      expect(store.toString(), r"$['store']");
+      expect(store.select(json).single.value, json['store']);
+      expect(store.select(json).single.path, r"$['store']");
+    });
+
+    test('Mixed brackets and fields', () {
+      final store = JsonPath(r"$['store'].bicycle['price']");
+      expect(store.toString(), r"$['store']['bicycle']['price']");
+      expect(store.select(json).single.value, json['store']['bicycle']['price']);
+      expect(store.select(json).single.path, r"$['store']['bicycle']['price']");
+    });
   });
 
   group('Wildcards', () {
