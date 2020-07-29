@@ -5,7 +5,9 @@ import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/state.dart';
 import 'package:json_path/src/tokenize.dart';
 
+/// A JSONPath expression
 class JsonPath {
+  /// Creates an instance from string
   factory JsonPath(String expression) {
     State state = Ready(Root());
     for (final node in Node.build(tokenize(expression)).children) {
@@ -18,7 +20,7 @@ class JsonPath {
 
   final Selector _selector;
 
-  /// Filters the given [json].
+  /// Filters the given [json] object.
   /// Returns an Iterable of all elements found
   Iterable<Result> select(json) => _selector([Result(json, '')]);
 

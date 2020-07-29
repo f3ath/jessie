@@ -19,6 +19,6 @@ jobs:
       - name: Install dependencies
         run: pub get
       - name: Analyzer
-        run: dartanalyzer --fatal-infos --fatal-warnings lib test
+        run: dartanalyzer --fatal-infos --fatal-warnings lib test example
       - name: Tests
         run: pub run test
