@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:jessie/jessie.dart';
+import 'package:json_path/json_path.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -27,33 +27,17 @@ void main() {
       expect(store.select(json).single.value, json['store']);
       expect(store.select(json).single.path, r"$['store']");
     });
+  });
 
-    test('Path with an index', () {
-      final firstBookTitle = JsonPath(r'$.store.book[0].title');
-      expect(firstBookTitle.toString(), r"$['store']['book'][0]['title']");
-      expect(
-          firstBookTitle.select(json).single.value, 'Sayings of the Century');
-      expect(firstBookTitle.select(json).single.path,
-          r"$['store']['book'][0]['title']");
-    });
-
-    test('All in array', () {
-      final allBooksInStore = JsonPath(r'$.store.book[*]');
-      expect(allBooksInStore.toString(), r"$['store']['book'][*]");
-      expect(allBooksInStore.select(json).length, 4);
-      expect(
-          allBooksInStore.select(json).first.value, json['store']['book'][0]);
-      expect(allBooksInStore.select(json).first.path, r"$['store']['book'][0]");
-      expect(allBooksInStore.select(json).last.value, json['store']['book'][3]);
-      expect(allBooksInStore.select(json).last.path, r"$['store']['book'][3]");
-    });
-
-    test('All values', () {
+  group('Wildcards', () {
+    test('All in root', () {
       final allInRoot = JsonPath(r'$.*');
       expect(allInRoot.toString(), r'$.*');
       expect(allInRoot.select(json).single.value, json['store']);
       expect(allInRoot.select(json).single.path, r"$['store']");
+    });
 
+    test('All in store', () {
       final allInStore = JsonPath(r'$.store.*');
       expect(allInStore.toString(), r"$['store'].*");
       expect(allInStore.select(json).length, 2);
@@ -62,7 +46,9 @@ void main() {
       expect(allInStore.select(json).last.value, json['store']['bicycle']);
       expect(allInStore.select(json).last.path, r"$['store']['bicycle']");
     });
+  });
 
+  group('Recursion', () {
     test('Recursive', () {
       final allNode = JsonPath(r'$..');
       expect(allNode.toString(), r'$..');
@@ -73,16 +59,43 @@ void main() {
       expect(allNode.select(json).last.path, r"$['store']['bicycle']");
     });
 
-    test('Recursive with all fields', () {
-      final allValues = JsonPath(r'$..*');
-      expect(allValues.toString(), r'$..*');
-      expect(allValues.select(json).length, 27);
-      expect(allValues.select(json).first.value, json['store']);
-      expect(allValues.select(json).first.path, r"$['store']");
-      expect(
-          allValues.select(json).last.value, json['store']['bicycle']['price']);
-      expect(
-          allValues.select(json).last.path, r"$['store']['bicycle']['price']");
+    test('Recursive with all values', () {
+      final path = JsonPath(r'$..*');
+      expect(path.toString(), r'$..*');
+      expect(path.select(json).length, 27);
+      expect(path.select(json).first.value, json['store']);
+      expect(path.select(json).first.path, r"$['store']");
+      expect(path.select(json).last.value, json['store']['bicycle']['price']);
+      expect(path.select(json).last.path, r"$['store']['bicycle']['price']");
+    });
+
+    test('Every price tag', () {
+      final path = JsonPath(r'$..price');
+      expect(path.toString(), r"$..['price']");
+      expect(path.select(json).length, 5);
+//      expect(path.select(json).first.value, json['store']);
+//      expect(path.select(json).first.path, r"$['store']");
+//      expect(path.select(json).last.value, json['store']['bicycle']['price']);
+//      expect(path.select(json).last.path, r"$['store']['bicycle']['price']");
+    });
+  });
+
+  group('Arrays', () {
+    test('Path with an index', () {
+      final path = JsonPath(r'$.store.book[0].title');
+      expect(path.toString(), r"$['store']['book'][0]['title']");
+      expect(path.select(json).single.value, 'Sayings of the Century');
+      expect(path.select(json).single.path, r"$['store']['book'][0]['title']");
+    });
+
+    test('All in array', () {
+      final path = JsonPath(r'$.store.book[*]');
+      expect(path.toString(), r"$['store']['book'][*]");
+      expect(path.select(json).length, 4);
+      expect(path.select(json).first.value, json['store']['book'][0]);
+      expect(path.select(json).first.path, r"$['store']['book'][0]");
+      expect(path.select(json).last.value, json['store']['book'][3]);
+      expect(path.select(json).last.path, r"$['store']['book'][3]");
     });
   });
 }

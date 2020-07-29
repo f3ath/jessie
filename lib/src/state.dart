@@ -1,10 +1,10 @@
-import 'package:jessie/src/ast.dart';
-import 'package:jessie/src/selector/all_in_array.dart';
-import 'package:jessie/src/selector/all_values.dart';
-import 'package:jessie/src/selector/field.dart';
-import 'package:jessie/src/selector/index.dart';
-import 'package:jessie/src/selector/recursive.dart';
-import 'package:jessie/src/selector/selector.dart';
+import 'package:json_path/src/ast.dart';
+import 'package:json_path/src/selector/all_in_array.dart';
+import 'package:json_path/src/selector/all_values.dart';
+import 'package:json_path/src/selector/field.dart';
+import 'package:json_path/src/selector/index.dart';
+import 'package:json_path/src/selector/recursive.dart';
+import 'package:json_path/src/selector/selector.dart';
 
 /// AST parser state
 abstract class State {
@@ -24,28 +24,24 @@ class Ready implements State {
 
   @override
   State process(Node node) {
-    if (node.value == '[') {
-      return Ready(selector.then(_brackets(node.children)));
+    switch (node.value) {
+      case '[':
+        return Ready(selector.then(_bracketExpression(node.children)));
+      case '.':
+        return AwaitingField(selector);
+      case '..':
+        return Ready(selector.then(Recursive()));
+      case '*':
+        return Ready(selector.then(AllValues()));
+      default:
+        return Ready(selector.then(Field(node.value)));
     }
-    if (node.value == '.') {
-      return AwaitingField(selector);
-    }
-    if (node.value == '..') {
-      return Ready(selector.then(Recursive()));
-    }
-    if (node.value == '*') {
-      return Ready(selector.then(AllValues()));
-    }
-
-    throw StateError('Got ${node.value} in $this');
   }
 
-  Selector _brackets(List<Node> nodes) {
-    if (nodes.length == 1) {
-      final node = nodes.single;
-      if (node.value == '*') return AllInArray();
-      if (node.isNumber) return Index(int.parse(nodes.first.value));
-    }
+  Selector _bracketExpression(List<Node> nodes) {
+    final node = nodes.single;
+    if (node.value == '*') return AllInArray();
+    if (node.isNumber) return Index(int.parse(nodes.first.value));
     throw StateError('Unexpected bracket expression');
   }
 }

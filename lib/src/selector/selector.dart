@@ -1,6 +1,6 @@
-import 'package:jessie/src/result.dart';
-import 'package:jessie/src/selector/all_values.dart';
-import 'package:jessie/src/selector/recursive.dart';
+import 'package:json_path/src/result.dart';
+import 'package:json_path/src/selector/all_values.dart';
+import 'package:json_path/src/selector/recursive.dart';
 
 /// Converts a set of results into a set of results
 abstract class Selector {

@@ -1,9 +1,9 @@
-import 'package:jessie/src/ast.dart';
-import 'package:jessie/src/selector/selector.dart';
-import 'package:jessie/src/selector/root.dart';
-import 'package:jessie/src/result.dart';
-import 'package:jessie/src/state.dart';
-import 'package:jessie/src/tokenize.dart';
+import 'package:json_path/src/ast.dart';
+import 'package:json_path/src/result.dart';
+import 'package:json_path/src/selector/root.dart';
+import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/state.dart';
+import 'package:json_path/src/tokenize.dart';
 
 class JsonPath {
   factory JsonPath(String expression) {

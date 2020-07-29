@@ -1,5 +1,5 @@
 # [JSONPath] for Dart
-Jessie is a work-in-progress. Expect the API to change often. Feel free to join.
+**Warning!** This is a work-in-progress. Expect the API to change often. Also, feel free to join.
 
 ## Roadmap
 - [x] Basic selectors: fields, indices

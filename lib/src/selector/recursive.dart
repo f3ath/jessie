@@ -1,6 +1,6 @@
-import 'package:jessie/src/quote.dart';
-import 'package:jessie/src/result.dart';
-import 'package:jessie/src/selector/selector.dart';
+import 'package:json_path/src/quote.dart';
+import 'package:json_path/src/result.dart';
+import 'package:json_path/src/selector/selector.dart';
 
 class Recursive extends Selector {
   @override

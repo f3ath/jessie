@@ -1,6 +1,6 @@
-name: jessie
-version: 0.0.0+dev.1
-description: JSONPath for Dart
+name: json_path
+version: 0.0.0+dev.2
+description: JSONPath for Dart. JSONPath is XPath for JSON. It is a path in a JSON document.
 homepage: "https://github.com/f3ath/jessie"
 
 dev_dependencies:

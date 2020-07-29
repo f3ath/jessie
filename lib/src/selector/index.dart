@@ -1,5 +1,5 @@
-import 'package:jessie/src/selector/selector.dart';
-import 'package:jessie/src/result.dart';
+import 'package:json_path/src/result.dart';
+import 'package:json_path/src/selector/selector.dart';
 
 class Index extends Selector {
   Index(this.index);
