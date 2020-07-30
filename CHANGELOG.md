@@ -1,4 +1,5 @@
 ## [Unreleased]
+## [0.0.0+dev.4] - 2020-07-29
 ### Added
 - Bracket field notation support
 
@@ -20,7 +21,8 @@
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.0+dev.3...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.0+dev.4...HEAD
+[0.0.0+dev.4]: https://github.com/f3ath/jessie/compare/0.0.0+dev.3...0.0.0+dev.4
 [0.0.0+dev.3]: https://github.com/f3ath/jessie/compare/0.0.0+dev.2...0.0.0+dev.3
 [0.0.0+dev.2]: https://github.com/f3ath/jessie/compare/0.0.0+dev.1...0.0.0+dev.2
 [0.0.0+dev.1]: https://github.com/f3ath/jessie/compare/0.0.0+dev.0...0.0.0+dev.1
