@@ -38,8 +38,26 @@ void main() {
     test('Mixed brackets and fields', () {
       final store = JsonPath(r"$['store'].bicycle['price']");
       expect(store.toString(), r"$['store']['bicycle']['price']");
-      expect(store.select(json).single.value, json['store']['bicycle']['price']);
+      expect(
+          store.select(json).single.value, json['store']['bicycle']['price']);
       expect(store.select(json).single.path, r"$['store']['bicycle']['price']");
+    });
+  });
+
+  group('Invalid format', () {
+    test('Unmatched quote', () {
+      expect(() => JsonPath(r"$['hello"), throwsFormatException);
+      expect(() => JsonPath(r"$['hello\"), throwsFormatException);
+    });
+  });
+
+  group('Uncommon brackets', () {
+    test('Escape single quote', () {
+      final j = {r"sq'sq s\s qs\'qs": 'value'};
+      final path = JsonPath(r"$['sq\'sq s\\s qs\\\'qs']");
+      final select = path.select(j);
+      expect(select.single.value, 'value');
+      expect(select.single.path, r"$['sq\'sq s\\s qs\\\'qs']");
     });
   });
 
@@ -87,10 +105,10 @@ void main() {
       final path = JsonPath(r'$..price');
       expect(path.toString(), r"$..['price']");
       expect(path.select(json).length, 5);
-//      expect(path.select(json).first.value, json['store']);
-//      expect(path.select(json).first.path, r"$['store']");
-//      expect(path.select(json).last.value, json['store']['bicycle']['price']);
-//      expect(path.select(json).last.path, r"$['store']['bicycle']['price']");
+      expect(path.select(json).first.value, json['store']['book'][0]['price']);
+      expect(path.select(json).first.path, r"$['store']['book'][0]['price']");
+      expect(path.select(json).last.value, json['store']['bicycle']['price']);
+      expect(path.select(json).last.path, r"$['store']['bicycle']['price']");
     });
   });
 

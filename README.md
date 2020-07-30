@@ -5,7 +5,7 @@
 - [x] Basic selectors: fields, indices
 - [x] Recursive descent (`$..`)
 - [x] Wildcard (`$.store.*`)
-- [ ] Square-bracket field notation (`['foo']`, `$['"some" \'special\' [chars]']`)
+- [x] Square-bracket field notation (`['foo']`, `$['"some" \'special\' [chars]']`)
 - [ ] Subscript (`books[:2]`)
 - [ ] Slice (`articles[1:10:2]`)
 - [ ] Union (`book[0, 1]`, `book[author, title, price]`)

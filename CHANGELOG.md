@@ -1,4 +1,7 @@
 ## [Unreleased]
+### Added
+- Bracket field notation support
+
 ## [0.0.0+dev.3] - 2020-07-28
 ### Added
 - Partial implementation of bracket field notation
