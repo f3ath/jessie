@@ -6,7 +6,6 @@
 - [x] Recursive descent (`$..`)
 - [x] Wildcard (`$.store.*`)
 - [x] Square-bracket field notation (`['foo']`, `$['"some" \'special\' [chars]']`)
-- [ ] Subscript (`books[:2]`)
 - [ ] Slice (`articles[1:10:2]`)
 - [ ] Union (`book[0, 1]`, `book[author, title, price]`)
 - [ ] Basic filtering (`book[?(@.price - 1)]`)

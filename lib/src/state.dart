@@ -5,6 +5,7 @@ import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/index.dart';
 import 'package:json_path/src/selector/recursive.dart';
 import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector/slice.dart';
 
 /// AST parser state
 abstract class State {
@@ -26,7 +27,7 @@ class Ready implements State {
   State process(Node node) {
     switch (node.value) {
       case '[':
-        return Ready(selector.then(_bracketExpression(node.children)));
+        return Ready(selector.then(_bracketSelector(node.children)));
       case '.':
         return AwaitingField(selector);
       case '..':
@@ -38,15 +39,39 @@ class Ready implements State {
     }
   }
 
-  Selector _bracketExpression(List<Node> nodes) {
-    final node = nodes.single;
-    if (node.value == '*') return AllInArray();
-    if (node.isNumber) return Index(int.parse(nodes.first.value));
-    if (node.value.startsWith("'")) return Field(_unquote(node.value));
+  Selector _bracketSelector(List<Node> nodes) {
+    if (nodes.length == 1) {
+      final node = nodes.single;
+      if (node.value == '*') return AllInArray();
+      if (node.isNumber) return Index(int.parse(nodes.first.value));
+      if (node.value.startsWith("'")) {
+        return Field(node.value.substring(1, node.value.length - 1));
+      }
+    } else if (nodes.length > 1) {
+      int first;
+      int last;
+      int step;
+      var colons = 0;
+      nodes.map((_) => _.value).forEach((val) {
+        if (val == ':') {
+          colons++;
+          return;
+        }
+        if (colons == 0) {
+          first = int.parse(val);
+          return;
+        }
+        if (colons == 1) {
+          last = int.parse(val);
+          return;
+        }
+        step = int.parse(val);
+      });
+      return Slice(first: first, last: last, step: step);
+    }
+
     throw StateError('Unexpected bracket expression');
   }
-
-  String _unquote(String s) => s.substring(1, s.length - 1);
 }
 
 class AwaitingField implements State {

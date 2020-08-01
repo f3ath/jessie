@@ -36,11 +36,11 @@ void main() {
     });
 
     test('Mixed brackets and fields', () {
-      final store = JsonPath(r"$['store'].bicycle['price']");
-      expect(store.toString(), r"$['store']['bicycle']['price']");
+      final price = JsonPath(r"$['store'].bicycle['price']");
+      expect(price.toString(), r"$['store']['bicycle']['price']");
       expect(
-          store.select(json).single.value, json['store']['bicycle']['price']);
-      expect(store.select(json).single.path, r"$['store']['bicycle']['price']");
+          price.select(json).single.value, json['store']['bicycle']['price']);
+      expect(price.select(json).single.path, r"$['store']['bicycle']['price']");
     });
   });
 
@@ -49,6 +49,122 @@ void main() {
       expect(() => JsonPath(r"$['hello"), throwsFormatException);
       expect(() => JsonPath(r"$['hello\"), throwsFormatException);
     });
+  });
+
+  group('Slices', () {
+    final abc = 'abcdefg'.split('');
+    test('1:3', () {
+      final slice = JsonPath(r'$[1:3]');
+      expect(slice.toString(), r'$[1:3]');
+      expect(slice.select(abc).length, 2);
+      expect(slice.select(abc).first.value, 'b');
+      expect(slice.select(abc).first.path, r'$[1]');
+      expect(slice.select(abc).last.value, 'c');
+      expect(slice.select(abc).last.path, r'$[2]');
+    });
+    test('1:5:2', () {
+      final slice = JsonPath(r'$[1:5:2]');
+      expect(slice.toString(), r'$[1:5:2]');
+      expect(slice.select(abc).length, 2);
+      expect(slice.select(abc).first.value, 'b');
+      expect(slice.select(abc).first.path, r'$[1]');
+      expect(slice.select(abc).last.value, 'd');
+      expect(slice.select(abc).last.path, r'$[3]');
+    });
+    test('1:5:-2', () {
+      final slice = JsonPath(r'$[1:5:-2]');
+      expect(slice.toString(), r'$[1:5:-2]');
+      expect(slice.select(abc).length, 0);
+    });
+    test(':3', () {
+      final slice = JsonPath(r'$[:3]');
+      expect(slice.toString(), r'$[:3]');
+      expect(slice.select(abc).length, 3);
+      expect(slice.select(abc).first.value, 'a');
+      expect(slice.select(abc).first.path, r'$[0]');
+      expect(slice.select(abc).last.value, 'c');
+      expect(slice.select(abc).last.path, r'$[2]');
+    });
+    test(':3:2', () {
+      final slice = JsonPath(r'$[:3:2]');
+      expect(slice.toString(), r'$[:3:2]');
+      expect(slice.select(abc).length, 2);
+      expect(slice.select(abc).first.value, 'a');
+      expect(slice.select(abc).first.path, r'$[0]');
+      expect(slice.select(abc).last.value, 'c');
+      expect(slice.select(abc).last.path, r'$[2]');
+    });
+    test('3::2', () {
+      final slice = JsonPath(r'$[3::2]');
+      expect(slice.toString(), r'$[3::2]');
+      expect(slice.select(abc).length, 2);
+      expect(slice.select(abc).first.value, 'd');
+      expect(slice.select(abc).first.path, r'$[3]');
+      expect(slice.select(abc).last.value, 'f');
+      expect(slice.select(abc).last.path, r'$[5]');
+    });
+    test('100:', () {
+      final slice = JsonPath(r'$[100:]');
+      expect(slice.toString(), r'$[100:]');
+      expect(slice.select(abc).length, 0);
+    });
+    test('3:', () {
+      final slice = JsonPath(r'$[3:]');
+      expect(slice.toString(), r'$[3:]');
+      expect(slice.select(abc).length, 4);
+      expect(slice.select(abc).first.value, 'd');
+      expect(slice.select(abc).first.path, r'$[3]');
+      expect(slice.select(abc).last.value, 'g');
+      expect(slice.select(abc).last.path, r'$[6]');
+    });
+    test(':-5', () {
+      final slice = JsonPath(r'$[:-5]');
+      expect(slice.toString(), r'$[:-5]');
+      expect(slice.select(abc).length, 2);
+      expect(slice.select(abc).first.value, 'a');
+      expect(slice.select(abc).first.path, r'$[0]');
+      expect(slice.select(abc).last.value, 'b');
+      expect(slice.select(abc).last.path, r'$[1]');
+    });
+
+    test('-5:', () {
+      final slice = JsonPath(r'$[-5:]');
+      expect(slice.toString(), r'$[-5:]');
+      expect(slice.select(abc).length, 5);
+      expect(slice.select(abc).first.value, 'c');
+      expect(slice.select(abc).first.path, r'$[2]');
+      expect(slice.select(abc).last.value, 'g');
+      expect(slice.select(abc).last.path, r'$[6]');
+    });
+    test('0:6', () {
+      final slice = JsonPath(r'$[0:6]');
+      expect(slice.toString(), r'$[:6]');
+      expect(slice.select(abc).length, 6);
+      expect(slice.select(abc).first.value, 'a');
+      expect(slice.select(abc).first.path, r'$[0]');
+      expect(slice.select(abc).last.value, 'f');
+      expect(slice.select(abc).last.path, r'$[5]');
+    });
+    test('0:100', () {
+      final slice = JsonPath(r'$[0:100]');
+      expect(slice.toString(), r'$[:100]');
+      expect(slice.select(abc).length, 7);
+      expect(slice.select(abc).first.value, 'a');
+      expect(slice.select(abc).first.path, r'$[0]');
+      expect(slice.select(abc).last.value, 'g');
+      expect(slice.select(abc).last.path, r'$[6]');
+    });
+
+    test('-6:-1', () {
+      final slice = JsonPath(r'$[-6:-1]');
+      expect(slice.toString(), r'$[-6:-1]');
+      expect(slice.select(abc).length, 5);
+      expect(slice.select(abc).first.value, 'b');
+      expect(slice.select(abc).first.path, r'$[1]');
+      expect(slice.select(abc).last.value, 'f');
+      expect(slice.select(abc).last.path, r'$[5]');
+    });
+
   });
 
   group('Uncommon brackets', () {

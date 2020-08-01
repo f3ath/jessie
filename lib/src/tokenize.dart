@@ -46,12 +46,14 @@ List<String> tokenize(String expr) {
   return tokens;
 }
 
+
 const _singles = [
   r'$',
   '[',
   ']',
   '.',
   '*',
+  ':',
 ];
 
 const _doubles = [
