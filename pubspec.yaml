@@ -1,8 +1,7 @@
 name: json_path
-version: 0.0.0+dev.4
+version: 0.0.0+dev.5
 description: JSONPath for Dart. JSONPath is XPath for JSON. It is a path in a JSON document.
 homepage: "https://github.com/f3ath/jessie"
-
 
 dev_dependencies:
   pedantic: ^1.9.0
