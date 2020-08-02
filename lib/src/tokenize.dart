@@ -1,23 +1,19 @@
 /// Parses a JSONPath expression into a list of tokens
 Iterable<String> tokenize(String expr) sync* {
   var pos = 0;
-  var insideQuotedString = false;
   while (pos < expr.length) {
     var token = '';
+    var insideQuotedString = false;
+    var escapeMode = false;
     while (pos < expr.length) {
       final char = expr[pos];
-      if (char == "'") {
+      if (char == "'" && !escapeMode) {
         insideQuotedString = !insideQuotedString;
       }
+      escapeMode = char == r'\';
       if (insideQuotedString) {
-        if (char == r'\') {
-          if (expr.length <= pos + 1) throw FormatException('Dangling escape');
-          token += expr[pos + 1];
-          pos += 2;
-        } else {
-          token += char;
-          pos += 1;
-        }
+        token += char;
+        pos += 1;
         continue;
       }
       if (_singles.contains(char)) {

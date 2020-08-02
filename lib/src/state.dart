@@ -27,7 +27,7 @@ class Ready implements State {
   State process(Node node) {
     switch (node.value) {
       case '[':
-        return Ready(selector.then(_bracketSelector(node.children)));
+        return Ready(selector.then(brackets(node.children)));
       case '.':
         return AwaitingField(selector);
       case '..':
@@ -39,42 +39,40 @@ class Ready implements State {
     }
   }
 
-  Selector _bracketSelector(List<Node> nodes) {
-    if (nodes.length == 1) {
-      final node = nodes.single;
-      if (node.value == '*') return AllInArray();
-      if (node.isNumber) return Index(int.parse(nodes.first.value));
-      if (node.value.startsWith("'")) {
-        return Field(node.value.substring(1, node.value.length - 1));
-      }
-    } else if (nodes.length > 1) {
-      int first;
-      int last;
-      int step;
-      var colons = 0;
-      nodes.map((_) => _.value).forEach((val) {
-//        if (nodes.length > 2 && nodes[1].value == ',') {
-//          // union. take the odd ones
-//          nodes.map((e) => e.value).where((element) => element != ',')
-//        }
-        if (val == ':') {
-          colons++;
-          return;
-        }
-        if (colons == 0) {
-          first = int.parse(val);
-          return;
-        }
-        if (colons == 1) {
-          last = int.parse(val);
-          return;
-        }
-        step = int.parse(val);
-      });
-      return Slice(first: first, last: last, step: step);
-    }
+  Selector brackets(List<Node> nodes) {
+    if (nodes.isEmpty) throw FormatException('Empty brackets');
+    if (nodes.length == 1) return singleValueBrackets(nodes.single);
+    return multiValueBrackets(nodes);
+  }
 
-    throw StateError('Unexpected bracket expression');
+  Slice multiValueBrackets(List<Node> nodes) {
+    int first;
+    int last;
+    int step;
+    var colons = 0;
+    nodes.forEach((node) {
+      if (node.value == ':') {
+        colons++;
+        return;
+      }
+      if (colons == 0) {
+        first = node.intValue;
+        return;
+      }
+      if (colons == 1) {
+        last = node.intValue;
+        return;
+      }
+      step = node.intValue;
+    });
+    return Slice(first: first, last: last, step: step);
+  }
+
+  Selector singleValueBrackets(Node node) {
+    if (node.value == '*') return AllInArray();
+    if (node.isNumber) return Index(node.intValue);
+    if (node.isQuoted) return Field(node.unquoted);
+    throw FormatException('Unexpected bracket expression');
   }
 }
 

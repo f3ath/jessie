@@ -166,6 +166,7 @@ void main() {
     test('Escape single quote', () {
       final j = {r"sq'sq s\s qs\'qs": 'value'};
       final path = JsonPath(r"$['sq\'sq s\\s qs\\\'qs']");
+      expect(path.toString(), r"$['sq\'sq s\\s qs\\\'qs']");
       final select = path.select(j);
       expect(select.single.value, 'value');
       expect(select.single.path, r"$['sq\'sq s\\s qs\\\'qs']");

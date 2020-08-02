@@ -31,4 +31,13 @@ class Node {
   final children = <Node>[];
 
   bool get isNumber => RegExp(r'^-?\d+$').hasMatch(value);
+
+  bool get isQuoted => value.startsWith("'");
+
+  String get unquoted => value
+      .substring(1, value.length - 1)
+      .replaceAll(r'\\', r'\')
+      .replaceAll(r"\'", r"'");
+
+  int get intValue => int.parse(value);
 }
