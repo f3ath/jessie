@@ -10,14 +10,14 @@ class ObjectUnion with SelectorMixin {
 
   @override
   Iterable<Result> filter(Iterable<Result> results) => results
-      .map((r) => (r.value is Map) ? map(r.value, r.path) : [])
+      .map((r) => (r.value is Map) ? _map(r.value, r.path) : [])
       .expand((_) => _);
-
-  Iterable<Result> map(Map map, String path) => keys
-      .where(map.containsKey)
-      .map((key) => Result(map[key], path + '[${Quote(key)}]'));
 
   @override
   String expression([Selector previous]) =>
       '[${keys.map((k) => Quote(k)).join(',')}]';
+
+  Iterable<Result> _map(Map map, String path) => keys
+      .where(map.containsKey)
+      .map((key) => Result(map[key], path + '[${Quote(key)}]'));
 }
