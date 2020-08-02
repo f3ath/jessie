@@ -1,10 +1,12 @@
 import 'package:json_path/src/quote.dart';
 import 'package:json_path/src/result.dart';
+import 'package:json_path/src/selector/recursive.dart';
 import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector/selector_mixin.dart';
 
-class AllValues extends Selector {
+class ObjectWildcard with SelectorMixin {
   @override
-  Iterable<Result> call(Iterable<Result> results) => results.map((r) {
+  Iterable<Result> filter(Iterable<Result> results) => results.map((r) {
         final val = r.value;
         if (val is Map) {
           return val.entries
@@ -20,5 +22,5 @@ class AllValues extends Selector {
       }).expand((_) => _);
 
   @override
-  String get expression => '*';
+  String expression([Selector previous]) => previous is Recursive ? '*' : '.*';
 }

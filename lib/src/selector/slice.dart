@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:json_path/src/result.dart';
 import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector/selector_mixin.dart';
 
-class Slice extends Selector {
+class Slice with SelectorMixin {
   Slice({int first, this.last, int step})
       : first = first ?? 0,
         step = step ?? 1;
@@ -15,7 +16,7 @@ class Slice extends Selector {
   final int step;
 
   @override
-  Iterable<Result> call(Iterable<Result> results) => results.map((r) {
+  Iterable<Result> filter(Iterable<Result> results) => results.map((r) {
         if (step > 0 && r.value is List) {
           return _filterList(r.value, r.path);
         }
@@ -23,7 +24,7 @@ class Slice extends Selector {
       }).expand((_) => _);
 
   @override
-  String get expression =>
+  String expression([Selector previous]) =>
       '[${first == 0 ? '' : first}:${last ?? ''}${step != 1 ? ':$step' : ''}]';
 
   Iterable<Result> _filterList(List list, String path) =>

@@ -50,7 +50,7 @@ void main() {
   /// $['store']['book'][3]['price']:	22.99
   /// $['store']['bicycle']['price']:	19.95
   JsonPath(r'$..price')
-      .select(json)
+      .filter(json)
       .map((result) => '${result.path}:\t${result.value}')
       .forEach(print);
 }

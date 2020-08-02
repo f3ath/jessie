@@ -1,6 +1,6 @@
 import 'package:json_path/src/ast.dart';
-import 'package:json_path/src/selector/all_in_array.dart';
-import 'package:json_path/src/selector/all_values.dart';
+import 'package:json_path/src/selector/list_wildcard.dart';
+import 'package:json_path/src/selector/object_wildcard.dart';
 import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/index.dart';
 import 'package:json_path/src/selector/list_union.dart';
@@ -35,7 +35,7 @@ class Ready implements State {
       case '..':
         return Ready(selector.then(Recursive()));
       case '*':
-        return Ready(selector.then(AllValues()));
+        return Ready(selector.then(ObjectWildcard()));
       default:
         return Ready(selector.then(Field(node.value)));
     }
@@ -79,7 +79,7 @@ class Ready implements State {
   }
 
   Selector singleValueBrackets(Node node) {
-    if (node.value == '*') return AllInArray();
+    if (node.value == '*') return ListWildcard();
     if (node.isNumber) return Index(node.intValue);
     if (node.isQuoted) return Field(node.unquoted);
     throw FormatException('Unexpected bracket expression');
@@ -95,7 +95,7 @@ class AwaitingField implements State {
   @override
   State process(Node node) {
     if (node.value == '*') {
-      return Ready(selector.then(AllValues()));
+      return Ready(selector.then(ObjectWildcard()));
     }
     return Ready(selector.then(Field(node.value)));
   }

@@ -23,8 +23,8 @@ class JsonPath {
 
   /// Filters the given [json] object.
   /// Returns an Iterable of all elements found
-  Iterable<Result> select(json) => _selector([Result(json, '')]);
+  Iterable<Result> filter(json) => _selector.filter([Result(json, '')]);
 
   @override
-  String toString() => _selector.toString();
+  String toString() => _selector.expression();
 }

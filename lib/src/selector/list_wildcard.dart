@@ -1,9 +1,10 @@
 import 'package:json_path/src/result.dart';
 import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector/selector_mixin.dart';
 
-class AllInArray extends Selector {
+class ListWildcard with SelectorMixin {
   @override
-  Iterable<Result> call(Iterable<Result> results) =>
+  Iterable<Result> filter(Iterable<Result> results) =>
       results.where((r) => r.value is List).map((r) {
         final val = r.value as List;
         final results = <Result>[];
@@ -14,5 +15,5 @@ class AllInArray extends Selector {
       }).expand((_) => _);
 
   @override
-  String get expression => '[*]';
+  String expression([Selector previous]) => '[*]';
 }
