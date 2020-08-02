@@ -173,13 +173,32 @@ void main() {
     });
   });
 
-//  group('Union', () {
-//    test('Array', () {
-////      final abc = 'abcdefg'.split('');
-//      final union = JsonPath(r'$[2,3,5]');
-//      expect(union.toString(), r'$[2,3,5]');
-//    });
-//  });
+  group('Union', () {
+    test('List', () {
+      final abc = 'abcdefg'.split('');
+      final union = JsonPath(r'$[2,3,100,5]');
+      expect(union.toString(), r'$[2,3,100,5]');
+      expect(union.select(abc).length, 3);
+      expect(union.select(abc).first.value, 'c');
+      expect(union.select(abc).first.path, r'$[2]');
+      expect(union.select(abc).last.value, 'f');
+      expect(union.select(abc).last.path, r'$[5]');
+    });
+    test('Object', () {
+      final abc = {
+        'a': 'A',
+        'b': 'B',
+        'c': 'C',
+      };
+      final union = JsonPath(r"$['a','x',c]");
+      expect(union.toString(), r"$['a','x','c']");
+      expect(union.select(abc).length, 2);
+      expect(union.select(abc).first.value, 'A');
+      expect(union.select(abc).first.path, r"$['a']");
+      expect(union.select(abc).last.value, 'C');
+      expect(union.select(abc).last.path, r"$['c']");
+    });
+  });
 
   group('Wildcards', () {
     test('All in root', () {

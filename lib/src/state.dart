@@ -3,6 +3,8 @@ import 'package:json_path/src/selector/all_in_array.dart';
 import 'package:json_path/src/selector/all_values.dart';
 import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/index.dart';
+import 'package:json_path/src/selector/list_union.dart';
+import 'package:json_path/src/selector/object_union.dart';
 import 'package:json_path/src/selector/recursive.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/slice.dart';
@@ -45,27 +47,35 @@ class Ready implements State {
     return multiValueBrackets(nodes);
   }
 
-  Slice multiValueBrackets(List<Node> nodes) {
-    int first;
-    int last;
-    int step;
-    var colons = 0;
-    nodes.forEach((node) {
-      if (node.value == ':') {
-        colons++;
-        return;
-      }
-      if (colons == 0) {
-        first = node.intValue;
-        return;
-      }
-      if (colons == 1) {
-        last = node.intValue;
-        return;
-      }
-      step = node.intValue;
-    });
-    return Slice(first: first, last: last, step: step);
+  Selector multiValueBrackets(List<Node> nodes) {
+    if (nodes.any((node) => node.value == ':')) {
+      int first;
+      int last;
+      int step;
+      var colons = 0;
+      nodes.forEach((node) {
+        if (node.value == ':') {
+          colons++;
+          return;
+        }
+        if (colons == 0) {
+          first = node.intValue;
+          return;
+        }
+        if (colons == 1) {
+          last = node.intValue;
+          return;
+        }
+        step = node.intValue;
+      });
+      return Slice(first: first, last: last, step: step);
+    }
+    final filtered = nodes.where((_) => _.value != ',');
+    if (nodes.first.isNumber) {
+      return ListUnion(filtered.map((_) => _.intValue).toList());
+    }
+    return ObjectUnion(
+        filtered.map((_) => _.isQuoted ? _.unquoted : _.value).toList());
   }
 
   Selector singleValueBrackets(Node node) {

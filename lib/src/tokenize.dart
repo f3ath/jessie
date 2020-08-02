@@ -47,6 +47,7 @@ const _singles = [
   '.',
   '*',
   ':',
+  ',',
 ];
 
 const _doubles = [
