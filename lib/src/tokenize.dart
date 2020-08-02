@@ -1,6 +1,5 @@
 /// Parses a JSONPath expression into a list of tokens
-List<String> tokenize(String expr) {
-  final tokens = <String>[];
+Iterable<String> tokenize(String expr) sync* {
   var pos = 0;
   var insideQuotedString = false;
   while (pos < expr.length) {
@@ -41,11 +40,9 @@ List<String> tokenize(String expr) {
       pos += 1;
     }
     if (insideQuotedString) throw FormatException('Unmatched quote');
-    tokens.add(token);
+    yield token;
   }
-  return tokens;
 }
-
 
 const _singles = [
   r'$',

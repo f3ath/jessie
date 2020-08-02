@@ -9,8 +9,9 @@ import 'package:json_path/src/tokenize.dart';
 class JsonPath {
   /// Creates an instance from string
   factory JsonPath(String expression) {
+    if (expression.isEmpty) throw FormatException('Empty expression');
     State state = Ready(Root());
-    for (final node in Node.build(tokenize(expression)).children) {
+    for (final node in Node.list(tokenize(expression))) {
       state = state.process(node);
     }
     return JsonPath._(state.selector);

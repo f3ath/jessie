@@ -7,13 +7,6 @@ import 'package:test/test.dart';
 void main() {
   final json = jsonDecode(File('test/store.json').readAsStringSync());
   group('Basic expressions', () {
-    test('Empty', () {
-      final empty = JsonPath('');
-      expect(empty.toString(), r'$');
-      expect(empty.select(json).single.value, json);
-      expect(empty.select(json).single.path, r'$');
-    });
-
     test('Only root', () {
       final root = JsonPath(r'$');
       expect(root.toString(), r'$');
@@ -48,6 +41,9 @@ void main() {
     test('Unmatched quote', () {
       expect(() => JsonPath(r"$['hello"), throwsFormatException);
       expect(() => JsonPath(r"$['hello\"), throwsFormatException);
+    });
+    test('Empty', () {
+      expect(() => JsonPath(''), throwsFormatException);
     });
   });
 
@@ -164,7 +160,6 @@ void main() {
       expect(slice.select(abc).last.value, 'f');
       expect(slice.select(abc).last.path, r'$[5]');
     });
-
   });
 
   group('Uncommon brackets', () {
@@ -176,6 +171,14 @@ void main() {
       expect(select.single.path, r"$['sq\'sq s\\s qs\\\'qs']");
     });
   });
+
+//  group('Union', () {
+//    test('Array', () {
+////      final abc = 'abcdefg'.split('');
+//      final union = JsonPath(r'$[2,3,5]');
+//      expect(union.toString(), r'$[2,3,5]');
+//    });
+//  });
 
   group('Wildcards', () {
     test('All in root', () {

@@ -53,6 +53,10 @@ class Ready implements State {
       int step;
       var colons = 0;
       nodes.map((_) => _.value).forEach((val) {
+//        if (nodes.length > 2 && nodes[1].value == ',') {
+//          // union. take the odd ones
+//          nodes.map((e) => e.value).where((element) => element != ',')
+//        }
         if (val == ':') {
           colons++;
           return;

@@ -2,36 +2,29 @@ class Node {
   Node(this.value);
 
   /// Builds the AST from the list of tokens
-  static Node build(List<String> tokens) {
-    final root = Node(r'$');
-    if (tokens.isEmpty) {
-      return root;
-    }
-    final reversed = [...tokens.reversed];
-    if (reversed.last == r'$') {
-      reversed.removeLast();
-    }
-    final stack = <Node>[root];
-    while (reversed.isNotEmpty) {
-      final token = reversed.removeLast();
+  static List<Node> list(Iterable<String> tokens) {
+    const root = r'$';
+    final stack = <Node>[Node(root)];
+    tokens.skipWhile((token) => token == root).forEach((token) {
       if (token == '[') {
         stack.add(Node(token));
-        continue;
+        return;
       }
       if (token == ']' || token == ')') {
-        final search = token == ']' ? '[' : '(';
+        final closing = token == ']' ? '[' : '(';
         final children = <Node>[];
-        while (stack.last.value != search) {
+        while (stack.last.value != closing) {
           children.add(stack.removeLast());
         }
         final brackets = stack.removeLast();
         brackets.children.addAll(children.reversed);
         stack.last.children.add(brackets);
-        continue;
+        return;
       }
       stack.last.children.add(Node(token));
-    }
-    return stack.last;
+    });
+
+    return stack.last.children;
   }
 
   final String value;
