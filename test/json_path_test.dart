@@ -38,10 +38,6 @@ void main() {
   });
 
   group('Invalid format', () {
-    test('Unmatched quote', () {
-      expect(() => JsonPath(r"$['hello"), throwsFormatException);
-      expect(() => JsonPath(r"$['hello\"), throwsFormatException);
-    });
     test('Empty', () {
       expect(() => JsonPath(''), throwsFormatException);
     });

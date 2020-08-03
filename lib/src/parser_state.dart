@@ -1,34 +1,34 @@
-import 'package:json_path/src/ast.dart';
-import 'package:json_path/src/selector/list_wildcard.dart';
-import 'package:json_path/src/selector/object_wildcard.dart';
+import 'package:json_path/src/node.dart';
 import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/index.dart';
 import 'package:json_path/src/selector/list_union.dart';
+import 'package:json_path/src/selector/list_wildcard.dart';
 import 'package:json_path/src/selector/object_union.dart';
+import 'package:json_path/src/selector/object_wildcard.dart';
 import 'package:json_path/src/selector/recursive.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/slice.dart';
 
 /// AST parser state
-abstract class State {
+abstract class ParserState {
   /// Processes the node. Returns the next state
-  State process(Node node);
+  ParserState process(Node node);
 
   /// Selector made from the tree
   Selector get selector;
 }
 
 /// Ready to process the next node
-class Ready implements State {
+class Ready implements ParserState {
   Ready(this.selector);
 
   @override
   final Selector selector;
 
   @override
-  State process(Node node) {
+  ParserState process(Node node) {
     switch (node.value) {
-      case '[':
+      case '[]':
         return Ready(selector.then(brackets(node.children)));
       case '.':
         return AwaitingField(selector);
@@ -79,22 +79,22 @@ class Ready implements State {
   }
 
   Selector singleValueBrackets(Node node) {
-    if (node.value == '*') return ListWildcard();
+    if (node.isWildcard) return ListWildcard();
     if (node.isNumber) return Index(node.intValue);
     if (node.isQuoted) return Field(node.unquoted);
     throw FormatException('Unexpected bracket expression');
   }
 }
 
-class AwaitingField implements State {
+class AwaitingField implements ParserState {
   AwaitingField(this.selector);
 
   @override
   final Selector selector;
 
   @override
-  State process(Node node) {
-    if (node.value == '*') {
+  ParserState process(Node node) {
+    if (node.isWildcard) {
       return Ready(selector.then(ObjectWildcard()));
     }
     return Ready(selector.then(Field(node.value)));

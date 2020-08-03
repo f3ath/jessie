@@ -39,7 +39,7 @@ class Slice with SelectorMixin {
     return min(len, last);
   }
 
-  Iterable<int> _for(int from, int to, int step) sync* {
+  static Iterable<int> _for(int from, int to, int step) sync* {
     for (var i = from; i < to; i += step) {
       yield i;
     }

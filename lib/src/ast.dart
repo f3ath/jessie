@@ -1,43 +1,39 @@
-class Node {
-  Node(this.value);
+import 'package:json_path/src/node.dart';
 
-  /// Builds the AST from the list of tokens
-  static List<Node> list(Iterable<String> tokens) {
-    const root = r'$';
-    final stack = <Node>[Node(root)];
-    tokens.skipWhile((token) => token == root).forEach((token) {
-      if (token == '[') {
-        stack.add(Node(token));
-        return;
-      }
-      if (token == ']' || token == ')') {
-        final closing = token == ']' ? '[' : '(';
-        final children = <Node>[];
-        while (stack.last.value != closing) {
-          children.add(stack.removeLast());
-        }
-        final brackets = stack.removeLast();
-        brackets.children.addAll(children.reversed);
-        stack.last.children.add(brackets);
-        return;
-      }
-      stack.last.children.add(Node(token));
-    });
-
-    return stack.last.children;
+/// The Abstract Syntax Tree
+class AST {
+  AST(Iterable<String> tokens) {
+    tokens.skipWhile((token) => token == _root).forEach(_processToken);
   }
 
-  final String value;
-  final children = <Node>[];
+  /// The children of the root node
+  Iterable<Node> get children => _stack.last.children;
 
-  bool get isNumber => RegExp(r'^-?\d+$').hasMatch(value);
+  static const _root = r'$';
 
-  bool get isQuoted => value.startsWith("'");
+  final _stack = <Node>[Node(_root)];
 
-  String get unquoted => value
-      .substring(1, value.length - 1)
-      .replaceAll(r'\\', r'\')
-      .replaceAll(r"\'", r"'");
+  void _processToken(String token) {
+    if (token == '[') {
+      _startBrackets();
+    } else if (token == ']') {
+      _finishBrackets();
+    } else {
+      _stack.last.children.add(Node(token));
+    }
+  }
 
-  int get intValue => int.parse(value);
+  void _startBrackets() {
+    _stack.add(Node('[]'));
+  }
+
+  void _finishBrackets() {
+    final children = <Node>[];
+    while (_stack.last.value != '[]') {
+      children.add(_stack.removeLast());
+    }
+    final bracketExp = _stack.removeLast();
+    bracketExp.children.addAll(children.reversed);
+    _stack.last.children.add(bracketExp);
+  }
 }
