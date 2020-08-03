@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [0.0.0+dev.7] - 2020-08-02
+### Changed
+- Tokenized and AST refactoring
+
 ## [0.0.0+dev.6] - 2020-08-01
 ### Added
 - Unions
@@ -29,7 +33,8 @@
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.0+dev.6...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.0+dev.7...HEAD
+[0.0.0+dev.7]: https://github.com/f3ath/jessie/compare/0.0.0+dev.6...0.0.0+dev.7
 [0.0.0+dev.6]: https://github.com/f3ath/jessie/compare/0.0.0+dev.5...0.0.0+dev.6
 [0.0.0+dev.5]: https://github.com/f3ath/jessie/compare/0.0.0+dev.4...0.0.0+dev.5
 [0.0.0+dev.4]: https://github.com/f3ath/jessie/compare/0.0.0+dev.3...0.0.0+dev.4
