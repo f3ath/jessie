@@ -9,7 +9,7 @@ class Parser {
   /// Builds a selector from the JsonPath [expression]
   Selector parse(String expression) {
     if (expression.isEmpty) throw FormatException('Empty expression');
-    ParserState state = Ready(Root());
+    ParserState state = Ready(RootSelector());
     AST(_tokenize(expression)).children.forEach((node) {
       state = state.process(node);
     });
@@ -21,8 +21,8 @@ class Parser {
 
   static final _tokens = RegExp([
     r'\$', // root
-    r'\[', // open bracket
-    r'\]', // closing bracket
+    r'\[', // left bracket
+    r'\]', // right bracket
     r'\.\.', // recursion
     r'\.', // child
     r'\*', // wildcard

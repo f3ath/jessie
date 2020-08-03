@@ -29,7 +29,7 @@ class Ready implements ParserState {
   ParserState process(Node node) {
     switch (node.value) {
       case '[]':
-        return Ready(selector.then(brackets(node.children)));
+        return Ready(selector.then(bracketExpression(node.children)));
       case '.':
         return AwaitingField(selector);
       case '..':
@@ -41,35 +41,27 @@ class Ready implements ParserState {
     }
   }
 
-  Selector brackets(List<Node> nodes) {
+  Selector bracketExpression(List<Node> nodes) {
     if (nodes.isEmpty) throw FormatException('Empty brackets');
     if (nodes.length == 1) return singleValueBrackets(nodes.single);
     return multiValueBrackets(nodes);
   }
 
+  Selector singleValueBrackets(Node node) {
+    if (node.isWildcard) return ListWildcard();
+    if (node.isNumber) return Index(node.intValue);
+    if (node.isQuoted) return Field(node.unquoted);
+    throw FormatException('Unexpected bracket expression');
+  }
+
   Selector multiValueBrackets(List<Node> nodes) {
-    if (nodes.any((node) => node.value == ':')) {
-      int first;
-      int last;
-      int step;
-      var colons = 0;
-      nodes.forEach((node) {
-        if (node.value == ':') {
-          colons++;
-          return;
-        }
-        if (colons == 0) {
-          first = node.intValue;
-          return;
-        }
-        if (colons == 1) {
-          last = node.intValue;
-          return;
-        }
-        step = node.intValue;
-      });
-      return Slice(first: first, last: last, step: step);
-    }
+    if (_isSlice(nodes)) return _slice(nodes);
+    return _union(nodes);
+  }
+
+  bool _isSlice(List<Node> nodes) => nodes.any((node) => node.value == ':');
+
+  Selector _union(List<Node> nodes) {
     final filtered = nodes.where((_) => _.value != ',');
     if (nodes.first.isNumber) {
       return ListUnion(filtered.map((_) => _.intValue).toList());
@@ -78,11 +70,27 @@ class Ready implements ParserState {
         filtered.map((_) => _.isQuoted ? _.unquoted : _.value).toList());
   }
 
-  Selector singleValueBrackets(Node node) {
-    if (node.isWildcard) return ListWildcard();
-    if (node.isNumber) return Index(node.intValue);
-    if (node.isQuoted) return Field(node.unquoted);
-    throw FormatException('Unexpected bracket expression');
+  Slice _slice(List<Node> nodes) {
+    int first;
+    int last;
+    int step;
+    var colons = 0;
+    nodes.forEach((node) {
+      if (node.value == ':') {
+        colons++;
+        return;
+      }
+      if (colons == 0) {
+        first = node.intValue;
+        return;
+      }
+      if (colons == 1) {
+        last = node.intValue;
+        return;
+      }
+      step = node.intValue;
+    });
+    return Slice(first: first, last: last, step: step);
   }
 }
 

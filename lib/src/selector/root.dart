@@ -2,8 +2,8 @@ import 'package:json_path/src/result.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
-class Root with SelectorMixin {
-  const Root();
+class RootSelector with SelectorMixin {
+  const RootSelector();
 
   @override
   Iterable<Result> filter(Iterable<Result> results) =>

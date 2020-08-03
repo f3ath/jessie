@@ -247,7 +247,7 @@ void main() {
     });
   });
 
-  group('Arrays', () {
+  group('Lists', () {
     test('Path with an index', () {
       final path = JsonPath(r'$.store.book[0].title');
       expect(path.toString(), r"$['store']['book'][0]['title']");
@@ -255,7 +255,7 @@ void main() {
       expect(path.filter(json).single.path, r"$['store']['book'][0]['title']");
     });
 
-    test('All in array', () {
+    test('All in list', () {
       final path = JsonPath(r'$.store.book[*]');
       expect(path.toString(), r"$['store']['book'][*]");
       expect(path.filter(json).length, 4);

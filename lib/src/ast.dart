@@ -3,33 +3,31 @@ import 'package:json_path/src/node.dart';
 /// The Abstract Syntax Tree
 class AST {
   AST(Iterable<String> tokens) {
-    tokens.skipWhile((token) => token == _root).forEach(_processToken);
+    tokens.skipWhile((_) => _ == r'$').forEach(_processToken);
   }
 
   /// The children of the root node
   Iterable<Node> get children => _stack.last.children;
 
-  static const _root = r'$';
-
-  final _stack = <Node>[Node(_root)];
+  final _stack = <Node>[Node('')];
 
   void _processToken(String token) {
     if (token == '[') {
-      _startBrackets();
+      _start('[]');
     } else if (token == ']') {
-      _finishBrackets();
+      _finish('[]');
     } else {
       _stack.last.children.add(Node(token));
     }
   }
 
-  void _startBrackets() {
-    _stack.add(Node('[]'));
+  void _start(String root) {
+    _stack.add(Node(root));
   }
 
-  void _finishBrackets() {
+  void _finish(String root) {
     final children = <Node>[];
-    while (_stack.last.value != '[]') {
+    while (_stack.last.value != root) {
       children.add(_stack.removeLast());
     }
     final bracketExp = _stack.removeLast();
