@@ -1,5 +1,6 @@
 import 'package:json_path/src/ast.dart';
 import 'package:json_path/src/parser_state.dart';
+import 'package:json_path/src/predicate.dart';
 import 'package:json_path/src/selector/root.dart';
 import 'package:json_path/src/selector/selector.dart';
 
@@ -7,11 +8,11 @@ class Parser {
   const Parser();
 
   /// Builds a selector from the JsonPath [expression]
-  Selector parse(String expression) {
+  Selector parse(String expression, Map<String, Predicate> filters) {
     if (expression.isEmpty) throw FormatException('Empty expression');
     ParserState state = Ready(RootSelector());
     AST(_tokenize(expression)).children.forEach((node) {
-      state = state.process(node);
+      state = state.process(node, filters);
     });
     return state.selector;
   }
@@ -28,8 +29,9 @@ class Parser {
     r'\*', // wildcard
     r'\:', // slice
     r'\,', // union
+    r'\?', // filter
     r"'(?:[^'\\]|\\.)*'", // quoted string
     r'-?\d+', // number
-    r'[A-Za-z_-]+', // field
+    r'([A-Za-z_-][A-Za-z_\d-]*)', // field
   ].join('|'));
 }

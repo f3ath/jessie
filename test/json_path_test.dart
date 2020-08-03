@@ -21,6 +21,14 @@ void main() {
       expect(store.filter(json).single.path, r"$['store']");
     });
 
+    test('Single field with digits', () {
+      final j = {'aA_12': 'foo'};
+      final store = JsonPath(r'$aA_12');
+      expect(store.toString(), r"$['aA_12']");
+      expect(store.filter(j).single.value, 'foo');
+      expect(store.filter(j).single.path, r"$['aA_12']");
+    });
+
     test('Single field in bracket notation', () {
       final store = JsonPath(r"$['store']");
       expect(store.toString(), r"$['store']");
@@ -200,6 +208,7 @@ void main() {
     test('All in root', () {
       final allInRoot = JsonPath(r'$.*');
       expect(allInRoot.toString(), r'$.*');
+      expect(allInRoot.filter(json).length, 1);
       expect(allInRoot.filter(json).single.value, json['store']);
       expect(allInRoot.filter(json).single.path, r"$['store']");
     });
@@ -263,6 +272,24 @@ void main() {
       expect(path.filter(json).first.path, r"$['store']['book'][0]");
       expect(path.filter(json).last.value, json['store']['book'][3]);
       expect(path.filter(json).last.path, r"$['store']['book'][3]");
+    });
+  });
+
+  group('Filtering', () {
+    test('Simple', () {
+      final path = JsonPath(r'$.store..[?discounted]', filter: {
+        'discounted': (e) => e is Map && e['price'] is num && e['price'] < 20
+      });
+      expect(path.toString(), r"$['store']..[?discounted]");
+      expect(path.filter(json).length, 4);
+      expect(path.filter(json).first.value, json['store']['book'][0]);
+      expect(path.filter(json).first.path, r"$['store']['book'][0]");
+      expect(path.filter(json).last.value, json['store']['bicycle']);
+      expect(path.filter(json).last.path, r"$['store']['bicycle']");
+    });
+
+    test('Missing filter', () {
+      expect(() => JsonPath(r'$.store..[?discounted]'), throwsFormatException);
     });
   });
 }

@@ -1,11 +1,13 @@
 import 'package:json_path/src/parser.dart';
+import 'package:json_path/src/predicate.dart';
 import 'package:json_path/src/result.dart';
 import 'package:json_path/src/selector/selector.dart';
 
 /// A JSONPath expression
 class JsonPath {
   /// Creates an instance from string
-  JsonPath(String expression) : _selector = const Parser().parse(expression);
+  JsonPath(String expression, {Map<String, Predicate> filter})
+      : _selector = const Parser().parse(expression, filter ?? {});
 
   final Selector _selector;
 
@@ -16,3 +18,4 @@ class JsonPath {
   @override
   String toString() => _selector.expression();
 }
+

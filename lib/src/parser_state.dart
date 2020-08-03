@@ -1,5 +1,7 @@
 import 'package:json_path/src/node.dart';
+import 'package:json_path/src/predicate.dart';
 import 'package:json_path/src/selector/field.dart';
+import 'package:json_path/src/selector/filter.dart';
 import 'package:json_path/src/selector/index.dart';
 import 'package:json_path/src/selector/list_union.dart';
 import 'package:json_path/src/selector/list_wildcard.dart';
@@ -12,7 +14,7 @@ import 'package:json_path/src/selector/slice.dart';
 /// AST parser state
 abstract class ParserState {
   /// Processes the node. Returns the next state
-  ParserState process(Node node);
+  ParserState process(Node node, Map<String, Predicate> filters);
 
   /// Selector made from the tree
   Selector get selector;
@@ -26,10 +28,10 @@ class Ready implements ParserState {
   final Selector selector;
 
   @override
-  ParserState process(Node node) {
+  ParserState process(Node node, Map<String, Predicate> filters) {
     switch (node.value) {
       case '[]':
-        return Ready(selector.then(bracketExpression(node.children)));
+        return Ready(selector.then(bracketExpression(node.children, filters)));
       case '.':
         return AwaitingField(selector);
       case '..':
@@ -41,10 +43,10 @@ class Ready implements ParserState {
     }
   }
 
-  Selector bracketExpression(List<Node> nodes) {
+  Selector bracketExpression(List<Node> nodes, Map<String, Predicate> filters) {
     if (nodes.isEmpty) throw FormatException('Empty brackets');
     if (nodes.length == 1) return singleValueBrackets(nodes.single);
-    return multiValueBrackets(nodes);
+    return multiValueBrackets(nodes, filters);
   }
 
   Selector singleValueBrackets(Node node) {
@@ -54,10 +56,22 @@ class Ready implements ParserState {
     throw FormatException('Unexpected bracket expression');
   }
 
-  Selector multiValueBrackets(List<Node> nodes) {
+  Selector multiValueBrackets(
+      List<Node> nodes, Map<String, Predicate> filters) {
+    if (_isFilter(nodes)) return _filter(nodes, filters);
     if (_isSlice(nodes)) return _slice(nodes);
     return _union(nodes);
   }
+
+  Filter _filter(List<Node> nodes, Map<String, Predicate> filters) {
+    final name = nodes[1].value;
+    if (!filters.containsKey(name)) {
+      throw FormatException('Filter not found: "${name}"');
+    }
+    return Filter(name, filters[name]);
+  }
+
+  bool _isFilter(List<Node> nodes) => nodes.first.value == '?';
 
   bool _isSlice(List<Node> nodes) => nodes.any((node) => node.value == ':');
 
@@ -101,7 +115,7 @@ class AwaitingField implements ParserState {
   final Selector selector;
 
   @override
-  ParserState process(Node node) {
+  ParserState process(Node node, Map<String, Predicate> filters) {
     if (node.isWildcard) {
       return Ready(selector.then(ObjectWildcard()));
     }
