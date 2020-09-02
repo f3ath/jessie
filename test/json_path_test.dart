@@ -264,6 +264,13 @@ void main() {
       expect(path.filter(json).single.path, r"$['store']['book'][0]['title']");
     });
 
+    test('Last element of array (regression #1)', () {
+      final path = JsonPath(r"$['store']['book'][3]['price']");
+      expect(path.toString(), r"$['store']['book'][3]['price']");
+      expect(path.filter(json).single.value, 22.99);
+      expect(path.filter(json).single.path, r"$['store']['book'][3]['price']");
+    });
+
     test('All in list', () {
       final path = JsonPath(r'$.store.book[*]');
       expect(path.toString(), r"$['store']['book'][*]");

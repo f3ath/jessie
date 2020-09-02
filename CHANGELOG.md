@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [0.0.2] - 2020-09-01
+### Fixed
+- Last element of array was not selected (regression #1)
+
 ## [0.0.1] - 2020-08-03
 ### Added
 - Filters
@@ -37,7 +41,8 @@
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.1...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.2...HEAD
+[0.0.2]: https://github.com/f3ath/jessie/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/f3ath/jessie/compare/0.0.0+dev.7...0.0.1
 [0.0.0+dev.7]: https://github.com/f3ath/jessie/compare/0.0.0+dev.6...0.0.0+dev.7
 [0.0.0+dev.6]: https://github.com/f3ath/jessie/compare/0.0.0+dev.5...0.0.0+dev.6

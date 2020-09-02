@@ -9,7 +9,7 @@ class Index with SelectorMixin {
 
   @override
   Iterable<Result> filter(Iterable<Result> results) => results
-      .where((r) => r.value is List && r.value.length > index + 1)
+      .where((r) => r.value is List && r.value.length > index)
       .map((r) => Result(r.value[index], r.path + expression()));
 
   @override
