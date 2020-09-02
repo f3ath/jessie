@@ -18,4 +18,3 @@ class JsonPath {
   @override
   String toString() => _selector.expression();
 }
-
