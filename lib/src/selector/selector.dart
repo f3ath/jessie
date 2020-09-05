@@ -6,9 +6,12 @@ abstract class Selector {
   Iterable<Result> filter(Iterable<Result> results);
 
   /// The filter expression as string.
-  /// The [previous] selector must be provided if being followed by this
-  String expression([Selector previous]);
+  String expression();
 
   /// Combines this expression with the [other]
   Selector then(Selector other);
+
+  /// Applies the [mutate] callback to the selected elements in [json].
+  /// Returns the modified object.
+  dynamic apply(dynamic json, dynamic Function(dynamic _) mutate);
 }

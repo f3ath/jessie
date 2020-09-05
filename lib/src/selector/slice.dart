@@ -4,10 +4,16 @@ import 'package:json_path/src/result.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
-class Slice with SelectorMixin {
+class Slice with SelectorMixin implements Selector {
   Slice({int first, this.last, int step})
       : first = first ?? 0,
         step = step ?? 1;
+
+  static Iterable<int> _for(int from, int to, int step) sync* {
+    for (var i = from; i < to; i += step) {
+      yield i;
+    }
+  }
 
   final int first;
 
@@ -24,7 +30,7 @@ class Slice with SelectorMixin {
       }).expand((_) => _);
 
   @override
-  String expression([Selector previous]) =>
+  String expression() =>
       '[${first == 0 ? '' : first}:${last ?? ''}${step != 1 ? ':$step' : ''}]';
 
   Iterable<Result> _filterList(List list, String path) =>
@@ -39,9 +45,9 @@ class Slice with SelectorMixin {
     return min(len, last);
   }
 
-  static Iterable<int> _for(int from, int to, int step) sync* {
-    for (var i = from; i < to; i += step) {
-      yield i;
-    }
+  @override
+  Object apply(Object json, Object Function(Object _) setter) {
+    // TODO: implement setIn
+    throw UnimplementedError();
   }
 }

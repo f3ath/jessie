@@ -4,7 +4,7 @@ import 'package:json_path/src/result.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
-class Filter with SelectorMixin {
+class Filter with SelectorMixin implements Selector {
   Filter(this.name, this.predicate);
 
   final String name;
@@ -16,5 +16,13 @@ class Filter with SelectorMixin {
       results.where((r) => predicate(r.value));
 
   @override
-  String expression([Selector previous]) => '[?$name]';
+  String expression() => '[?$name]';
+
+  @override
+  dynamic apply(dynamic json,  Function(dynamic _) mutate) {
+    if (predicate(json)) {
+      return mutate(json);
+    }
+    return json;
+  }
 }

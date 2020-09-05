@@ -295,6 +295,18 @@ void main() {
       expect(path.filter(json).last.path, r"$['store']['bicycle']");
     });
 
+    test('Can be applied to scalars', () {
+      final path = JsonPath(r'$.store..price[?low]', filter: {
+        'low': (e) => e is num && e < 20
+      });
+      expect(path.toString(), r"$['store']..['price'][?low]");
+      expect(path.filter(json).length, 4);
+      expect(path.filter(json).first.value, json['store']['book'][0]['price']);
+      expect(path.filter(json).first.path, r"$['store']['book'][0]['price']");
+      expect(path.filter(json).last.value, json['store']['bicycle']['price']);
+      expect(path.filter(json).last.path, r"$['store']['bicycle']['price']");
+    });
+
     test('Missing filter', () {
       expect(() => JsonPath(r'$.store..[?discounted]'), throwsFormatException);
     });

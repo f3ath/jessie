@@ -1,8 +1,6 @@
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/predicate.dart';
-import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/filter.dart';
-import 'package:json_path/src/selector/index.dart';
 import 'package:json_path/src/selector/list_union.dart';
 import 'package:json_path/src/selector/list_wildcard.dart';
 import 'package:json_path/src/selector/object_union.dart';
@@ -39,7 +37,7 @@ class Ready implements ParserState {
       case '*':
         return Ready(selector.then(ObjectWildcard()));
       default:
-        return Ready(selector.then(Field(node.value)));
+        return Ready(selector.then(ObjectUnion([node.value])));
     }
   }
 
@@ -51,8 +49,9 @@ class Ready implements ParserState {
 
   Selector singleValueBrackets(Node node) {
     if (node.isWildcard) return ListWildcard();
-    if (node.isNumber) return Index(node.intValue);
-    if (node.isQuoted) return Field(node.unquoted);
+    if (node.isNumber) return ListUnion([node.intValue]);
+//    if (node.isQuoted) return Field(node.unquoted);
+    if (node.isQuoted) return ObjectUnion([node.unquoted]);
     throw FormatException('Unexpected bracket expression');
   }
 
@@ -119,6 +118,6 @@ class AwaitingField implements ParserState {
     if (node.isWildcard) {
       return Ready(selector.then(ObjectWildcard()));
     }
-    return Ready(selector.then(Field(node.value)));
+    return Ready(selector.then(ObjectUnion([node.value])));
   }
 }
