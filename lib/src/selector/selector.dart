@@ -1,9 +1,9 @@
-import 'package:json_path/src/result.dart';
+import 'package:json_path/src/json_path_match.dart';
 
-/// Converts a set of results into a set of results
+/// Converts a set of matches into a set of matches
 abstract class Selector {
-  /// Applies this filter to the [results]
-  Iterable<Result> filter(Iterable<Result> results);
+  /// Applies this filter to the [matches]
+  Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches);
 
   /// The filter expression as string.
   String expression();
@@ -11,7 +11,8 @@ abstract class Selector {
   /// Combines this expression with the [other]
   Selector then(Selector other);
 
-  /// Applies the [mutate] callback to the selected elements in [json].
-  /// Returns the modified object.
-  dynamic apply(dynamic json, dynamic Function(dynamic _) mutate);
+  /// Returns a copy of [json] with all selected values modified using [replacement] function.
+  dynamic replace(dynamic json, Replacement replacement);
 }
+
+typedef Replacement = dynamic Function(dynamic value);

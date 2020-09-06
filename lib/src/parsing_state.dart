@@ -1,4 +1,4 @@
-import 'package:json_path/src/node.dart';
+import 'package:json_path/src/ast/node.dart';
 import 'package:json_path/src/predicate.dart';
 import 'package:json_path/src/selector/filter.dart';
 import 'package:json_path/src/selector/list_union.dart';
@@ -10,23 +10,23 @@ import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/slice.dart';
 
 /// AST parser state
-abstract class ParserState {
+abstract class ParsingState {
   /// Processes the node. Returns the next state
-  ParserState process(Node node, Map<String, Predicate> filters);
+  ParsingState process(Node node, Map<String, Predicate> filters);
 
   /// Selector made from the tree
   Selector get selector;
 }
 
 /// Ready to process the next node
-class Ready implements ParserState {
+class Ready implements ParsingState {
   Ready(this.selector);
 
   @override
   final Selector selector;
 
   @override
-  ParserState process(Node node, Map<String, Predicate> filters) {
+  ParsingState process(Node node, Map<String, Predicate> filters) {
     switch (node.value) {
       case '[]':
         return Ready(selector.then(bracketExpression(node.children, filters)));
@@ -107,14 +107,14 @@ class Ready implements ParserState {
   }
 }
 
-class AwaitingField implements ParserState {
+class AwaitingField implements ParsingState {
   AwaitingField(this.selector);
 
   @override
   final Selector selector;
 
   @override
-  ParserState process(Node node, Map<String, Predicate> filters) {
+  ParsingState process(Node node, Map<String, Predicate> filters) {
     if (node.isWildcard) {
       return Ready(selector.then(ObjectWildcard()));
     }

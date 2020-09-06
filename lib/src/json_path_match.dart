@@ -1,6 +1,6 @@
 /// A single matching result
-class Result<T> {
-  Result(this.value, this.path);
+class JsonPathMatch<T> {
+  JsonPathMatch(this.value, this.path);
 
   /// The value
   final T value;

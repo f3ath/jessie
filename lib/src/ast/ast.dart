@@ -1,4 +1,4 @@
-import 'package:json_path/src/node.dart';
+import 'package:json_path/src/ast/node.dart';
 
 /// The Abstract Syntax Tree
 class AST {
@@ -7,7 +7,7 @@ class AST {
   }
 
   /// The children of the root node
-  Iterable<Node> get children => _stack.last.children;
+  Iterable<Node> get nodes => _stack.last.children;
 
   final _stack = <Node>[Node('')];
 

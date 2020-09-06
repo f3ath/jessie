@@ -1,4 +1,4 @@
-import 'package:json_path/src/result.dart';
+import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
@@ -8,34 +8,33 @@ class ListUnion with SelectorMixin implements Selector {
   final List<int> keys;
 
   @override
-  Iterable<Result> filter(Iterable<Result> results) => results
+  Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches) => matches
       .map((r) => (r.value is List) ? _map(r.value, r.path) : [])
       .expand((_) => _);
 
   @override
   String expression() => '[${keys.join(',')}]';
 
-  Iterable<Result> _map(List list, String path) => keys
+  Iterable<JsonPathMatch> _map(List list, String path) => keys
       .where((key) => key < list.length)
-      .map((key) => Result(list[key], path + '[$key]'));
+      .map((key) => JsonPathMatch(list[key], path + '[$key]'));
 
   @override
-  dynamic apply(dynamic json, Function(dynamic _) mutate) {
+  dynamic replace(dynamic json, Function(dynamic _) replacement) {
     if (json is List) {
       final applicableKeys = keys.where((key) => json.length > key);
       if (applicableKeys.isEmpty) {
         return json;
       }
-      return _mutateInList(json, applicableKeys, mutate);
+      return _replaceInList(json, applicableKeys, replacement);
     }
     return json;
   }
 
-  List _mutateInList(
-      List json, Iterable<int> keys, Function(dynamic _) mutate) {
-    final copy = [...json];
+  List _replaceInList(List list, Iterable<int> keys, Replacement replacement) {
+    final copy = [...list];
     keys.forEach((key) {
-      copy[key] = mutate(copy[key]);
+      copy[key] = replacement(copy[key]);
     });
     return copy;
   }

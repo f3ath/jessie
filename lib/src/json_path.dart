@@ -1,26 +1,44 @@
-import 'package:json_path/src/parser.dart';
+import 'package:json_path/src/ast/ast.dart';
+import 'package:json_path/src/ast/tokenize.dart';
+import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/parsing_state.dart';
 import 'package:json_path/src/predicate.dart';
-import 'package:json_path/src/result.dart';
+import 'package:json_path/src/selector/root.dart';
 import 'package:json_path/src/selector/selector.dart';
 
 /// A JSONPath expression
 class JsonPath {
-  /// Creates an instance from string
-  JsonPath(String expression, {Map<String, Predicate> filter})
-      : _selector = const Parser().parse(expression, filter ?? {});
+  /// Creates an instance from string. The [expression] is parsed once, and
+  /// the instance may be used many times after that.
+  ///
+  /// The [filter] arguments may contain the named filters used
+  /// in the [expression].
+  ///
+  /// Throws [FormatException] if the [expression] can not be parsed.
+  factory JsonPath(String expression, {Map<String, Predicate> filter}) {
+    if (expression.isEmpty) throw FormatException('Empty expression');
+    ParsingState state = Ready(RootSelector());
+    AST(tokenize(expression)).nodes.forEach((node) {
+      state = state.process(node, filter ?? {});
+    });
+    return JsonPath._(state.selector);
+  }
+
+  JsonPath._(this._selector);
 
   final Selector _selector;
 
-  /// Filters the given [json] object.
-  /// Returns an Iterable of all elements found
-  Iterable<Result> filter(json) => _selector.filter([Result(json, '')]);
+  /// Reads the given [json] object returning an Iterable of all matches found.
+  Iterable<JsonPathMatch> read(json) =>
+      _selector.read([JsonPathMatch(json, '')]);
 
-  /// Returns a copy of [json] with all selected values set to [value].
-  dynamic set(dynamic json, dynamic value) => replace(json, (_) => value);
+  /// Deprecated. Use `read()`
+  @deprecated
+  Iterable<JsonPathMatch> filter(json) => read(json);
 
-  /// Returns a copy of [json] with all selected values modified using [replacement] function.
-  dynamic replace(dynamic json, dynamic Function(dynamic _) replacement) =>
-      _selector.apply(json, replacement);
+  /// Returns a copy of [json] with all matching values replaced with [value].
+  dynamic set(dynamic json, dynamic value) =>
+      _selector.replace(json, (_) => value);
 
   @override
   String toString() => _selector.expression();

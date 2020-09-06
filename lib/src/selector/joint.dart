@@ -1,4 +1,4 @@
-import 'package:json_path/src/result.dart';
+import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/object_wildcard.dart';
 import 'package:json_path/src/selector/recursive.dart';
 import 'package:json_path/src/selector/selector.dart';
@@ -24,8 +24,8 @@ class Joint with SelectorMixin implements Selector {
   final Selector right;
 
   @override
-  Iterable<Result> filter(Iterable<Result> results) =>
-      right.filter(left.filter(results));
+  Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches) =>
+      right.read(left.read(matches));
 
   @override
   String expression() =>
@@ -34,6 +34,6 @@ class Joint with SelectorMixin implements Selector {
       right.expression();
 
   @override
-  dynamic apply(dynamic json, Function(dynamic _) mutate) =>
-      left.apply(json, (_) => right.apply(_, mutate));
+  dynamic replace(dynamic json, Replacement replacement) =>
+      left.replace(json, (_) => right.replace(_, replacement));
 }

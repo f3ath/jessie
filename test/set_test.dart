@@ -35,6 +35,12 @@ void main() {
       expect(store.set(42, 'foo'), 42);
       expect(store.set([true], 'foo'), [true]);
     });
+    test('Replace all bicycle fields with a banana', () {
+      final bikeFields = JsonPath(r'$.store.bicycle.*');
+      final mutated = bikeFields.set(json, 'banana');
+      expect(mutated['store']['bicycle']['color'], 'banana');
+      expect(mutated['store']['bicycle']['price'], 'banana');
+    });
   });
 
   test('Recursive. Set all prices to 0', () {
@@ -74,6 +80,22 @@ void main() {
       expect(mutated['store']['book'][1]['price'], 'hidden');
       expect(mutated['store']['book'][2]['price'], isA<num>());
       expect(mutated['store']['book'][3]['price'], 'hidden');
+    });
+    test('Index. Hide the prices of all books', () {
+      final price = JsonPath(r'$.store.book[*].price');
+      final mutated = price.set(json, 'hidden');
+      expect(mutated['store']['book'][0]['price'], 'hidden');
+      expect(mutated['store']['book'][1]['price'], 'hidden');
+      expect(mutated['store']['book'][2]['price'], 'hidden');
+      expect(mutated['store']['book'][3]['price'], 'hidden');
+    });
+    test('Index. Replace every other book with a banana', () {
+      final price = JsonPath(r'$.store.book[::2]');
+      final mutated = price.set(json, 'banana');
+      expect(mutated['store']['book'][0], 'banana');
+      expect(mutated['store']['book'][1]['price'], isA<num>());
+      expect(mutated['store']['book'][2], 'banana');
+      expect(mutated['store']['book'][3]['price'], isA<num>());
     });
   });
 }

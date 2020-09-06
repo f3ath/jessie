@@ -1,4 +1,13 @@
 ## [Unreleased]
+### Added
+- JsonPath.set() method to alter the JSON object in a non-destructive way
+
+### Changed
+- **BREAKING!** Result renamed to JsonPathMatch
+
+### Deprecated
+- JsonPath.filter() is deprecated in favor of read()
+
 ## [0.0.2] - 2020-09-01
 ### Fixed
 - Last element of array was not selected (regression #1)
