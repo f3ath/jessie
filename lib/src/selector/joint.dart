@@ -34,6 +34,6 @@ class Joint with SelectorMixin implements Selector {
       right.expression();
 
   @override
-  dynamic replace(dynamic json, Replacement replacement) =>
-      left.replace(json, (_) => right.replace(_, replacement));
+  dynamic set(dynamic json, Replacement replacement) =>
+      left.set(json, (_) => right.set(_, replacement));
 }

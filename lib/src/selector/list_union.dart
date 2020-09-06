@@ -20,13 +20,9 @@ class ListUnion with SelectorMixin implements Selector {
       .map((key) => JsonPathMatch(list[key], path + '[$key]'));
 
   @override
-  dynamic replace(dynamic json, Function(dynamic _) replacement) {
+  dynamic set(dynamic json, Function(dynamic _) replacement) {
     if (json is List) {
-      final applicableKeys = keys.where((key) => json.length > key);
-      if (applicableKeys.isEmpty) {
-        return json;
-      }
-      return _replaceInList(json, applicableKeys, replacement);
+      return _replaceInList(json, keys, replacement);
     }
     return json;
   }

@@ -12,7 +12,7 @@ class Recursive with SelectorMixin implements Selector {
   String expression() => '..';
 
   @override
-  dynamic replace(dynamic json, Replacement replacement) {
+  dynamic set(dynamic json, Replacement replacement) {
     if (json is Map) {
       return _replaceInMap(json, replacement);
     }
@@ -33,10 +33,10 @@ class Recursive with SelectorMixin implements Selector {
   }
 
   dynamic _replaceInMap(Map map, Replacement replacement) => replacement(
-      map.map((key, value) => MapEntry(key, replace(value, replacement))));
+      map.map((key, value) => MapEntry(key, set(value, replacement))));
 
   dynamic _replaceInList(List list, Replacement replacement) =>
-      replacement(list.map((value) => replace(value, replacement)).toList());
+      replacement(list.map((value) => set(value, replacement)).toList());
 
   Iterable<JsonPathMatch> _values(List val, String path) => val
       .asMap()

@@ -24,7 +24,7 @@ class ObjectWildcard with SelectorMixin implements Selector {
       .map((e) => JsonPathMatch(e.value, path + '[${e.key}]'));
 
   @override
-  dynamic replace(dynamic json, Replacement replacement) => (json is Map)
+  dynamic set(dynamic json, Replacement replacement) => (json is Map)
       ? json.map((key, value) => MapEntry(key, replacement(value)))
       : json;
 }

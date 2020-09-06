@@ -19,6 +19,6 @@ class Filter with SelectorMixin implements Selector {
   String expression() => '[?$name]';
 
   @override
-  dynamic replace(dynamic json, Replacement replacement) =>
+  dynamic set(dynamic json, Replacement replacement) =>
       isApplicable(json) ? replacement(json) : json;
 }

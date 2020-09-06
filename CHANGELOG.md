@@ -1,4 +1,11 @@
 ## [Unreleased]
+## [0.1.2] - 2020-09-06
+### Changed
+- When JsonPath.set() is called on a path with non-existing property, the property will be created. 
+Previously, no modification would be made and no errors/exceptions thrown.
+- When JsonPath.set() is called on a path with non-existing index, a `RangeError` will be thrown. 
+Previously, no modification would be made and no errors/exceptions thrown.
+
 ## [0.1.1] - 2020-09-05
 ### Fixed
 - Fixed example code in the readme
@@ -13,7 +20,7 @@
 
 ## [0.0.2] - 2020-09-01
 ### Fixed
-- Last element of array was not selected (regression #1)
+- Last element of array would not get selected (regression #1)
 
 ## [0.0.1] - 2020-08-03
 ### Added
@@ -53,7 +60,8 @@
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.1.1...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.1.2...HEAD
+[0.1.2]: https://github.com/f3ath/jessie/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/f3ath/jessie/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/f3ath/jessie/compare/0.0.2...0.1.0
 [0.0.2]: https://github.com/f3ath/jessie/compare/0.0.1...0.0.2

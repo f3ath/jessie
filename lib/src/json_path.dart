@@ -34,7 +34,7 @@ class JsonPath {
 
   /// Returns a copy of [json] with all matching values replaced with [value].
   dynamic set(dynamic json, dynamic value) =>
-      _selector.replace(json, (_) => value);
+      _selector.set(json, (_) => value);
 
   @override
   String toString() => _selector.expression();
