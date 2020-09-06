@@ -25,11 +25,11 @@ void main() {
       expect(json['store']['bicycle']['color'], 'red',
           reason: 'Original bike is still red');
     });
-    test('Does not set non-existing field', () {
-      final foo = JsonPath(r'$.foo');
-      final mutated = foo.set(json, 42);
-      expect(mutated.containsKey('foo'), false);
-      expect(mutated['store'], json['store']);
+    test('Creates a field if it does not exist', () {
+      final abc = JsonPath(r'$.a.b.c');
+      final mutated = abc.set({'foo': 'bar'}, 'magic');
+      expect(mutated['foo'], 'bar');
+      expect(mutated['a']['b']['c'], 'magic');
     });
     test('Does not change non-object (scalars, arrays)', () {
       expect(store.set(42, 'foo'), 42);
@@ -96,6 +96,10 @@ void main() {
       expect(mutated['store']['book'][1]['price'], isA<num>());
       expect(mutated['store']['book'][2], 'banana');
       expect(mutated['store']['book'][3]['price'], isA<num>());
+    });
+    test('Index. Setting non-existing index throws RangeError', () {
+      final title = JsonPath(r'$.store.book[100].title');
+      expect(() => title.set(json, 'Banana'), throwsRangeError);
     });
   });
 }

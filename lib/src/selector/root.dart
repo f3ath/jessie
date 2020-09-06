@@ -13,5 +13,5 @@ class RootSelector with SelectorMixin implements Selector {
   String expression() => r'$';
 
   @override
-  dynamic replace(dynamic json, Replacement replacement) => replacement(json);
+  dynamic set(dynamic json, Replacement replacement) => replacement(json);
 }
