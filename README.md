@@ -117,7 +117,7 @@ Instead, use the callback-kind of filters.
 ```dart
 /// Select all elements with price under 20
 JsonPath(r'$.store..[?discounted]', filter: {
-  'discounted': (e) => e['price'] < 20
+  'discounted': (e) => e is Map && e['price'] is num && e['price'] < 20
 });
 ``` 
 

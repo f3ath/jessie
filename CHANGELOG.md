@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [0.1.1] - 2020-09-05
+### Fixed
+- Fixed example code in the readme
+
 ## [0.1.0] - 2020-09-05
 ### Added
 - JsonPath.set() method to alter the JSON object in a non-destructive way
@@ -49,7 +53,8 @@
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/f3ath/jessie/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/f3ath/jessie/compare/0.0.2...0.1.0
 [0.0.2]: https://github.com/f3ath/jessie/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/f3ath/jessie/compare/0.0.0+dev.7...0.0.1
