@@ -39,8 +39,7 @@ void main() {
     test('Mixed brackets and fields', () {
       final price = JsonPath(r"$['store'].bicycle['price']");
       expect(price.toString(), r"$['store']['bicycle']['price']");
-      expect(
-          price.read(json).single.value, json['store']['bicycle']['price']);
+      expect(price.read(json).single.value, json['store']['bicycle']['price']);
       expect(price.read(json).single.path, r"$['store']['bicycle']['price']");
     });
   });
@@ -221,6 +220,11 @@ void main() {
       expect(allInStore.read(json).first.path, r"$['store']['book']");
       expect(allInStore.read(json).last.value, json['store']['bicycle']);
       expect(allInStore.read(json).last.path, r"$['store']['bicycle']");
+    });
+    test('No effect on scalars', () {
+      final allInStore = JsonPath(r'$.store.bicycle.color.*');
+      expect(allInStore.toString(), r"$['store']['bicycle']['color'].*");
+      expect(allInStore.read(json), isEmpty);
     });
   });
 

@@ -28,8 +28,8 @@ class Ready implements ParsingState {
   @override
   ParsingState process(Node node, Map<String, Predicate> filters) {
     switch (node.value) {
-      case '[]':
-        return Ready(selector.then(bracketExpression(node.children, filters)));
+      case '[':
+        return Ready(selector.then(_brackets(node.children, filters)));
       case '.':
         return AwaitingField(selector);
       case '..':
@@ -41,21 +41,20 @@ class Ready implements ParsingState {
     }
   }
 
-  Selector bracketExpression(List<Node> nodes, Map<String, Predicate> filters) {
+  Selector _brackets(List<Node> nodes, Map<String, Predicate> filters) {
     if (nodes.isEmpty) throw FormatException('Empty brackets');
-    if (nodes.length == 1) return singleValueBrackets(nodes.single);
-    return multiValueBrackets(nodes, filters);
+    if (nodes.length == 1) return _singleValueBrackets(nodes.single);
+    return _multiValueBrackets(nodes, filters);
   }
 
-  Selector singleValueBrackets(Node node) {
+  Selector _singleValueBrackets(Node node) {
     if (node.isWildcard) return ListWildcard();
     if (node.isNumber) return ListUnion([node.intValue]);
-//    if (node.isQuoted) return Field(node.unquoted);
     if (node.isQuoted) return ObjectUnion([node.unquoted]);
     throw FormatException('Unexpected bracket expression');
   }
 
-  Selector multiValueBrackets(
+  Selector _multiValueBrackets(
       List<Node> nodes, Map<String, Predicate> filters) {
     if (_isFilter(nodes)) return _filter(nodes, filters);
     if (_isSlice(nodes)) return _slice(nodes);

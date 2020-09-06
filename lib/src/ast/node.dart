@@ -1,7 +1,5 @@
 class Node {
-  Node(this.value, [Iterable<Node> children]) {
-    if (children != null) this.children.addAll(children);
-  }
+  Node(this.value);
 
   final String value;
   final children = <Node>[];

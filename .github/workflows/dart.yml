@@ -23,4 +23,4 @@ jobs:
       - name: Analyzer
         run: dartanalyzer --fatal-infos --fatal-warnings lib test example
       - name: Tests
-        run: pub run test
+        run: pub run test_coverage --no-badge --print-test-output --min-coverage 100

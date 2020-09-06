@@ -32,10 +32,6 @@ class JsonPath {
   Iterable<JsonPathMatch> read(json) =>
       _selector.read([JsonPathMatch(json, '')]);
 
-  /// Deprecated. Use `read()`
-  @deprecated
-  Iterable<JsonPathMatch> filter(json) => read(json);
-
   /// Returns a copy of [json] with all matching values replaced with [value].
   dynamic set(dynamic json, dynamic value) =>
       _selector.replace(json, (_) => value);
