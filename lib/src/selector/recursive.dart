@@ -1,22 +1,48 @@
-import 'package:json_path/src/quote.dart';
-import 'package:json_path/src/result.dart';
+import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/selector/quote.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
-class Recursive with SelectorMixin {
+class Recursive with SelectorMixin implements Selector {
   @override
-  Iterable<Result> filter(Iterable<Result> results) => results.map((r) {
-        if (r.value is Map) return [r].followedBy(_properties(r.value, r.path));
-        if (r.value is List) return [r].followedBy(_values(r.value, r.path));
-        return <Result>[];
-      }).expand((_) => _);
+  Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches) =>
+      matches.map(_traverse).expand((_) => _);
 
   @override
-  String expression([Selector previous]) => '..';
+  String expression() => '..';
 
-  Iterable<Result> _values(List val, String path) => filter(
-      val.asMap().entries.map((e) => Result(e.value, path + '[${e.key}]')));
+  @override
+  dynamic replace(dynamic json, Replacement replacement) {
+    if (json is Map) {
+      return _replaceInMap(json, replacement);
+    }
+    if (json is List) {
+      return _replaceInList(json, replacement);
+    }
+    return replacement(json);
+  }
 
-  Iterable<Result> _properties(Map map, String path) => filter(
-      map.entries.map((e) => Result(e.value, path + '[${Quote(e.key)}]')));
+  Iterable<JsonPathMatch> _traverse(JsonPathMatch m) {
+    if (m.value is Map) {
+      return [m].followedBy(read(_props(m.value, m.path)));
+    }
+    if (m.value is List) {
+      return [m].followedBy(read(_values(m.value, m.path)));
+    }
+    return <JsonPathMatch>[];
+  }
+
+  dynamic _replaceInMap(Map map, Replacement replacement) => replacement(
+      map.map((key, value) => MapEntry(key, replace(value, replacement))));
+
+  dynamic _replaceInList(List list, Replacement replacement) =>
+      replacement(list.map((value) => replace(value, replacement)).toList());
+
+  Iterable<JsonPathMatch> _values(List val, String path) => val
+      .asMap()
+      .entries
+      .map((e) => JsonPathMatch(e.value, path + '[${e.key}]'));
+
+  Iterable<JsonPathMatch> _props(Map map, String path) => map.entries
+      .map((e) => JsonPathMatch(e.value, path + '[${Quote(e.key)}]'));
 }

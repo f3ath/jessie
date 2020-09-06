@@ -1,8 +1,6 @@
-import 'package:json_path/src/node.dart';
+import 'package:json_path/src/ast/node.dart';
 import 'package:json_path/src/predicate.dart';
-import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/filter.dart';
-import 'package:json_path/src/selector/index.dart';
 import 'package:json_path/src/selector/list_union.dart';
 import 'package:json_path/src/selector/list_wildcard.dart';
 import 'package:json_path/src/selector/object_union.dart';
@@ -12,26 +10,26 @@ import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/slice.dart';
 
 /// AST parser state
-abstract class ParserState {
+abstract class ParsingState {
   /// Processes the node. Returns the next state
-  ParserState process(Node node, Map<String, Predicate> filters);
+  ParsingState process(Node node, Map<String, Predicate> filters);
 
   /// Selector made from the tree
   Selector get selector;
 }
 
 /// Ready to process the next node
-class Ready implements ParserState {
+class Ready implements ParsingState {
   Ready(this.selector);
 
   @override
   final Selector selector;
 
   @override
-  ParserState process(Node node, Map<String, Predicate> filters) {
+  ParsingState process(Node node, Map<String, Predicate> filters) {
     switch (node.value) {
-      case '[]':
-        return Ready(selector.then(bracketExpression(node.children, filters)));
+      case '[':
+        return Ready(selector.then(_brackets(node.children, filters)));
       case '.':
         return AwaitingField(selector);
       case '..':
@@ -39,24 +37,24 @@ class Ready implements ParserState {
       case '*':
         return Ready(selector.then(ObjectWildcard()));
       default:
-        return Ready(selector.then(Field(node.value)));
+        return Ready(selector.then(ObjectUnion([node.value])));
     }
   }
 
-  Selector bracketExpression(List<Node> nodes, Map<String, Predicate> filters) {
+  Selector _brackets(List<Node> nodes, Map<String, Predicate> filters) {
     if (nodes.isEmpty) throw FormatException('Empty brackets');
-    if (nodes.length == 1) return singleValueBrackets(nodes.single);
-    return multiValueBrackets(nodes, filters);
+    if (nodes.length == 1) return _singleValueBrackets(nodes.single);
+    return _multiValueBrackets(nodes, filters);
   }
 
-  Selector singleValueBrackets(Node node) {
+  Selector _singleValueBrackets(Node node) {
     if (node.isWildcard) return ListWildcard();
-    if (node.isNumber) return Index(node.intValue);
-    if (node.isQuoted) return Field(node.unquoted);
+    if (node.isNumber) return ListUnion([node.intValue]);
+    if (node.isQuoted) return ObjectUnion([node.unquoted]);
     throw FormatException('Unexpected bracket expression');
   }
 
-  Selector multiValueBrackets(
+  Selector _multiValueBrackets(
       List<Node> nodes, Map<String, Predicate> filters) {
     if (_isFilter(nodes)) return _filter(nodes, filters);
     if (_isSlice(nodes)) return _slice(nodes);
@@ -108,17 +106,17 @@ class Ready implements ParserState {
   }
 }
 
-class AwaitingField implements ParserState {
+class AwaitingField implements ParsingState {
   AwaitingField(this.selector);
 
   @override
   final Selector selector;
 
   @override
-  ParserState process(Node node, Map<String, Predicate> filters) {
+  ParsingState process(Node node, Map<String, Predicate> filters) {
     if (node.isWildcard) {
       return Ready(selector.then(ObjectWildcard()));
     }
-    return Ready(selector.then(Field(node.value)));
+    return Ready(selector.then(ObjectUnion([node.value])));
   }
 }

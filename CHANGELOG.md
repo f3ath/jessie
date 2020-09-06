@@ -1,4 +1,12 @@
 ## [Unreleased]
+## [0.1.0] - 2020-09-05
+### Added
+- JsonPath.set() method to alter the JSON object in a non-destructive way
+
+### Changed
+- **BREAKING!** `Result` renamed to `JsonPathMatch`
+- **BREAKING!**  `JsonPath.filter()` renamed to `read()`
+
 ## [0.0.2] - 2020-09-01
 ### Fixed
 - Last element of array was not selected (regression #1)
@@ -41,7 +49,8 @@
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.0.2...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/f3ath/jessie/compare/0.0.2...0.1.0
 [0.0.2]: https://github.com/f3ath/jessie/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/f3ath/jessie/compare/0.0.0+dev.7...0.0.1
 [0.0.0+dev.7]: https://github.com/f3ath/jessie/compare/0.0.0+dev.6...0.0.0+dev.7
