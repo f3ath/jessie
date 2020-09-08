@@ -1,4 +1,14 @@
 ## [Unreleased]
+## [0.2.0] - 2020-09-07
+### Added
+- Ability to create arrays and set ajacent indices
+
+### Changed
+- List union sorts the keys
+
+### Fixed
+- Improved union parsing stability
+
 ## [0.1.2] - 2020-09-06
 ### Changed
 - When JsonPath.set() is called on a path with non-existing property, the property will be created. 
@@ -60,7 +70,8 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.1.2...HEAD
+[Unreleased]: https://github.com/f3ath/jessie/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/f3ath/jessie/compare/0.1.2...0.2.0
 [0.1.2]: https://github.com/f3ath/jessie/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/f3ath/jessie/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/f3ath/jessie/compare/0.0.2...0.1.0

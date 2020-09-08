@@ -75,7 +75,7 @@ class Ready implements ParsingState {
 
   Selector _union(List<Node> nodes) {
     final filtered = nodes.where((_) => _.value != ',');
-    if (nodes.first.isNumber) {
+    if (filtered.every((_) => _.isNumber)) {
       return ListUnion(filtered.map((_) => _.intValue).toList());
     }
     return ObjectUnion(

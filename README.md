@@ -108,7 +108,7 @@ Use `[start:end:step]` to filter arrays. Any index can be omitted E.g. `$.store.
 starting from the 4th. Negative `start` and `end` are also supported.
 
 ### Unions
-Array (`book[0,1]`) and object (`book[author,title,price]`) unions are supported. 
+Array (`book[0,1]`) and object (`book[author,title,price]`) unions are supported. Array unions are always sorted.
 Object unions support the bracket-notation.
 
 ### Filtering
