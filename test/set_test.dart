@@ -63,7 +63,7 @@ void main() {
   });
 
   group('Index', () {
-    test('Index. Hide the prices of the fist book', () {
+    test('First element', () {
       final price = JsonPath(r'$.store.book[0].price');
       final mutated = price.set(json, 'hidden');
       expect(mutated['store']['bicycle']['price'], isA<num>());
@@ -72,7 +72,7 @@ void main() {
       expect(mutated['store']['book'][2]['price'], isA<num>());
       expect(mutated['store']['book'][3]['price'], isA<num>());
     });
-    test('Index. Hide the prices of the second and last books', () {
+    test('Union', () {
       final price = JsonPath(r'$.store.book[1,3].price');
       final mutated = price.set(json, 'hidden');
       expect(mutated['store']['bicycle']['price'], isA<num>());
@@ -81,7 +81,7 @@ void main() {
       expect(mutated['store']['book'][2]['price'], isA<num>());
       expect(mutated['store']['book'][3]['price'], 'hidden');
     });
-    test('Index. Hide the prices of all books', () {
+    test('Wildcard', () {
       final price = JsonPath(r'$.store.book[*].price');
       final mutated = price.set(json, 'hidden');
       expect(mutated['store']['book'][0]['price'], 'hidden');
@@ -89,7 +89,7 @@ void main() {
       expect(mutated['store']['book'][2]['price'], 'hidden');
       expect(mutated['store']['book'][3]['price'], 'hidden');
     });
-    test('Index. Replace every other book with a banana', () {
+    test('Slice', () {
       final price = JsonPath(r'$.store.book[::2]');
       final mutated = price.set(json, 'banana');
       expect(mutated['store']['book'][0], 'banana');
@@ -97,8 +97,56 @@ void main() {
       expect(mutated['store']['book'][2], 'banana');
       expect(mutated['store']['book'][3]['price'], isA<num>());
     });
-    test('Index. Setting non-existing index throws RangeError', () {
+    test('Create list with a single index', () {
+      final ab0c = JsonPath(r'$.a.b[0].c');
+      expect(ab0c.set({}, 'Banana'), {
+        'a': {
+          'b': [
+            {'c': 'Banana'}
+          ]
+        }
+      });
+    });
+    test('Create list with a single index (-0)', () {
+      final ab0c = JsonPath(r'$.a.b[-0].c');
+      expect(ab0c.set({}, 'Banana'), {
+        'a': {
+          'b': [
+            {'c': 'Banana'}
+          ]
+        }
+      });
+    });
+    test('Create list with a multiple adjacent indices', () {
+      final ab0c = JsonPath(r'$.a.b[0,2, 1,2,1,].c');
+      expect(ab0c.set({}, 'Banana'), {
+        'a': {
+          'b': [
+            {'c': 'Banana'},
+            {'c': 'Banana'},
+            {'c': 'Banana'},
+          ]
+        }
+      });
+    });
+    test('Setting non-existing adjacent index creates new element', () {
+      final title = JsonPath(r'$.store.book[5,4].title');
+      final mutated = title.set(json, 'My Book');
+      expect(json['store']['book'].length, 4);
+      expect(mutated['store']['book'].length, 6);
+      expect(mutated['store']['book'][4]['title'], 'My Book');
+      expect(mutated['store']['book'][5]['title'], 'My Book');
+    });
+    test('A gap in the indices throws RangeError', () {
+      final ab0c = JsonPath(r'$.a.b[3,1].c');
+      expect(() => ab0c.set({}, 'Banana'), throwsRangeError);
+    });
+    test('Setting non-existing non-adjacent index throws RangeError', () {
       final title = JsonPath(r'$.store.book[100].title');
+      expect(() => title.set(json, 'Banana'), throwsRangeError);
+    });
+    test('Setting negative index throws RangeError', () {
+      final title = JsonPath(r'$.store.book[-1].title');
       expect(() => title.set(json, 'Banana'), throwsRangeError);
     });
   });

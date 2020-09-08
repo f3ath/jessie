@@ -4,9 +4,9 @@ import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
 class ObjectUnion with SelectorMixin implements Selector {
-  ObjectUnion(this.keys);
+  ObjectUnion(List<String> keys) : _keys = keys.toSet().toList();
 
-  final List<String> keys;
+  final List<String> _keys;
 
   @override
   Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches) => matches
@@ -15,7 +15,7 @@ class ObjectUnion with SelectorMixin implements Selector {
       .expand((_) => _);
 
   @override
-  String expression() => '[${keys.map((k) => Quote(k)).join(',')}]';
+  String expression() => '[${_keys.map((k) => Quote(k)).join(',')}]';
 
   @override
   dynamic set(dynamic json, Replacement replacement) {
@@ -24,10 +24,10 @@ class ObjectUnion with SelectorMixin implements Selector {
     return json;
   }
 
-  Iterable<JsonPathMatch> _readMap(Map map, String path) => keys
+  Iterable<JsonPathMatch> _readMap(Map map, String path) => _keys
       .where(map.containsKey)
       .map((key) => JsonPathMatch(map[key], path + '[${Quote(key)}]'));
 
   Map _patch(Map map, Replacement replacement) =>
-      Map.fromEntries(keys.map((key) => MapEntry(key, replacement(map[key]))));
+      Map.fromEntries(_keys.map((key) => MapEntry(key, replacement(map[key]))));
 }

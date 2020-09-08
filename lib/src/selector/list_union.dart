@@ -3,9 +3,9 @@ import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
 class ListUnion with SelectorMixin implements Selector {
-  ListUnion(this.keys);
+  ListUnion(List<int> keys) : _indices = keys.toSet().toList()..sort();
 
-  final List<int> keys;
+  final List<int> _indices;
 
   @override
   Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches) => matches
@@ -13,25 +13,31 @@ class ListUnion with SelectorMixin implements Selector {
       .expand((_) => _);
 
   @override
-  String expression() => '[${keys.join(',')}]';
-
-  Iterable<JsonPathMatch> _map(List list, String path) => keys
-      .where((key) => key < list.length)
-      .map((key) => JsonPathMatch(list[key], path + '[$key]'));
+  String expression() => '[${_indices.join(',')}]';
 
   @override
-  dynamic set(dynamic json, Function(dynamic _) replacement) {
+  dynamic set(dynamic json, Replacement replacement) {
+    json ??= [];
     if (json is List) {
-      return _replaceInList(json, keys, replacement);
+      json = [...json];
+      _replaceInList(json, replacement);
     }
     return json;
   }
 
-  List _replaceInList(List list, Iterable<int> keys, Replacement replacement) {
-    final copy = [...list];
-    keys.forEach((key) {
-      copy[key] = replacement(copy[key]);
-    });
-    return copy;
-  }
+  Iterable<JsonPathMatch> _map(List list, String path) => _indices
+      .where((key) => key < list.length)
+      .map((key) => JsonPathMatch(list[key], path + '[$key]'));
+
+  void _replaceInList(List list, Replacement replacement) =>
+      _indices.forEach((index) {
+        if (index < list.length) {
+          list[index] = replacement(list[index]);
+        } else if (index == list.length) {
+          list.add(replacement(null));
+        } else {
+          throw RangeError(
+              'Can not set index $index. Preceding index is missing.');
+        }
+      });
 }

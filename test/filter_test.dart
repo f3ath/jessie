@@ -180,12 +180,16 @@ void main() {
     test('List', () {
       final abc = 'abcdefg'.split('');
       final union = JsonPath(r'$[2,3,100,5]');
-      expect(union.toString(), r'$[2,3,100,5]');
+      expect(union.toString(), r'$[2,3,5,100]');
       expect(union.read(abc).length, 3);
       expect(union.read(abc).first.value, 'c');
       expect(union.read(abc).first.path, r'$[2]');
       expect(union.read(abc).last.value, 'f');
       expect(union.read(abc).last.path, r'$[5]');
+    });
+    test('List with extra commas', () {
+      final union = JsonPath(r'$[,2,3, 100,,5, ]');
+      expect(union.toString(), r'$[2,3,5,100]');
     });
     test('Object', () {
       final abc = {
@@ -200,6 +204,14 @@ void main() {
       expect(union.read(abc).first.path, r"$['a']");
       expect(union.read(abc).last.value, 'C');
       expect(union.read(abc).last.path, r"$['c']");
+    });
+    test('Object with extra commas', () {
+      final union = JsonPath(r"$[,'a',,,  'x',c  ,]");
+      expect(union.toString(), r"$['a','x','c']");
+    });
+    test('Mixed union is object union', () {
+      final union = JsonPath(r"$[,5,'a',6]");
+      expect(union.toString(), r"$['5','a','6']");
     });
   });
 
