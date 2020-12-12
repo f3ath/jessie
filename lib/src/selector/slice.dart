@@ -5,7 +5,7 @@ import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
 class Slice with SelectorMixin implements Selector {
-  Slice({int first, this.last, int step})
+  Slice({int? first, this.last, int? step})
       : first = first ?? 0,
         step = step ?? 1;
 
@@ -18,7 +18,7 @@ class Slice with SelectorMixin implements Selector {
 
   final int first;
 
-  final int last;
+  final int? last;
 
   final int step;
 
@@ -33,7 +33,7 @@ class Slice with SelectorMixin implements Selector {
       '[${first == 0 ? '' : first}:${last ?? ''}${step != 1 ? ':$step' : ''}]';
 
   @override
-  dynamic set(dynamic json, Replacement replacement) {
+  dynamic set(json, Replacement replacement) {
     if (json is List) {
       final indices = _indices(json);
       if (indices.isNotEmpty) {
@@ -57,7 +57,7 @@ class Slice with SelectorMixin implements Selector {
 
   int _actualLast(int len) {
     if (last == null) return len;
-    if (last < 0) return min(len, len + last);
-    return min(len, last);
+    if (last! < 0) return min(len, len + last!);
+    return min(len, last!);
   }
 }

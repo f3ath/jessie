@@ -20,7 +20,7 @@ abstract class ParsingState {
 
 /// Ready to process the next node
 class Ready implements ParsingState {
-  Ready(this.selector);
+  const Ready(this.selector);
 
   @override
   final Selector selector;
@@ -63,10 +63,11 @@ class Ready implements ParsingState {
 
   Filter _filter(List<Node> nodes, Map<String, Predicate> filters) {
     final name = nodes[1].value;
-    if (!filters.containsKey(name)) {
+    final filter = filters[name];
+    if (filter == null) {
       throw FormatException('Filter not found: "${name}"');
     }
-    return Filter(name, filters[name]);
+    return Filter(name, filter);
   }
 
   bool _isFilter(List<Node> nodes) => nodes.first.value == '?';
@@ -83,9 +84,9 @@ class Ready implements ParsingState {
   }
 
   Slice _slice(List<Node> nodes) {
-    int first;
-    int last;
-    int step;
+    int? first;
+    int? last;
+    int? step;
     var colons = 0;
     nodes.forEach((node) {
       if (node.value == ':') {
@@ -107,7 +108,7 @@ class Ready implements ParsingState {
 }
 
 class AwaitingField implements ParsingState {
-  AwaitingField(this.selector);
+  const AwaitingField(this.selector);
 
   @override
   final Selector selector;

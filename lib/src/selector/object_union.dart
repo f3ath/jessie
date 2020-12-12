@@ -1,5 +1,5 @@
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/quote.dart';
+import 'package:json_path/src/quote.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
@@ -18,7 +18,7 @@ class ObjectUnion with SelectorMixin implements Selector {
   String expression() => '[${_keys.map((k) => Quote(k)).join(',')}]';
 
   @override
-  dynamic set(dynamic json, Replacement replacement) {
+  dynamic set(json, Replacement replacement) {
     if (json == null) return _patch(<String, dynamic>{}, replacement);
     if (json is Map) return {...json, ..._patch(json, replacement)};
     return json;
