@@ -1,12 +1,13 @@
 name: json_path
-version: 0.2.0
+version: 0.3.0-nullsafety
 description: Implementation of JSONPath expressions like "$.store.book[2].price". Can read and set values in parsed JSON objects.
 homepage: "https://github.com/f3ath/jessie"
 
-dev_dependencies:
-  pedantic: ^1.9.0
-  test: ^1.9.0
-  test_coverage: ^0.4.3
-
 environment:
-  sdk: ">=2.8.0 <3.0.0"
+  sdk: '>=2.12.0-29 <3.0.0'
+
+dev_dependencies:
+  pedantic: ^1.10.0-nullsafety
+  test: ^1.16.0-nullsafety
+  test_coverage: ^0.5.0
+

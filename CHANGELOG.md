@@ -1,4 +1,7 @@
 ## [Unreleased]
+### Changed
+- Prepared for null safety
+
 ## [0.2.0] - 2020-09-07
 ### Added
 - Ability to create arrays and set adjacent indices

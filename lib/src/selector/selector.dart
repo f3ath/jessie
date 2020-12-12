@@ -12,7 +12,7 @@ abstract class Selector {
   Selector then(Selector other);
 
   /// Returns a copy of [json] with all selected values modified using [replacement] function.
-  dynamic set(dynamic json, Replacement replacement);
+  dynamic set(json, Replacement replacement);
 }
 
-typedef Replacement = dynamic Function(dynamic value);
+typedef Replacement<V, T> = V Function(T value);

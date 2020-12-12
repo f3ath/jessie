@@ -1,5 +1,5 @@
 Iterable<String> tokenize(String expr) =>
-    _tokens.allMatches(expr).map((match) => match.group(0));
+    _tokens.allMatches(expr).map((match) => match.group(0).toString());
 
 final _tokens = RegExp([
   r'\$', // root

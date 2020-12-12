@@ -15,11 +15,12 @@ class JsonPath {
   /// in the [expression].
   ///
   /// Throws [FormatException] if the [expression] can not be parsed.
-  factory JsonPath(String expression, {Map<String, Predicate> filter}) {
+  factory JsonPath(String expression,
+      {Map<String, Predicate> filter = const {}}) {
     if (expression.isEmpty) throw FormatException('Empty expression');
     ParsingState state = Ready(RootSelector());
     AST(tokenize(expression)).nodes.forEach((node) {
-      state = state.process(node, filter ?? {});
+      state = state.process(node, filter);
     });
     return JsonPath._(state.selector);
   }
@@ -33,7 +34,7 @@ class JsonPath {
       _selector.read([JsonPathMatch(json, '')]);
 
   /// Returns a copy of [json] with all matching values replaced with [value].
-  dynamic set(dynamic json, dynamic value) => _selector.set(json, (_) => value);
+  dynamic set(json, value) => _selector.set(json, (_) => value);
 
   @override
   String toString() => _selector.expression();

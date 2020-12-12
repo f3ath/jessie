@@ -1,5 +1,5 @@
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/quote.dart';
+import 'package:json_path/src/quote.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/selector_mixin.dart';
 
@@ -24,7 +24,7 @@ class ObjectWildcard with SelectorMixin implements Selector {
       .map((e) => JsonPathMatch(e.value, path + '[${e.key}]'));
 
   @override
-  dynamic set(dynamic json, Replacement replacement) => (json is Map)
+  dynamic set(json, Replacement replacement) => (json is Map)
       ? json.map((key, value) => MapEntry(key, replacement(value)))
       : json;
 }

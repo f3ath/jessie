@@ -9,14 +9,14 @@ class ListUnion with SelectorMixin implements Selector {
 
   @override
   Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches) => matches
-      .map((r) => (r.value is List) ? _map(r.value, r.path) : [])
+      .map((r) => (r.value is List) ? _map(r.value, r.path) : <JsonPathMatch>[])
       .expand((_) => _);
 
   @override
   String expression() => '[${_indices.join(',')}]';
 
   @override
-  dynamic set(dynamic json, Replacement replacement) {
+  dynamic set(json, Replacement replacement) {
     json ??= [];
     if (json is List) {
       json = [...json];

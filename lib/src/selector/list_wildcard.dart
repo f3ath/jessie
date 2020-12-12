@@ -13,10 +13,10 @@ class ListWildcard with SelectorMixin implements Selector {
   String expression() => '[*]';
 
   @override
-  dynamic set(dynamic json, Replacement replacement) =>
+  dynamic set(json, Replacement replacement) =>
       (json is List) ? json.map(replacement).toList() : json;
 
-  Iterable<JsonPathMatch> _wrap(List val, String path) sync* {
+  static Iterable<JsonPathMatch> _wrap(List val, String path) sync* {
     for (var i = 0; i < val.length; i++) {
       yield JsonPathMatch(val[i], path + '[$i]');
     }
