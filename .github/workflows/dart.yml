@@ -21,6 +21,6 @@ jobs:
       - name: Format
         run: dartfmt --dry-run --set-exit-if-changed lib test example
       - name: Analyzer
-        run: dart analyze --fatal-infos --fatal-warnings lib test example
+        run: dart analyze --fatal-infos --fatal-warnings
       - name: Tests
         run: dart run test_coverage --no-badge --print-test-output --min-coverage 100
