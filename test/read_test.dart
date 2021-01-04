@@ -136,7 +136,6 @@ void main() {
       expect(slice.read(abc).last.path, r'$[6]');
     });
 
-
     test('0:6', () {
       final slice = JsonPath(r'$[0:6]');
       expect(slice.toString(), r'$[:6]');
@@ -308,7 +307,6 @@ void main() {
       expect(path.read(json).single.value, json['store']['book'][0]);
       expect(path.read(json).single.path, r"$['store']['book'][0]");
     });
-
   });
 
   group('Lists', () {
