@@ -136,12 +136,6 @@ void main() {
       expect(slice.read(abc).last.path, r'$[6]');
     });
 
-    test('-1 (regression #14)', () {
-      final index = JsonPath(r'$[-1]');
-      expect(index.toString(), r'$[-1]');
-      expect(index.read(abc).single.value, 'g');
-      expect(index.read(abc).single.path, r'$[6]');
-    });
 
     test('0:6', () {
       final slice = JsonPath(r'$[0:6]');
@@ -193,8 +187,8 @@ void main() {
   });
 
   group('Union', () {
+    final abc = 'abcdefg'.split('');
     test('List', () {
-      final abc = 'abcdefg'.split('');
       final union = JsonPath(r'$[2,3,100,5]');
       expect(union.toString(), r'$[2,3,5,100]');
       expect(union.read(abc).length, 3);
@@ -203,6 +197,26 @@ void main() {
       expect(union.read(abc).last.value, 'f');
       expect(union.read(abc).last.path, r'$[5]');
     });
+
+    test('Index [-1] (regression #14)', () {
+      final index = JsonPath(r'$[-1]');
+      expect(index.toString(), r'$[-1]');
+      expect(index.read(abc).single.value, 'g');
+      expect(index.read(abc).single.path, r'$[6]');
+    });
+
+    test('Index on objects (regression #15)', () {
+      final index = JsonPath(r'$[0]');
+      expect(index.toString(), r'$[0]');
+      expect(index.read({'foo': 'bar'}), isEmpty);
+    });
+
+    test('Index on primitives (regression #16)', () {
+      final index = JsonPath(r'$[0]');
+      expect(index.toString(), r'$[0]');
+      expect(index.read('foo'), isEmpty);
+    });
+
     test('List with extra commas', () {
       final union = JsonPath(r'$[,2,3, 100,,5, ]');
       expect(union.toString(), r'$[2,3,5,100]');
