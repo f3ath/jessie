@@ -135,6 +135,7 @@ void main() {
       expect(slice.read(abc).last.value, 'g');
       expect(slice.read(abc).last.path, r'$[6]');
     });
+
     test('0:6', () {
       final slice = JsonPath(r'$[0:6]');
       expect(slice.toString(), r'$[:6]');
@@ -163,6 +164,14 @@ void main() {
       expect(slice.read(abc).last.value, 'f');
       expect(slice.read(abc).last.path, r'$[5]');
     });
+    test(': (regression #12)', () {
+      final slice = JsonPath(r'$[:]');
+      expect(slice.read(abc).length, 7);
+      expect(slice.read(abc).first.value, 'a');
+      expect(slice.read(abc).first.path, r'$[0]');
+      expect(slice.read(abc).last.value, 'g');
+      expect(slice.read(abc).last.path, r'$[6]');
+    });
   });
 
   group('Uncommon brackets', () {
@@ -177,8 +186,8 @@ void main() {
   });
 
   group('Union', () {
+    final abc = 'abcdefg'.split('');
     test('List', () {
-      final abc = 'abcdefg'.split('');
       final union = JsonPath(r'$[2,3,100,5]');
       expect(union.toString(), r'$[2,3,5,100]');
       expect(union.read(abc).length, 3);
@@ -187,6 +196,26 @@ void main() {
       expect(union.read(abc).last.value, 'f');
       expect(union.read(abc).last.path, r'$[5]');
     });
+
+    test('Index [-1] (regression #14)', () {
+      final index = JsonPath(r'$[-1]');
+      expect(index.toString(), r'$[-1]');
+      expect(index.read(abc).single.value, 'g');
+      expect(index.read(abc).single.path, r'$[6]');
+    });
+
+    test('Index on objects (regression #15)', () {
+      final index = JsonPath(r'$[0]');
+      expect(index.toString(), r'$[0]');
+      expect(index.read({'foo': 'bar'}), isEmpty);
+    });
+
+    test('Index on primitives (regression #16)', () {
+      final index = JsonPath(r'$[0]');
+      expect(index.toString(), r'$[0]');
+      expect(index.read('foo'), isEmpty);
+    });
+
     test('List with extra commas', () {
       final union = JsonPath(r'$[,2,3, 100,,5, ]');
       expect(union.toString(), r'$[2,3,5,100]');
@@ -269,6 +298,14 @@ void main() {
       expect(path.read(json).first.path, r"$['store']['book'][0]['price']");
       expect(path.read(json).last.value, json['store']['bicycle']['price']);
       expect(path.read(json).last.path, r"$['store']['bicycle']['price']");
+    });
+
+    test('Recursive with first element (regression #13)', () {
+      final path = JsonPath(r'$..[0]');
+      expect(path.toString(), r'$..[0]');
+      expect(path.read(json).length, 1);
+      expect(path.read(json).single.value, json['store']['book'][0]);
+      expect(path.read(json).single.path, r"$['store']['book'][0]");
     });
   });
 

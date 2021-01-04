@@ -43,7 +43,9 @@ class Ready implements ParsingState {
 
   Selector _brackets(List<Node> nodes, Map<String, Predicate> filters) {
     if (nodes.isEmpty) throw FormatException('Empty brackets');
-    if (nodes.length == 1) return _singleValueBrackets(nodes.single);
+    if (nodes.length == 1 && nodes.single.value != ':') {
+      return _singleValueBrackets(nodes.single);
+    }
     return _multiValueBrackets(nodes, filters);
   }
 
