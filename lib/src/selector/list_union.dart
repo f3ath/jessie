@@ -9,7 +9,7 @@ class ListUnion with SelectorMixin implements Selector {
 
   @override
   Iterable<JsonPathMatch> read(Iterable<JsonPathMatch> matches) => matches
-      .map((r) => (r.value is List) ? _map(r.value, r.path) : [])
+      .map((r) => (r.value is List) ? _map(r.value, r.path) : <JsonPathMatch>[])
       .expand((_) => _);
 
   @override
@@ -26,7 +26,8 @@ class ListUnion with SelectorMixin implements Selector {
   }
 
   Iterable<JsonPathMatch> _map(List list, String path) => _indices
-      .where((key) => key < list.length)
+      .map((key) => _normalize(list.length, key))
+      .where((key) => key < list.length && key < list.length)
       .map((key) => JsonPathMatch(list[key], path + '[$key]'));
 
   void _replaceInList(List list, Replacement replacement) =>
@@ -40,4 +41,10 @@ class ListUnion with SelectorMixin implements Selector {
               'Can not set index $index. Preceding index is missing.');
         }
       });
+
+  /// Normalizes negative index
+  int _normalize(int length, int index) {
+    if (index < 0) return length + index;
+    return index;
+  }
 }

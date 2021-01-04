@@ -1,6 +1,8 @@
 ## [Unreleased]
 ### Fixed
-- `$[:]` throwing FormatException
+- `$[:]` throwing FormatException (regression #12)
+- `$..[0]` throws FormatException (regression #13)
+- `$[-1]` throws RangeError (regression #14)
 
 ## [0.2.0] - 2020-09-07
 ### Added
