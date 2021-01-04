@@ -163,6 +163,14 @@ void main() {
       expect(slice.read(abc).last.value, 'f');
       expect(slice.read(abc).last.path, r'$[5]');
     });
+    test(':', () {
+      final slice = JsonPath(r'$[:]');
+      expect(slice.read(abc).length, 7);
+      expect(slice.read(abc).first.value, 'a');
+      expect(slice.read(abc).first.path, r'$[0]');
+      expect(slice.read(abc).last.value, 'g');
+      expect(slice.read(abc).last.path, r'$[6]');
+    });
   });
 
   group('Uncommon brackets', () {
