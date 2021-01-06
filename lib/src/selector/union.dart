@@ -1,6 +1,6 @@
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
-import 'package:json_path/src/selector/union/union_element.dart';
+import 'package:json_path/src/selector/union_element.dart';
 
 class Union implements Selector {
   Union(Iterable<UnionElement> elements) : elements = [...elements];

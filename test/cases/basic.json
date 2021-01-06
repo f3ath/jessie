@@ -27,6 +27,13 @@
       "paths": ["$['a']", "$['b']"],
       "pointers": ["/a", "/b"]
     }, {
+      "name": "union wildcard on object",
+      "selector": "$[*]",
+      "document": {"a": "A", "b": "B"},
+      "values": ["A", "B"],
+      "paths": ["$['a']", "$['b']"],
+      "pointers": ["/a", "/b"]
+    }, {
       "name": "dot wildcard on array",
       "selector": "$.*",
       "document": ["A", "B"],

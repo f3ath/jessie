@@ -1,18 +1,19 @@
+import 'package:json_path/src/selector/array_index.dart';
+import 'package:json_path/src/selector/array_slice.dart';
 import 'package:json_path/src/selector/dot_field.dart';
 import 'package:json_path/src/selector/dot_wildcard.dart';
+import 'package:json_path/src/selector/quoted_field.dart';
 import 'package:json_path/src/selector/selector.dart';
-import 'package:json_path/src/selector/union/array_index.dart';
-import 'package:json_path/src/selector/union/array_slice.dart';
-import 'package:json_path/src/selector/union/quoted_field.dart';
-import 'package:json_path/src/selector/union/union.dart';
-import 'package:json_path/src/selector/union/union_element.dart';
+import 'package:json_path/src/selector/union.dart';
+import 'package:json_path/src/selector/union_element.dart';
+import 'package:json_path/src/selector/wildcard.dart';
 import 'package:petitparser/petitparser.dart';
 
 final minus = char('-');
 final escape = char(r'\');
 final dQuote = char('"');
 final sQuote = char("'");
-final wildcard = char('*');
+final wildcard = char('*').map((value) => Wildcard());
 final anySymbol = range(0x20, 0x10FFF);
 final control = string(r'/\bfnrt');
 

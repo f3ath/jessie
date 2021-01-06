@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/union/union_element.dart';
+import 'package:json_path/src/selector/union_element.dart';
 
 class ArraySlice implements UnionElement {
   ArraySlice({int? start, this.stop, int? step})
