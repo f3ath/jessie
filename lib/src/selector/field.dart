@@ -1,6 +1,6 @@
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
-import 'package:json_path/src/string/quote.dart';
+import 'package:json_path/src/quote.dart';
 
 class Field implements Selector {
   Field(this.name, {this.quotationMark = "'"});
