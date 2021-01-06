@@ -1,0 +1,144 @@
+{
+  "tests": [
+    {
+      "name": "root",
+      "selector": "$",
+      "document": ["first", "second"],
+      "values": [["first", "second"]],
+      "paths": ["$"],
+      "pointers": [""]
+    }, {
+      "name": "dot field on object",
+      "selector": "$.a",
+      "document": {"a": "A", "b": "B"},
+      "values": ["A"],
+      "paths": ["$.a"],
+      "pointers": ["/a"]
+    }, {
+      "name": "dot field on array",
+      "selector": "$.a",
+      "document": ["A", "B"],
+      "values": []
+    }, {
+      "name": "dot wildcard on object",
+      "selector": "$.*",
+      "document": {"a": "A", "b": "B"},
+      "values": ["A", "B"],
+      "paths": ["$['a']", "$['b']"],
+      "pointers": ["/a", "/b"]
+    }, {
+      "name": "dot wildcard on array",
+      "selector": "$.*",
+      "document": ["A", "B"],
+      "values": ["A", "B"],
+      "paths": ["$[0]", "$[1]"],
+      "pointers": ["/0", "/1"]
+    }, {
+      "name": "dot wildcard dot field",
+      "selector": "$.*.a",
+      "document": {"x": {"a": "Ax", "b": "Bx"}, "y": {"a": "Ay", "b": "By"}},
+      "values": ["Ax", "Ay"],
+      "paths": ["$['x'].a", "$['y'].a"],
+      "pointers": ["/x/a", "/y/a"]
+    }, {
+      "name": "union sq field on object",
+      "selector": "$['a']",
+      "document": {"a": "A", "b": "B"},
+      "values": ["A"],
+      "paths": ["$['a']"],
+      "pointers": ["/a"]
+    }, {
+      "name": "union sq field on object (2 values)",
+      "selector": "$['a', 'c']",
+      "document": {"a": "A", "b": "B", "c": "C"},
+      "values": ["A", "C"],
+      "paths": ["$['a']", "$['c']"],
+      "pointers": ["/a", "/c"]
+    }, {
+      "name": "union sq field on object (numeric key)",
+      "selector": "$['1']",
+      "document": {"0": "A", "1": "B"},
+      "values": ["B"],
+      "paths": ["$['1']"],
+      "pointers": ["/1"]
+    }, {
+      "name": "union sq field on array",
+      "selector": "$['a']",
+      "document": ["A", "B"],
+      "values": []
+    }, {
+      "name": "union dq field on object",
+      "selector": "$[\"a\"]",
+      "document": {"a": "A", "b": "B"},
+      "values": ["A"],
+      "paths": ["$[\"a\"]"],
+      "pointers": ["/a"]
+    }, {
+      "name": "union dq field on object (2 values)",
+      "selector": "$[\"a\", \"c\"]",
+      "document": {"a": "A", "b": "B", "c": "C"},
+      "values": ["A", "C"],
+      "paths": ["$[\"a\"]", "$[\"c\"]"],
+      "pointers": ["/a", "/c"]
+    }, {
+      "name": "union dq field on object (numeric key)",
+      "selector": "$[\"1\"]",
+      "document": {"0": "A", "1": "B"},
+      "values": ["B"],
+      "paths": ["$[\"1\"]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "union dq field on array",
+      "selector": "$[\"a\"]",
+      "document": ["A", "B"],
+      "values": []
+    }, {
+      "name": "union index on array",
+      "selector": "$[1]",
+      "document": ["A", "B"],
+      "values": ["B"],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "union index on object",
+      "selector": "$[1]",
+      "document": {"a": "A", "b": "B"},
+      "values": []
+    }, {
+      "name": "union index and field on object",
+      "selector": "$[\"0\", 1, 'a']",
+      "document": {"a": "A", "b": "B", "0": "Zero", "1": "One"},
+      "values": ["Zero", "A"],
+      "paths": ["$[\"0\"]", "$['a']"],
+      "pointers": ["/0", "/a"]
+    }, {
+      "name": "union index and field on array",
+      "selector": "$[1, 'a', '1']",
+      "document": ["A", "B"],
+      "values": ["B"],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "union array slice on array [15:-7:-3]",
+      "selector": "$[15:-7:-3]",
+      "document": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "values": [9, 6],
+      "paths": ["$[9]", "$[6]"],
+      "pointers": ["/9", "/6"]
+    }, {
+      "name": "union array slice on array [:]",
+      "selector": "$[:]",
+      "document": [0, 1, 2],
+      "values": [0, 1, 2],
+      "paths": ["$[0]", "$[1]", "$[2]"],
+      "pointers": ["/0", "/1", "/2"]
+    }, {
+      "name": "union array slice on array [::]",
+      "selector": "$[:10000000000:]",
+      "document": [0, 1, 2],
+      "values": [0, 1, 2],
+      "paths": ["$[0]", "$[1]", "$[2]"],
+      "pointers": ["/0", "/1", "/2"]
+    }
+  ]
+}
