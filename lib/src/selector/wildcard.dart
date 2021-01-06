@@ -1,11 +1,9 @@
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/single_quote.dart';
-import 'package:json_path/src/selector/union_element.dart';
+import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/string/quote.dart';
 
-class Wildcard implements UnionElement {
-  const Wildcard({this.quote = singleQuote});
-
-  final String Function(String s) quote;
+class Wildcard implements Selector {
+  const Wildcard();
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) {

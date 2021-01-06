@@ -1,5 +1,6 @@
 import 'package:json_path/json_pointer.dart';
 import 'package:json_path/src/build_parser.dart';
+import 'package:json_path/src/id.dart';
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
 
@@ -20,7 +21,9 @@ class JsonPath {
   Iterable<JsonPathMatch> read(json) {
     final root = [JsonPathMatch(json, r'$', JsonPointer())];
     final transform = _selectors.fold<Transformer>(
-            (_) => _, (tr, selector) => (_) => selector.read(tr(_)));
+        id,
+        (tr, selector) =>
+            (matches) => tr(matches).map(selector.read).expand(id));
     return transform(root);
   }
 

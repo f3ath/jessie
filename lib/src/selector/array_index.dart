@@ -1,7 +1,7 @@
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/union_element.dart';
+import 'package:json_path/src/selector/selector.dart';
 
-class ArrayIndex implements UnionElement {
+class ArrayIndex implements Selector {
   ArrayIndex(this.index);
 
   final int index;

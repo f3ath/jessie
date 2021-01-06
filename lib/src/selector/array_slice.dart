@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/union_element.dart';
+import 'package:json_path/src/selector/selector.dart';
 
-class ArraySlice implements UnionElement {
+class ArraySlice implements Selector {
   ArraySlice({int? start, this.stop, int? step})
       : start = start ?? 0,
         step = step ?? 1;

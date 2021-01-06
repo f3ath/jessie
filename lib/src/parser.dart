@@ -1,40 +1,44 @@
 import 'package:json_path/src/selector/array_index.dart';
 import 'package:json_path/src/selector/array_slice.dart';
-import 'package:json_path/src/selector/dot_field.dart';
-import 'package:json_path/src/selector/dot_wildcard.dart';
-import 'package:json_path/src/selector/quoted_field.dart';
+import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/union.dart';
-import 'package:json_path/src/selector/union_element.dart';
 import 'package:json_path/src/selector/wildcard.dart';
 import 'package:petitparser/petitparser.dart';
 
 final minus = char('-');
 final escape = char(r'\');
-final dQuote = char('"');
-final sQuote = char("'");
+
+final doubleQuote = char('"');
+final escapedDoubleQuote = (escape & doubleQuote).map((value) => value.last);
+
+final singleQuote = char("'");
+final escapedSingleQuote = (escape & singleQuote).map((value) => value.last);
+
+final control = string(r'/\bfnrt');
+final escapedControl = (escape & control).map((value) => value.last);
+
 final wildcard = char('*').map((value) => Wildcard());
 final anySymbol = range(0x20, 0x10FFF);
-final control = string(r'/\bfnrt');
 
 final dotFieldNameChar = minus | char('_') | letter() | digit();
 final dotFieldName = dotFieldNameChar.plus().flatten();
-final dotWildcard = string('.*').map((value) => const DotWildcard());
-final dotField =
-    (char('.') & dotFieldName).map((value) => DotField(value.last));
+final dotWildcard = string('.*').map((value) => const Wildcard());
+final dotField = (char('.') & dotFieldName).map((value) => Field(value.last));
 final dotMatcher = dotWildcard | dotField;
 
-final allButBackslashAndDoubleQuote = ((escape | dQuote).not() & anySymbol);
-final dInner = allButBackslashAndDoubleQuote | (escape & (dQuote | control));
-final dQuotedString = (dQuote & dInner.star().flatten() & dQuote)
-    .flatten()
-    .map((value) => QuotedField(value));
+final allButBackslashAndDoubleQuote =
+    ((escape | doubleQuote).not() & anySymbol);
+final dInner =
+    allButBackslashAndDoubleQuote | escapedDoubleQuote | escapedControl;
+final dQuotedString = (doubleQuote & dInner.star().flatten() & doubleQuote)
+    .map((value) => Field(value[1], quotationMark: value.first));
 
-final allButBackslashAndSingleQuote = (escape | sQuote).not() & anySymbol;
-final sInner = allButBackslashAndSingleQuote | (escape & (sQuote | control));
-final sQuotedString = (sQuote & sInner.star().flatten() & sQuote)
-    .flatten()
-    .map((value) => QuotedField(value));
+final allButBackslashAndSingleQuote = (escape | singleQuote).not() & anySymbol;
+final sInner =
+    allButBackslashAndSingleQuote | (escape & (singleQuote | control));
+final sQuotedString = (singleQuote & sInner.star().flatten() & singleQuote)
+    .map((value) => Field(value[1], quotationMark: value.first));
 
 final integer = (minus.optional() & digit().plus()).flatten().map(int.parse);
 final colonTrimmed = char(':').trim();
@@ -48,13 +52,17 @@ final field = sQuotedString | dQuotedString;
 final arrayIndex = integer.map((value) => ArrayIndex(value));
 final unionElement = (arraySlice | arrayIndex | wildcard | field).trim();
 final unionContent = (unionElement & (char(',') & unionElement).star()).map(
-    (value) => [value.first as UnionElement]
-        .followedBy((value.last as List).map((v) => v.last as UnionElement)));
+    (value) => [value.first as Selector]
+        .followedBy((value.last as List).map((v) => v.last as Selector)));
 
 final union =
     (char('[') & unionContent & char(']')).map((value) => Union(value[1]));
 
-final recursion = string('..') & (wildcard | union | dotFieldName);
+final recursion =
+    (string('..') & (wildcard | union | dotFieldName)).map<Selector>((value) {
+  print(value);
+  return Wildcard();
+});
 final selector = (dotMatcher | union | recursion);
 final parser =
     (char(r'$') & selector.star()).end().map<Iterable<Selector>>((value) {

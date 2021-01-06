@@ -12,7 +12,7 @@
       "selector": "$.a",
       "document": {"a": "A", "b": "B"},
       "values": ["A"],
-      "paths": ["$.a"],
+      "paths": ["$['a']"],
       "pointers": ["/a"]
     }, {
       "name": "dot field on array",
@@ -45,7 +45,7 @@
       "selector": "$.*.a",
       "document": {"x": {"a": "Ax", "b": "Bx"}, "y": {"a": "Ay", "b": "By"}},
       "values": ["Ax", "Ay"],
-      "paths": ["$['x'].a", "$['y'].a"],
+      "paths": ["$['x']['a']", "$['y']['a']"],
       "pointers": ["/x/a", "/y/a"]
     }, {
       "name": "union sq field on object",
@@ -146,6 +146,7 @@
       "values": [0, 1, 2],
       "paths": ["$[0]", "$[1]", "$[2]"],
       "pointers": ["/0", "/1", "/2"]
+
     }
   ]
 }
