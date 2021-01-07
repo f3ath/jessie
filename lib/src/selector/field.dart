@@ -1,6 +1,6 @@
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/quote.dart';
+import 'package:json_path/src/selector/selector.dart';
 
 class Field implements Selector {
   Field(this.name, {this.quotationMark = "'"});
@@ -9,16 +9,13 @@ class Field implements Selector {
   final String quotationMark;
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) {
+  Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
     final v = match.value;
     if (v is Map && v.containsKey(name)) {
-      return [
-        JsonPathMatch(
-            v[name],
-            match.path + '[' + quote(name, quotationMark: quotationMark) + ']',
-            match.pointer.append(name))
-      ];
+      yield JsonPathMatch(
+          v[name],
+          match.path + '[' + quote(name, quotationMark: quotationMark) + ']',
+          match.pointer.append(name));
     }
-    return <JsonPathMatch>[];
   }
 }

@@ -7,19 +7,16 @@ class ArrayIndex implements Selector {
   final int index;
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) {
+  Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
     final v = match.value;
     if (v is List) {
       final normalized = index < 0 ? v.length + index : index;
       if (normalized >= 0 && normalized < v.length) {
-        return [
-          JsonPathMatch(
-              v[normalized],
-              match.path + '[' + index.toString() + ']',
-              match.pointer.append(normalized.toString()))
-        ];
+        yield JsonPathMatch(
+            v[normalized],
+            match.path + '[' + index.toString() + ']',
+            match.pointer.append(normalized.toString()));
       }
     }
-    return const <JsonPathMatch>[];
   }
 }

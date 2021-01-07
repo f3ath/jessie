@@ -1,0 +1,10 @@
+{
+  "tests": [
+    {
+      "name": "dot field, ☺ name",
+      "selector": "$.☺",
+      "document": {"☺": "A", "b": "B"},
+      "values": ["A"]
+    }
+  ]
+}

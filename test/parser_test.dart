@@ -31,6 +31,7 @@ void main() {
         r'$..book[-1]',
         r'$..book[0,1]',
         r'$..book[:2]',
+        r'$.☺',
       ].forEach((expr) {
         test(expr, () {
           final parser = buildParser().parse(expr);
@@ -47,7 +48,6 @@ void main() {
         r'.foo',
         r'$....',
         r'$...foo',
-        r'$.foo..',
         r'$[1+2]',
         r'$[1874509822062987436598726432519879857164397163046130756769274369]',
         r'$["""]',
