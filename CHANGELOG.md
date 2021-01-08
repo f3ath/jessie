@@ -1,6 +1,16 @@
 ## [Unreleased]
+### Added
+- `JsonPathMatch.context` contains the matching context. It is intended to be used in named filters.
+- `JsonPathMatch.parent` contains the parent match.
+- `JsonPathMatch.pointer` contains the RFC 6901 JSON Pointer to the match.
+
 ### Changed
-- Prepared for null safety
+- Named filters argument renamed from `filter` to `filters`
+- Named filters can now be passed to the `read()` method.
+- Named filters callback now accepts the entire `JsonPathMatch` object, not just the value.
+
+### Removed
+- The `set()` method. The intention is to allow modifications via JSON Pointer in the future.
 
 ## [0.2.0] - 2020-09-07
 ### Added

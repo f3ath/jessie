@@ -58,66 +58,20 @@ void main() {
   /// $['store']['bicycle']['price']:	19.95
   prices
       .read(json)
-      .map((result) => '${result.path}:\t${result.value}')
+      .map((match) => '${match.path}:\t${match.value}')
       .forEach(print);
-
-  print('\n');
-
-  final bikeColor = JsonPath(r'$.store.bicycle.color');
-
-  print('A copy of the store with repainted bike:');
-  print(bikeColor.set(json, 'blue'));
-
-  print('\n');
-
-  print('Note, that the bike in the original store is still red:');
-  bikeColor
-      .read(json)
-      .map((result) => '${result.path}:\t${result.value}')
-      .forEach(print);
-
-  print('\n');
-
-  print('It is also possible to modify json in place:');
-  final someBooks = JsonPath(r'$.store.book[::2]');
-  someBooks.read(json).forEach((match) {
-    result.value['title'] = 'Banana';
-  });
-  print(json);
 }
-
 ```
 
 ## Features and limitations
 Generally, this library tries to mimic the [reference implementations], except for the filtering.
-Evaluated expressions are not supported, use named filters instead (see below).
-### Fields and indices
-Both dot-notation (`$.store.book[0].title`) and bracket-notation (`$['store']['book'][2]['title']`) are supported.
-
-- The dot-notation only recognizes alphanumeric fields starting with a letter. Use bracket-notation for general cases.
-- The bracket-notation supports only single quotes.
-
-### Wildcards
-Wildcards (`*`) can be used for objects (`$.store.*`) and arrays (`$.store.book[*]`);
-
-### Recursion
-Use `..` to iterate all elements recursively. E.g. `$.store..price` matches all prices in the store.
-
-### Array slice
-Use `[start:end:step]` to filter arrays. Any index can be omitted E.g. `$.store.book[3::2]` selects all even books
-starting from the 4th. Negative `start` and `end` are also supported.
-
-### Unions
-Array (`book[0,1]`) and object (`book[author,title,price]`) unions are supported. Array unions are always sorted.
-Object unions support the bracket-notation.
-
-### Filtering
-Due to the nature of Dart language, filtering expressions like `$..book[?(@.price<10)]` are NOT supported. 
+Evaluated filtering expressions like `$..book[?(@.price<10)]` are NOT yet supported. 
 Instead, use the callback-kind of filters.
 ```dart
 /// Select all elements with price under 20
-JsonPath(r'$.store..[?discounted]', filter: {
-  'discounted': (e) => e is Map && e['price'] is num && e['price'] < 20
+final path = JsonPath(r'$.store..[?discounted]', filters: {
+'discounted': (match) =>
+    match.value is Map && match.value['price'] is num && match.value['price'] < 20
 });
 ``` 
 

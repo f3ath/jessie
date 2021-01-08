@@ -71,9 +71,7 @@ final singleInner =
 final singleQuotedString =
     (singleQuote & singleInner & singleQuote).map((value) => Field(value[1]));
 
-final integer = (zero | (minus.optional() & nonZeroDigit & digit().star()))
-    .flatten()
-    .map(int.parse);
+final integer = (minus.optional() & digit().plus()).flatten().map(int.parse);
 
 final colon = char(':').trim();
 
