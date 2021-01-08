@@ -1,4 +1,5 @@
 import 'package:json_path/json_pointer.dart';
+import 'package:json_path/src/matching_context.dart';
 
 /// A named filter function
 typedef CallbackFilter = bool Function(JsonPathMatch match);
@@ -13,9 +14,6 @@ abstract class JsonPathMatch<T> {
   /// JSON Pointer (RFC 6901) to this match
   JsonPointer get pointer;
 
-  /// JSON Path expression
-  String get expression;
-
-  /// Returns a callback filter by name
-  CallbackFilter? getFilter(String name);
+  /// Matching context
+  MatchingContext get context;
 }

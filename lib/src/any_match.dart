@@ -25,5 +25,5 @@ class AnyMatch<T> implements JsonPathMatch<T> {
 
   /// Returns a callback filter by name
   @override
-  CallbackFilter? getFilter(String name) => context.filter[name];
+  CallbackFilter? getFilter(String name) => context.filters[name];
 }

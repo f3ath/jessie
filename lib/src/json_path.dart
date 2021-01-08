@@ -1,4 +1,4 @@
-import 'package:json_path/src/build_parser.dart';
+import 'package:json_path/src/grammar.dart' as grammar;
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/match_factory.dart';
 import 'package:json_path/src/selector/selector.dart';
@@ -9,23 +9,21 @@ class JsonPath {
   /// the instance may be used many times after that.
   ///
   /// Throws [FormatException] if the [expression] can not be parsed.
-  JsonPath(this.expression, {Map<String, CallbackFilter> filters = const {}})
-      : _selector = buildParser().parse(expression).value {
-    _filters.addAll(filters);
-  }
+  JsonPath(this.expression, {this.filters = const {}})
+      : _selector = grammar.jsonPath.parse(expression).value;
 
   /// JSONPath expression.
   final String expression;
   final Selector _selector;
 
   /// Named callback filters
-  final _filters = <String, CallbackFilter>{};
+  final Map<String, CallbackFilter> filters;
 
   /// Reads the given [document] object returning an Iterable of all matches found.
   Iterable<JsonPathMatch> read(document,
           {Map<String, CallbackFilter> filters = const {}}) =>
       _selector
-          .read(rootMatch(document, expression, {..._filters, ...filters}));
+          .read(rootMatch(document, expression, {...this.filters, ...filters}));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable readValues(json) => read(json).map((_) => _.value);

@@ -57,8 +57,8 @@ final doubleInner =
         .star()
         .map((value) => value.join(''));
 
-final doubleQuotedString = (doubleQuote & doubleInner & doubleQuote)
-    .map<Field>((value) => Field(value[1]));
+final doubleQuotedString =
+    (doubleQuote & doubleInner & doubleQuote).map((value) => Field(value[1]));
 
 final singleUnescaped =
     range(0x20, 0x26) | range(0x28, 0x5B) | range(0x5D, 0x10FFF);
@@ -75,16 +75,14 @@ final integer = (zero | (minus.optional() & nonZeroDigit & digit().star()))
     .flatten()
     .map(int.parse);
 
-final colonTrimmed = char(':').trim();
+final colon = char(':').trim();
 
 final maybeInteger = integer.optional();
 
-final arraySlice = (maybeInteger &
-        colonTrimmed &
-        maybeInteger &
-        (colonTrimmed & maybeInteger).optional())
-    .map((value) =>
-        ArraySlice(start: value[0], stop: value[2], step: value[3]?[1]));
+final arraySlice =
+    (maybeInteger & colon & maybeInteger & (colon & maybeInteger).optional())
+        .map((value) =>
+            ArraySlice(start: value[0], stop: value[2], step: value[3]?[1]));
 
 final arrayIndex = integer.map((value) => ArrayIndex(value));
 
@@ -118,6 +116,6 @@ final recursion = (string('..') & (wildcard | union | fieldName | endOfInput()))
 
 final selector = dotMatcher | union | recursion;
 
-final parser = (char(r'$') & selector.star())
+final jsonPath = (char(r'$') & selector.star())
     .end()
     .map((value) => Sequence((value.last as List).map((e) => e as Selector)));

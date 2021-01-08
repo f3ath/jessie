@@ -9,7 +9,7 @@ class NamedFilter implements Selector {
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
-    final filter = match.getFilter(name);
+    final filter = match.context.filters[name];
     if (filter == null) {
       throw FilterNotFound('Callback filter "$name" not found');
     }

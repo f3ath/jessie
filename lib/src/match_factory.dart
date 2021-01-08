@@ -7,8 +7,8 @@ import 'package:json_path/src/quote.dart';
 /// Creates a match for the root element
 JsonPathMatch rootMatch(
         dynamic value, String expression, Map<String, CallbackFilter> filter) =>
-    _newMatch(value, r'$', const JsonPointer(),
-        MatchingContext(expression, filter)..filter.addAll(filter));
+    _newMatch(
+        value, r'$', const JsonPointer(), MatchingContext(expression, filter));
 
 class ListMatch extends AnyMatch<List> {
   const ListMatch(
