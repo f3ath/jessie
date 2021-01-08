@@ -22,7 +22,6 @@ void main() {
           } on FormatException {
             // do nothing as CTS expects us to throw
           }
-
         } else {
           expect(JsonPath(selector).readValues(document), equals(result!));
         }
