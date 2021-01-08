@@ -4,7 +4,6 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -16,6 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Update submodules
+        run: git submodule update --init --recursive
+      - name: Print Dart version
+        run: dart --version
       - name: Install dependencies
         run: dart pub get
       - name: Format

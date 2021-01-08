@@ -1,9 +1,6 @@
-import 'package:json_path/src/ast/ast.dart';
-import 'package:json_path/src/ast/tokenize.dart';
+import 'package:json_path/src/grammar.dart' as grammar;
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/parsing_state.dart';
-import 'package:json_path/src/predicate.dart';
-import 'package:json_path/src/selector/root.dart';
+import 'package:json_path/src/match_factory.dart';
 import 'package:json_path/src/selector/selector.dart';
 
 /// A JSONPath expression
@@ -11,31 +8,26 @@ class JsonPath {
   /// Creates an instance from string. The [expression] is parsed once, and
   /// the instance may be used many times after that.
   ///
-  /// The [filter] arguments may contain the named filters used
-  /// in the [expression].
-  ///
   /// Throws [FormatException] if the [expression] can not be parsed.
-  factory JsonPath(String expression,
-      {Map<String, Predicate> filter = const {}}) {
-    if (expression.isEmpty) throw FormatException('Empty expression');
-    ParsingState state = Ready(RootSelector());
-    AST(tokenize(expression)).nodes.forEach((node) {
-      state = state.process(node, filter);
-    });
-    return JsonPath._(state.selector);
-  }
+  JsonPath(this.expression, {this.filters = const {}})
+      : _selector = grammar.jsonPath.parse(expression).value;
 
-  JsonPath._(this._selector);
-
+  /// JSONPath expression.
+  final String expression;
   final Selector _selector;
 
-  /// Reads the given [json] object returning an Iterable of all matches found.
-  Iterable<JsonPathMatch> read(json) =>
-      _selector.read([JsonPathMatch(json, '')]);
+  /// Named callback filters
+  final Map<String, CallbackFilter> filters;
 
-  /// Returns a copy of [json] with all matching values replaced with [value].
-  dynamic set(json, value) => _selector.set(json, (_) => value);
+  /// Reads the given [document] object returning an Iterable of all matches found.
+  Iterable<JsonPathMatch> read(document,
+          {Map<String, CallbackFilter> filters = const {}}) =>
+      _selector
+          .read(rootMatch(document, expression, {...this.filters, ...filters}));
+
+  /// Reads the given [json] object returning an Iterable of all values found.
+  Iterable readValues(json) => read(json).map((_) => _.value);
 
   @override
-  String toString() => _selector.expression();
+  String toString() => expression;
 }

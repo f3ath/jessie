@@ -1,10 +1,22 @@
-/// A single matching result
-class JsonPathMatch<T> {
-  JsonPathMatch(this.value, this.path);
+import 'package:json_path/json_pointer.dart';
+import 'package:json_path/src/matching_context.dart';
 
+/// A named filter function
+typedef CallbackFilter = bool Function(JsonPathMatch match);
+
+abstract class JsonPathMatch<T> {
   /// The value
-  final T value;
+  T get value;
 
-  /// JSONPath to this result
-  final String path;
+  /// JSONPath to this match
+  String get path;
+
+  /// JSON Pointer (RFC 6901) to this match
+  JsonPointer get pointer;
+
+  /// Matching context
+  MatchingContext get context;
+
+  /// The parent match
+  JsonPathMatch? get parent;
 }
