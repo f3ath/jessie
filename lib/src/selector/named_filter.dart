@@ -1,5 +1,5 @@
-import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/filter_not_found.dart';
+import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
 
 class NamedFilter implements Selector {
