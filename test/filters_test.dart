@@ -42,8 +42,10 @@ void main() {
     });
 
     test('Missing filter', () {
-      expect(() => JsonPath(r'$.store..[?discounted]').read(json),
-          throwsA(isA<FilterNotFound>()));
+      expect(
+          () => JsonPath(r'$.store..[?discounted]').read(json),
+          throwsA(predicate((e) =>
+              e is FilterNotFound && e.toString().contains('discounted'))));
     });
   });
 }

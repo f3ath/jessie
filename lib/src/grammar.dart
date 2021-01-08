@@ -11,8 +11,6 @@ import 'package:petitparser/petitparser.dart';
 
 final minus = char('-');
 final escape = char(r'\');
-final zero = char('0');
-final nonZeroDigit = anyOf('123456789');
 final hexDigit = anyOf('0123456789ABCDEF');
 
 final unicodeSymbol = (string(r'\u') & hexDigit.repeat(4).flatten())
