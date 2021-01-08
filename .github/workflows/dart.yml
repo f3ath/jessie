@@ -15,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Print Dart version
+        run: dart --version
       - name: Install dependencies
         run: dart pub get
       - name: Format
