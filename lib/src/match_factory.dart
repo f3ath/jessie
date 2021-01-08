@@ -8,35 +8,85 @@ import 'package:json_path/src/quote.dart';
 JsonPathMatch rootMatch(
         dynamic value, String expression, Map<String, CallbackFilter> filter) =>
     _newMatch(
-        value, r'$', const JsonPointer(), MatchingContext(expression, filter));
+        value: value,
+        path: r'$',
+        pointer: const JsonPointer(),
+        context: MatchingContext(expression, filter),
+        parent: null);
 
 class ListMatch extends AnyMatch<List> {
   const ListMatch(
-      List value, String path, JsonPointer pointer, MatchingContext context)
-      : super(value, path, pointer, context);
+      {required List value,
+      required String path,
+      required JsonPointer pointer,
+      required MatchingContext context,
+      JsonPathMatch? parent})
+      : super(
+            value: value,
+            path: path,
+            pointer: pointer,
+            context: context,
+            parent: parent);
 
   /// Creates a match for the child element.
   JsonPathMatch child(int key) => _newMatch(
-      value[key],
-      path + '[' + key.toString() + ']',
-      pointer.append(key.toString()),
-      context);
+      value: value[key],
+      path: path + '[' + key.toString() + ']',
+      pointer: pointer.append(key.toString()),
+      context: context,
+      parent: this);
 }
 
 class MapMatch extends AnyMatch<Map> {
   const MapMatch(
-      Map value, String path, JsonPointer pointer, MatchingContext context)
-      : super(value, path, pointer, context);
+      {required Map value,
+      required String path,
+      required JsonPointer pointer,
+      required MatchingContext context,
+      JsonPathMatch? parent})
+      : super(
+            value: value,
+            path: path,
+            pointer: pointer,
+            context: context,
+            parent: parent);
 
   /// Creates a match for the child element.
   JsonPathMatch child(String key) => _newMatch(
-      value[key], path + '[' + quote(key) + ']', pointer.append(key), context);
+      value: value[key],
+      path: path + '[' + quote(key) + ']',
+      pointer: pointer.append(key),
+      context: context,
+      parent: this);
 }
 
 /// Creates a new match depending on the value type
 JsonPathMatch _newMatch(
-    dynamic value, String path, JsonPointer pointer, MatchingContext context) {
-  if (value is List) return ListMatch(value, path, pointer, context);
-  if (value is Map) return MapMatch(value, path, pointer, context);
-  return AnyMatch(value, path, pointer, context);
+    {required dynamic value,
+    required String path,
+    required JsonPointer pointer,
+    required MatchingContext context,
+    required JsonPathMatch? parent}) {
+  if (value is List) {
+    return ListMatch(
+        value: value,
+        path: path,
+        pointer: pointer,
+        context: context,
+        parent: parent);
+  }
+  if (value is Map) {
+    return MapMatch(
+        value: value,
+        path: path,
+        pointer: pointer,
+        context: context,
+        parent: parent);
+  }
+  return AnyMatch(
+      value: value,
+      path: path,
+      pointer: pointer,
+      context: context,
+      parent: parent);
 }

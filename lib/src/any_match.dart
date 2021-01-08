@@ -3,7 +3,12 @@ import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/matching_context.dart';
 
 class AnyMatch<T> implements JsonPathMatch<T> {
-  const AnyMatch(this.value, this.path, this.pointer, this.context);
+  const AnyMatch(
+      {required this.value,
+      required this.path,
+      required this.pointer,
+      required this.context,
+      this.parent});
 
   /// The value
   @override
@@ -17,13 +22,9 @@ class AnyMatch<T> implements JsonPathMatch<T> {
   @override
   final JsonPointer pointer;
 
+  @override
   final MatchingContext context;
 
-  /// JSON Path expression
   @override
-  String get expression => context.expression;
-
-  /// Returns a callback filter by name
-  @override
-  CallbackFilter? getFilter(String name) => context.filters[name];
+  final JsonPathMatch? parent;
 }

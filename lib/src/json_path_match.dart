@@ -16,4 +16,7 @@ abstract class JsonPathMatch<T> {
 
   /// Matching context
   MatchingContext get context;
+
+  /// The parent match
+  JsonPathMatch? get parent;
 }
