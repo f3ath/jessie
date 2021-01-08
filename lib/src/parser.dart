@@ -1,7 +1,8 @@
 import 'package:json_path/src/selector/array_index.dart';
 import 'package:json_path/src/selector/array_slice.dart';
 import 'package:json_path/src/selector/field.dart';
-import 'package:json_path/src/selector/recusrion.dart';
+import 'package:json_path/src/selector/named_filter.dart';
+import 'package:json_path/src/selector/recursion.dart';
 import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/selector/sequence.dart';
 import 'package:json_path/src/selector/union.dart';
@@ -57,7 +58,7 @@ final doubleInner =
         .map((value) => value.join(''));
 
 final doubleQuotedString = (doubleQuote & doubleInner & doubleQuote)
-    .map<Field>((value) => Field(value[1], quotationMark: value.first));
+    .map<Field>((value) => Field(value[1]));
 
 final singleUnescaped =
     range(0x20, 0x26) | range(0x28, 0x5B) | range(0x5D, 0x10FFF);
@@ -67,8 +68,8 @@ final singleInner =
         .star()
         .map((value) => value.join(''));
 
-final singleQuotedString = (singleQuote & singleInner & singleQuote)
-    .map((value) => Field(value[1], quotationMark: value.first));
+final singleQuotedString =
+    (singleQuote & singleInner & singleQuote).map((value) => Field(value[1]));
 
 final integer = (zero | (minus.optional() & nonZeroDigit & digit().star()))
     .flatten()
@@ -87,11 +88,17 @@ final arraySlice = (maybeInteger &
 
 final arrayIndex = integer.map((value) => ArrayIndex(value));
 
+final namedFilter = (char('?') &
+        ((char('_') | letter()) & (char('_') | letter() | digit()).star())
+            .flatten())
+    .map((value) => NamedFilter(value.last));
+
 final unionElement = (arraySlice |
         arrayIndex |
         wildcard |
         singleQuotedString |
-        doubleQuotedString)
+        doubleQuotedString |
+        namedFilter)
     .trim();
 
 final subsequentUnionElement =
@@ -106,10 +113,11 @@ final union =
 
 final recursion = (string('..') & (wildcard | union | fieldName | endOfInput()))
     .map((value) => (value.last == null)
-        ? Recursion()
-        : Sequence([Recursion(), value.last]));
+        ? const Recursion()
+        : Sequence([const Recursion(), value.last]));
 
 final selector = dotMatcher | union | recursion;
 
-final parser = (char(r'$') & selector.star()).end().map<Selector>(
-    (value) => Sequence((value.last as List).map((e) => e as Selector)));
+final parser = (char(r'$') & selector.star())
+    .end()
+    .map((value) => Sequence((value.last as List).map((e) => e as Selector)));

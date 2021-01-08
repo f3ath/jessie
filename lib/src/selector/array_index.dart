@@ -1,4 +1,5 @@
 import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/match_factory.dart';
 import 'package:json_path/src/selector/selector.dart';
 
 class ArrayIndex implements Selector {
@@ -8,14 +9,10 @@ class ArrayIndex implements Selector {
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
-    final v = match.value;
-    if (v is List) {
-      final normalized = index < 0 ? v.length + index : index;
-      if (normalized >= 0 && normalized < v.length) {
-        yield JsonPathMatch(
-            v[normalized],
-            match.path + '[' + index.toString() + ']',
-            match.pointer.append(normalized.toString()));
+    if (match is ListMatch) {
+      final normalizedIndex = index < 0 ? match.value.length + index : index;
+      if (normalizedIndex >= 0 && normalizedIndex < match.value.length) {
+        yield match.child(normalizedIndex);
       }
     }
   }

@@ -1,4 +1,3 @@
-import 'package:json_path/src/id.dart';
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
 
@@ -8,9 +7,9 @@ typedef Filter = Iterable<JsonPathMatch> Function(
 class Sequence implements Selector {
   Sequence(Iterable<Selector> selectors)
       : _filter = selectors.fold<Filter>(
-            id,
-            (filter, selector) =>
-                (matches) => filter(matches).map(selector.read).expand(id));
+            (_) => _,
+            (filter, selector) => (matches) =>
+                filter(matches).map(selector.read).expand((_) => _));
 
   final Filter _filter;
 

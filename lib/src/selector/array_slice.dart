@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/match_factory.dart';
 import 'package:json_path/src/selector/selector.dart';
 
 class ArraySlice implements Selector {
@@ -12,10 +13,8 @@ class ArraySlice implements Selector {
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
-    final v = match.value;
-    if (v is List) {
-      yield* _iterate(v).map((i) => JsonPathMatch(
-          v[i], match.path + '[$i]', match.pointer.append(i.toString())));
+    if (match is ListMatch) {
+      yield* _iterate(match.value).map((i) => match.child(i));
     }
   }
 

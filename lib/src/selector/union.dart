@@ -1,13 +1,12 @@
-import 'package:json_path/src/id.dart';
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
 
 class Union implements Selector {
-  Union(Iterable<Selector> elements) : elements = [...elements];
+  const Union(this._elements);
 
-  final List<Selector> elements;
+  final Iterable<Selector> _elements;
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) =>
-      elements.map((e) => e.read(match)).expand(id);
+      _elements.map((e) => e.read(match)).expand((_) => _);
 }

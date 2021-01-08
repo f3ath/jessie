@@ -1,21 +1,22 @@
 import 'package:json_path/json_pointer.dart';
 import 'package:json_path/src/quote.dart';
 
-/// A single matching result
-class JsonPathMatch<T> {
-  const JsonPathMatch(this.value, this.path, this.pointer);
+/// A named filter function
+typedef CallbackFilter = bool Function(JsonPathMatch match);
 
+abstract class JsonPathMatch<T> {
   /// The value
-  final T value;
+  T get value;
 
   /// JSONPath to this match
-  final String path;
+  String get path;
 
   /// JSON Pointer (RFC 6901) to this match
-  final JsonPointer pointer;
+  JsonPointer get pointer;
 
-  JsonPathMatch child(dynamic key, dynamic value) => JsonPathMatch(
-      value, path + '[' + _quote(key) + ']', pointer.append(key.toString()));
+  /// JSON Path expression
+  String get expression;
 
-  String _quote(key) => (key is int) ? key.toString() : quote(key.toString());
+  /// Returns a callback filter by name
+  CallbackFilter? getFilter(String name);
 }

@@ -78,21 +78,21 @@
       "selector": "$[\"a\"]",
       "document": {"a": "A", "b": "B"},
       "values": ["A"],
-      "paths": ["$[\"a\"]"],
+      "paths": ["$['a']"],
       "pointers": ["/a"]
     }, {
       "name": "union dq field on object (2 values)",
       "selector": "$[\"a\", \"c\"]",
       "document": {"a": "A", "b": "B", "c": "C"},
       "values": ["A", "C"],
-      "paths": ["$[\"a\"]", "$[\"c\"]"],
+      "paths": ["$['a']", "$['c']"],
       "pointers": ["/a", "/c"]
     }, {
       "name": "union dq field on object (numeric key)",
       "selector": "$[\"1\"]",
       "document": {"0": "A", "1": "B"},
       "values": ["B"],
-      "paths": ["$[\"1\"]"],
+      "paths": ["$['1']"],
       "pointers": ["/1"]
     }, {
       "name": "union dq field on array",
@@ -116,7 +116,7 @@
       "selector": "$[\"0\", 1, 'a']",
       "document": {"a": "A", "b": "B", "0": "Zero", "1": "One"},
       "values": ["Zero", "A"],
-      "paths": ["$[\"0\"]", "$['a']"],
+      "paths": ["$['0']", "$['a']"],
       "pointers": ["/0", "/a"]
     }, {
       "name": "union index and field on array",

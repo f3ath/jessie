@@ -1,16 +1,17 @@
-import 'package:json_path/src/id.dart';
-import 'package:json_path/src/iterate.dart';
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector/wildcard.dart';
 
 class Recursion implements Selector {
+  const Recursion();
+
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
     yield match;
-    yield* iterate(match.value)
+    yield* const Wildcard()
+        .read(match)
         .where((e) => e.value is Map || e.value is List)
-        .map((e) => match.child(e.key, e.value))
         .map(read)
-        .expand(id);
+        .expand((_) => _);
   }
 }
