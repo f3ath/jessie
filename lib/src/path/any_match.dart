@@ -1,6 +1,6 @@
 import 'package:json_path/json_pointer.dart';
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/matching_context.dart';
+import 'package:json_path/src/path/json_path_match.dart';
+import 'package:json_path/src/path/matching_context.dart';
 
 class AnyMatch<T> implements JsonPathMatch<T> {
   const AnyMatch(

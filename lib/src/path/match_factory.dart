@@ -1,8 +1,8 @@
 import 'package:json_path/json_pointer.dart';
-import 'package:json_path/src/any_match.dart';
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/matching_context.dart';
-import 'package:json_path/src/quote.dart';
+import 'package:json_path/src/path/any_match.dart';
+import 'package:json_path/src/path/json_path_match.dart';
+import 'package:json_path/src/path/matching_context.dart';
+import 'package:json_path/src/path/quote.dart';
 
 /// Creates a match for the root element
 JsonPathMatch rootMatch(
@@ -10,7 +10,7 @@ JsonPathMatch rootMatch(
     _newMatch(
         value: value,
         path: r'$',
-        pointer: const JsonPointer(),
+        pointer: JsonPointer(),
         context: MatchingContext(expression, filter),
         parent: null);
 

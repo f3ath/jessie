@@ -1,18 +1,5 @@
-/// JSON Pointer (RFC 6901).
-class JsonPointer {
-  /// Creates a pointer to the root element
-  const JsonPointer() : value = '';
+library json_pointer;
 
-  JsonPointer._(this.value);
-
-  /// The string value of the pointer
-  final String value;
-
-  /// Returns a new instance of [JsonPointer]
-  /// with the [segment] appended at the end.
-  JsonPointer append(String segment) => JsonPointer._(
-      value + '/' + segment.replaceAll('~', '~0').replaceAll('/', '~1'));
-
-  @override
-  String toString() => value;
-}
+export 'package:json_path/src/pointer/json_pointer.dart';
+export 'package:json_path/src/pointer/reference.dart';
+export 'package:json_path/src/pointer/invalid_route.dart';

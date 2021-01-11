@@ -1,6 +1,6 @@
-import 'package:json_path/src/filter_not_found.dart';
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/path/filter_not_found.dart';
+import 'package:json_path/src/path/json_path_match.dart';
+import 'package:json_path/src/path/selector/selector.dart';
 
 class NamedFilter implements Selector {
   NamedFilter(this.name);

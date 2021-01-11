@@ -1,6 +1,6 @@
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/selector.dart';
-import 'package:json_path/src/selector/wildcard.dart';
+import 'package:json_path/src/path/json_path_match.dart';
+import 'package:json_path/src/path/selector/selector.dart';
+import 'package:json_path/src/path/selector/wildcard.dart';
 
 class Recursion implements Selector {
   const Recursion();

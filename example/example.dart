@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:json_path/json_path.dart';
 
 void main() {
-  final json = jsonDecode('''
+  final document = jsonDecode('''
 {
   "store": {
     "book": [
@@ -48,13 +48,18 @@ void main() {
 
   /// The following code will print:
   ///
-  /// $['store']['book'][0]['price']:	8.95
-  /// $['store']['book'][1]['price']:	12.99
-  /// $['store']['book'][2]['price']:	8.99
-  /// $['store']['book'][3]['price']:	22.99
-  /// $['store']['bicycle']['price']:	19.95
+  /// /store/book/0/price:	8.95
+  /// /store/book/1/price:	12.99
+  /// /store/book/2/price:	8.99
+  /// /store/book/3/price:	22.99
+  /// /store/bicycle/price:	19.95
   prices
-      .read(json)
-      .map((match) => '${match.path}:\t${match.value}')
+      .read(document)
+      .map((match) => '${match.pointer}:\t${match.value}')
       .forEach(print);
+
+  /// Modifying all prices in-place:
+  prices.read(document).map((match) => match.pointer).forEach((pointer) {
+    pointer.transform(document, (value) => value - 1);
+  });
 }

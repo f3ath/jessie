@@ -1,5 +1,5 @@
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/path/json_path_match.dart';
+import 'package:json_path/src/path/selector/selector.dart';
 
 typedef Filter = Iterable<JsonPathMatch> Function(
     Iterable<JsonPathMatch> matches);

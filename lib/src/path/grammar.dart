@@ -1,12 +1,12 @@
-import 'package:json_path/src/selector/array_index.dart';
-import 'package:json_path/src/selector/array_slice.dart';
-import 'package:json_path/src/selector/field.dart';
-import 'package:json_path/src/selector/named_filter.dart';
-import 'package:json_path/src/selector/recursion.dart';
-import 'package:json_path/src/selector/selector.dart';
-import 'package:json_path/src/selector/sequence.dart';
-import 'package:json_path/src/selector/union.dart';
-import 'package:json_path/src/selector/wildcard.dart';
+import 'package:json_path/src/path/selector/array_index.dart';
+import 'package:json_path/src/path/selector/array_slice.dart';
+import 'package:json_path/src/path/selector/field.dart';
+import 'package:json_path/src/path/selector/named_filter.dart';
+import 'package:json_path/src/path/selector/recursion.dart';
+import 'package:json_path/src/path/selector/selector.dart';
+import 'package:json_path/src/path/selector/sequence.dart';
+import 'package:json_path/src/path/selector/union.dart';
+import 'package:json_path/src/path/selector/wildcard.dart';
 import 'package:petitparser/petitparser.dart';
 
 final minus = char('-');
