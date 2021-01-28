@@ -57,9 +57,4 @@ void main() {
       .read(document)
       .map((match) => '${match.pointer}:\t${match.value}')
       .forEach(print);
-
-  /// Modifying all prices in-place:
-  prices.read(document).map((match) => match.pointer).forEach((pointer) {
-    pointer.transform(document, (value) => value - 1);
-  });
 }

@@ -1,8 +1,8 @@
-import 'package:json_path/json_pointer.dart';
-import 'package:json_path/src/path/any_match.dart';
-import 'package:json_path/src/path/json_path_match.dart';
-import 'package:json_path/src/path/matching_context.dart';
-import 'package:json_path/src/path/quote.dart';
+import 'package:json_path/src/any_match.dart';
+import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/matching_context.dart';
+import 'package:json_path/src/quote.dart';
+import 'package:rfc_6901/rfc_6901.dart';
 
 /// Creates a match for the root element
 JsonPathMatch rootMatch(
@@ -32,7 +32,7 @@ class ListMatch extends AnyMatch<List> {
   JsonPathMatch child(int key) => _newMatch(
       value: value[key],
       path: path + '[' + key.toString() + ']',
-      pointer: pointer.append(key.toString()),
+      pointer: JsonPointerSegment(key.toString(), pointer),
       context: context,
       parent: this);
 }
@@ -55,7 +55,7 @@ class MapMatch extends AnyMatch<Map> {
   JsonPathMatch child(String key) => _newMatch(
       value: value[key],
       path: path + '[' + quote(key) + ']',
-      pointer: pointer.append(key),
+      pointer: JsonPointerSegment(key, pointer),
       context: context,
       parent: this);
 }

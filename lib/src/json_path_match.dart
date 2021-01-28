@@ -1,5 +1,5 @@
-import 'package:json_path/json_pointer.dart';
-import 'package:json_path/src/path/matching_context.dart';
+import 'package:json_path/src/matching_context.dart';
+import 'package:rfc_6901/rfc_6901.dart';
 
 /// A named filter function
 typedef CallbackFilter = bool Function(JsonPathMatch match);

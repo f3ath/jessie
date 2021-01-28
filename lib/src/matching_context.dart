@@ -1,4 +1,4 @@
-import 'package:json_path/src/path/json_path_match.dart';
+import 'package:json_path/src/json_path_match.dart';
 
 class MatchingContext {
   const MatchingContext(this.expression, this.filters);

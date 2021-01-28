@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:json_path/src/path/json_path_match.dart';
-import 'package:json_path/src/path/match_factory.dart';
-import 'package:json_path/src/path/selector/selector.dart';
+import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/match_factory.dart';
+import 'package:json_path/src/selector/selector.dart';
 
 class ArraySlice implements Selector {
   ArraySlice({this.start, this.stop, int? step}) : step = step ?? 1;

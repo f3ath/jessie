@@ -1,4 +1,4 @@
-import 'package:json_path/src/path/build_parser.dart';
+import 'package:json_path/src/build_parser.dart';
 import 'package:test/test.dart';
 
 void main() {
