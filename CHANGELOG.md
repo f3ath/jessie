@@ -3,7 +3,6 @@
 - `JsonPathMatch.context` contains the matching context. It is intended to be used in named filters.
 - `JsonPathMatch.parent` contains the parent match.
 - `JsonPathMatch.pointer` contains the RFC 6901 JSON Pointer to the match.
-- JsonPointer implementation
 
 ### Changed
 - Named filters argument renamed from `filter` to `filters`
