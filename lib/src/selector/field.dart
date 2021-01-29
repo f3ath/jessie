@@ -8,7 +8,7 @@ class Field implements Selector {
   final String name;
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
+  Iterable<JsonPathMatch> apply(JsonPathMatch match) sync* {
     final value = match.value;
     if (value is Map && value.containsKey(name)) {
       yield ChildMatch.child(name, match);

@@ -9,10 +9,10 @@ class Sequence implements Selector {
       : _filter = selectors.fold<Filter>(
             (_) => _,
             (filter, selector) => (matches) =>
-                filter(matches).map(selector.read).expand((_) => _));
+                filter(matches).map(selector.apply).expand((_) => _));
 
   final Filter _filter;
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) => _filter([match]);
+  Iterable<JsonPathMatch> apply(JsonPathMatch match) => _filter([match]);
 }

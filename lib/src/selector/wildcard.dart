@@ -6,7 +6,7 @@ class Wildcard implements Selector {
   const Wildcard();
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
+  Iterable<JsonPathMatch> apply(JsonPathMatch match) sync* {
     final value = match.value;
     if (value is Map) {
       yield* value.entries.map((e) => ChildMatch.child(e.key, match));

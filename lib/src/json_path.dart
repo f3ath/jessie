@@ -22,7 +22,7 @@ class JsonPath {
   /// Reads the given [document] object returning an Iterable of all matches found.
   Iterable<JsonPathMatch> read(document,
           {Map<String, CallbackFilter> filters = const {}}) =>
-      _selector.read(RootMatch(document, {...this.filters, ...filters}));
+      _selector.apply(RootMatch(document, {...this.filters, ...filters}));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable readValues(json) => read(json).map((_) => _.value);

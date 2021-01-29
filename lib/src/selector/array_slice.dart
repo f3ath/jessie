@@ -12,7 +12,7 @@ class ArraySlice implements Selector {
   final int step;
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
+  Iterable<JsonPathMatch> apply(JsonPathMatch match) sync* {
     final value = match.value;
     if (value is List) {
       yield* _SliceIterator()

@@ -7,6 +7,6 @@ class Union implements Selector {
   final Iterable<Selector> _elements;
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) =>
-      _elements.map((e) => e.read(match)).expand((_) => _);
+  Iterable<JsonPathMatch> apply(JsonPathMatch match) =>
+      _elements.map((e) => e.apply(match)).expand((_) => _);
 }

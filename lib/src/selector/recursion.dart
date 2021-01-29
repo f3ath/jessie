@@ -6,12 +6,12 @@ class Recursion implements Selector {
   const Recursion();
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
+  Iterable<JsonPathMatch> apply(JsonPathMatch match) sync* {
     yield match;
     yield* const Wildcard()
-        .read(match)
+        .apply(match)
         .where((e) => e.value is Map || e.value is List)
-        .map(read)
+        .map(apply)
         .expand((_) => _);
   }
 }
