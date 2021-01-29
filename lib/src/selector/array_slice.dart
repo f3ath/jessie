@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:json_path/src/child_match.dart';
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/match_factory.dart';
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector.dart';
 
 class ArraySlice implements Selector {
   ArraySlice({this.start, this.stop, int? step}) : step = step ?? 1;
@@ -13,19 +13,28 @@ class ArraySlice implements Selector {
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
-    if (match is ListMatch) {
-      yield* _iterate(match.value).map((i) => match.child(i));
+    final value = match.value;
+    if (value is List) {
+      yield* _SliceIterator()
+          .iterate(value, start, stop, step)
+          .map((i) => ChildMatch.index(i, match));
+    }
+  }
+}
+
+class _SliceIterator {
+  Iterable<int> iterate(List list, int? start, int? stop, int? step) sync* {
+    step ??= 1;
+    if (step > 0) {
+      yield* _iterateForward(list, start ?? 0, stop ?? list.length, step);
+    }
+    if (step < 0) {
+      yield* _iterateBackward(list, start, stop, step);
     }
   }
 
-  Iterable<int> _iterate(List list) sync* {
-    if (step > 0) yield* _iterateForward(list);
-    if (step < 0) yield* _iterateBackward(list);
-  }
-
-  Iterable<int> _iterateForward(List list) sync* {
-    final stop = this.stop ?? list.length;
-    final start = this.start ?? 0;
+  Iterable<int> _iterateForward(
+      List list, int start, int stop, int step) sync* {
     final low = start < 0 ? max(list.length + start, 0) : start;
     final high = stop < 0 ? list.length + stop : min(list.length, stop);
     for (var i = low; i < high; i += step) {
@@ -33,7 +42,8 @@ class ArraySlice implements Selector {
     }
   }
 
-  Iterable<int> _iterateBackward(List list) sync* {
+  Iterable<int> _iterateBackward(
+      List list, int? start, int? stop, int step) sync* {
     final low = _low(stop, list.length);
     final high = _high(start, list.length);
     for (var i = high; i > low; i += step) {

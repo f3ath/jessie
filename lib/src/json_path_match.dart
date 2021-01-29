@@ -4,9 +4,9 @@ import 'package:rfc_6901/rfc_6901.dart';
 /// A named filter function
 typedef CallbackFilter = bool Function(JsonPathMatch match);
 
-abstract class JsonPathMatch<T> {
+abstract class JsonPathMatch {
   /// The value
-  T get value;
+  dynamic get value;
 
   /// JSONPath to this match
   String get path;

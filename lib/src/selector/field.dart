@@ -1,6 +1,6 @@
+import 'package:json_path/src/child_match.dart';
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/match_factory.dart';
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector.dart';
 
 class Field implements Selector {
   Field(this.name);
@@ -9,8 +9,9 @@ class Field implements Selector {
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
-    if (match is MapMatch && match.value.containsKey(name)) {
-      yield match.child(name);
+    final value = match.value;
+    if (value is Map && value.containsKey(name)) {
+      yield ChildMatch.child(name, match);
     }
   }
 }

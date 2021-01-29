@@ -1,17 +1,18 @@
+import 'package:json_path/src/child_match.dart';
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/match_factory.dart';
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector.dart';
 
 class Wildcard implements Selector {
   const Wildcard();
 
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
-    if (match is MapMatch) {
-      yield* match.value.entries.map((e) => match.child(e.key));
+    final value = match.value;
+    if (value is Map) {
+      yield* value.entries.map((e) => ChildMatch.child(e.key, match));
     }
-    if (match is ListMatch) {
-      yield* match.value.asMap().entries.map((e) => match.child(e.key));
+    if (value is List) {
+      yield* value.asMap().entries.map((e) => ChildMatch.index(e.key, match));
     }
   }
 }
