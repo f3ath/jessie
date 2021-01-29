@@ -10,7 +10,7 @@ class ArrayIndex implements Selector {
   @override
   Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
     final value = match.value;
-    if (match is List) {
+    if (value is List) {
       final normalized = _normalize(value.length);
       if (normalized >= 0 && normalized < value.length) {
         yield ChildMatch.index(normalized, match);
