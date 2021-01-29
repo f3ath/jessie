@@ -1,7 +1,7 @@
-import 'package:json_path/src/path/grammar.dart' as grammar;
-import 'package:json_path/src/path/json_path_match.dart';
-import 'package:json_path/src/path/match_factory.dart';
-import 'package:json_path/src/path/selector/selector.dart';
+import 'package:json_path/src/grammar.dart' as grammar;
+import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/root_match.dart';
+import 'package:json_path/src/selector.dart';
 
 /// A JSONPath expression
 class JsonPath {
@@ -22,8 +22,7 @@ class JsonPath {
   /// Reads the given [document] object returning an Iterable of all matches found.
   Iterable<JsonPathMatch> read(document,
           {Map<String, CallbackFilter> filters = const {}}) =>
-      _selector
-          .read(rootMatch(document, expression, {...this.filters, ...filters}));
+      _selector.apply(RootMatch(document, {...this.filters, ...filters}));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable readValues(json) => read(json).map((_) => _.value);

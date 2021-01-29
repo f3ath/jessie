@@ -1,4 +1,4 @@
-import 'package:json_path/src/path/build_parser.dart';
+import 'package:json_path/src/grammar.dart' as grammar;
 import 'package:test/test.dart';
 
 void main() {
@@ -34,7 +34,7 @@ void main() {
         r'$.☺',
       ].forEach((expr) {
         test(expr, () {
-          final parser = buildParser().parse(expr);
+          final parser = grammar.jsonPath.parse(expr);
           if (parser.isFailure) {
             fail(parser.message);
           }
@@ -62,7 +62,7 @@ void main() {
       ].forEach((expr) {
         test(expr, () {
           try {
-            expect(buildParser().parse(expr).isFailure, isTrue);
+            expect(grammar.jsonPath.parse(expr).isFailure, isTrue);
           } on FormatException catch (_) {}
         });
       });

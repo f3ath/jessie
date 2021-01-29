@@ -1,6 +1,6 @@
-import 'package:json_path/src/path/filter_not_found.dart';
-import 'package:json_path/src/path/json_path_match.dart';
-import 'package:json_path/src/path/selector/selector.dart';
+import 'package:json_path/src/filter_not_found.dart';
+import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/selector.dart';
 
 class NamedFilter implements Selector {
   NamedFilter(this.name);
@@ -8,7 +8,7 @@ class NamedFilter implements Selector {
   final String name;
 
   @override
-  Iterable<JsonPathMatch> read(JsonPathMatch match) sync* {
+  Iterable<JsonPathMatch> apply(JsonPathMatch match) sync* {
     final filter = match.context.filters[name];
     if (filter == null) {
       throw FilterNotFound('Callback filter "$name" not found');
