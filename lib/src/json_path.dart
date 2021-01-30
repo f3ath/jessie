@@ -1,7 +1,8 @@
-import 'package:json_path/src/grammar.dart' as grammar;
+import 'package:json_path/src/grammar/json_path.dart';
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/root_match.dart';
 import 'package:json_path/src/selector.dart';
+import 'package:petitparser/core.dart';
 
 /// A JSONPath expression
 class JsonPath {
@@ -10,7 +11,15 @@ class JsonPath {
   ///
   /// Throws [FormatException] if the [expression] can not be parsed.
   JsonPath(this.expression, {this.filters = const {}})
-      : _selector = grammar.jsonPath.parse(expression).value;
+      : _selector = _parse(expression);
+
+  static Selector _parse(String expression) {
+    try {
+      return jsonPath.parse(expression).value;
+    } on ParserException catch (e) {
+      throw FormatException('$e. Expression: ${e.source}');
+    }
+  }
 
   /// JSONPath expression.
   final String expression;

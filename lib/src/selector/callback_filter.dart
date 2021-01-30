@@ -1,9 +1,10 @@
 import 'package:json_path/src/filter_not_found.dart';
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector.dart';
+import 'package:json_path/src/selector/wildcard.dart';
 
-class NamedFilter implements Selector {
-  NamedFilter(this.name);
+class CallbackFilter implements Selector {
+  CallbackFilter(this.name);
 
   final String name;
 
@@ -13,6 +14,6 @@ class NamedFilter implements Selector {
     if (filter == null) {
       throw FilterNotFound('Callback filter "$name" not found');
     }
-    if (filter(match)) yield match;
+    yield* const Wildcard().apply(match).where(filter);
   }
 }
