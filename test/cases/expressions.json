@@ -98,6 +98,13 @@
       "values": [{"key": "b"}],
       "paths": ["$[1]"],
       "pointers": ["/1"]
+    }, {
+      "name": "object child, combined",
+      "selector": "$[?(@.foo['bar'] == 'b')]",
+      "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": {"moo": 42}}, {}],
+      "values": [{"foo": {"bar": "b"}}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
     }
   ]
 }

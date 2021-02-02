@@ -20,9 +20,7 @@ Parser<Eval> _build() {
           (integer | doubleQuotedString | singleQuotedString) &
           char(']'))
       .map((value) => value[1])
-      .map<Eval>((value) => (match) {
-            final key = value;
-            final v = match.value;
+      .map<_Filter>((key) => (v) {
             if (key is int && v is List && key < v.length && key >= 0) {
               return v[key];
             } else if (key is String && v is Map && v.containsKey(key)) {
@@ -30,15 +28,18 @@ Parser<Eval> _build() {
             }
           });
 
-  final _dotName = (char('.') & dotString).map((value) => (match) {
+  final _dotName = (char('.') & dotString).map((value) => (v) {
         final key = value.last;
-        final v = match.value;
         if (v is Map && v.containsKey(key)) {
           return v[key];
         }
       });
 
-  final _nodeMapper = _index | _dotName;
+  final _nodeMapper = (_index | _dotName)
+      .plus()
+      .map(
+          (value) => value.reduce((value, element) => (v) => element(value(v))))
+      .map<Eval>((value) => (match) => value(match.value));
 
   final _node = (char('@') & _nodeMapper).map<Eval>((value) => value.last);
 
@@ -51,5 +52,7 @@ Parser<Eval> _build() {
 
   return (string('?(') & _term & char(')')).map((value) => value[1]);
 }
+
+typedef _Filter = dynamic Function(dynamic _);
 
 final expression = _build();
