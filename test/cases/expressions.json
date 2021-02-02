@@ -71,12 +71,33 @@
       "paths": [],
       "pointers": []
     }, {
-      "name": "current node as array",
+      "name": "array index",
       "selector": "$[?(@[1] == 'b')]",
       "document": [["a", "b"], ["x", "y"]],
       "values": [["a", "b"]],
       "paths": ["$[0]"],
       "pointers": ["/0"]
+    }, {
+      "name": "object child, single quote",
+      "selector": "$[?(@['key'] == 'b')]",
+      "document": [{"key": "a"}, {"key": "b"}, {}],
+      "values": [{"key": "b"}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, double quote",
+      "selector": "$[?(@[\"key\"] == 'b')]",
+      "document": [{"key": "a"}, {"key": "b"}, {}],
+      "values": [{"key": "b"}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, dot-notation",
+      "selector": "$[?(@.key == 'b')]",
+      "document": [{"key": "a"}, {"key": "b"}, {}],
+      "values": [{"key": "b"}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
     }
   ]
 }

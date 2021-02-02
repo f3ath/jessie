@@ -1,3 +1,4 @@
+import 'package:json_path/src/selector/field.dart';
 import 'package:petitparser/petitparser.dart';
 
 final _escape = char(r'\');
@@ -54,3 +55,7 @@ final doubleQuotedString =
 
 final singleQuotedString =
     (_singleQuote & _singleInner & _singleQuote).map((value) => value[1]);
+
+final dotString =
+    (anyOf('-_') | letter() | digit() | range(0x80, 0x10FFF)).plus().flatten();
+

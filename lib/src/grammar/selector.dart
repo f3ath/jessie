@@ -1,5 +1,5 @@
-import 'package:json_path/src/grammar/common.dart';
 import 'package:json_path/src/grammar/expression.dart' show expression;
+import 'package:json_path/src/grammar/integer.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/array_index.dart';
@@ -50,11 +50,7 @@ final unionContent = (unionElement & subsequentUnionElement.star()).map(
 final union =
     (char('[') & unionContent & char(']')).map((value) => Union(value[1]));
 
-final fieldName =
-    (minus | char('_') | letter() | digit() | range(0x80, 0x10FFF))
-        .plus()
-        .flatten()
-        .map((value) => Field(value));
+final fieldName = dotString.map((value) => Field(value));
 
 final recursion = (string('..') & (wildcard | union | fieldName | endOfInput()))
     .map((value) => (value.last == null)
