@@ -14,31 +14,12 @@ void main() {
       });
 
       expect(path.toString(), r'$.store..[?discounted]');
-
       final matches = path.read(json);
       expect(matches.length, 4);
-      expect(matches.first.value, json['store']['book'][0]);
-      expect(matches.first.path, r"$['store']['book'][0]");
-      expect(matches.last.value, json['store']['bicycle']);
-      expect(matches.last.path, r"$['store']['bicycle']");
-    });
-
-    test('Can be applied to scalars, can access parent', () {
-      final path = JsonPath(r'$.store..price[?low]', filters: {
-        'low': (m) =>
-            m.value is num &&
-            m.value < 20 &&
-            m.parent?.value['category'] == 'fiction'
-      });
-
-      expect(path.toString(), r'$.store..price[?low]');
-
-      final matches = path.read(json);
-      expect(matches.length, 2);
-      expect(matches.first.value, json['store']['book'][1]['price']);
-      expect(matches.first.path, r"$['store']['book'][1]['price']");
-      expect(matches.last.value, json['store']['book'][2]['price']);
-      expect(matches.last.path, r"$['store']['book'][2]['price']");
+      expect(matches.first.value, json['store']['bicycle']);
+      expect(matches.first.path, r"$['store']['bicycle']");
+      expect(matches.last.value, json['store']['book'][2]);
+      expect(matches.last.path, r"$['store']['book'][2]");
     });
 
     test('Missing filter', () {
