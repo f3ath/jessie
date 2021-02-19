@@ -93,11 +93,25 @@
       "pointers": ["/1"]
     }, {
       "name": "object child, dot-notation",
-      "selector": "$[?(@.key == 'b')]",
+      "selector": "$[?(@.key=='b')]",
       "document": [{"key": "a"}, {"key": "b"}, {}],
       "values": [{"key": "b"}],
       "paths": ["$[1]"],
       "pointers": ["/1"]
+    }, {
+      "name": "object child, combined",
+      "selector": "$[?(@.foo['bar'] == 'b')]",
+      "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": {"moo": 42}}, {}],
+      "values": [{"foo": {"bar": "b"}}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "equal props",
+      "selector": "$[?(@.foo == @.bar)]",
+      "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
+      "values": [{"foo": 42, "bar": 42}, {}],
+      "paths": ["$[1]", "$[3]"],
+      "pointers": ["/1", "/3"]
     }
   ]
 }
