@@ -65,7 +65,7 @@ void main() {
 
 ## Features and limitations
 Generally, this library tries to mimic the [reference implementations], except for the filtering.
-Evaluated filtering expressions like `$..book[?(@.price<10)]` are NOT yet supported. 
+Evaluated filtering expressions (e.g. `$..book[?(@.price<10)]`) support is limited. 
 Instead, use the callback-kind of filters.
 ```dart
 /// Select all elements with price under 20
