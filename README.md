@@ -75,5 +75,9 @@ final path = JsonPath(r'$.store..[?discounted]', filters: {
 });
 ``` 
 
+## References
+- [Standard development](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base)
+- [Feature comparison matrix](https://cburgmer.github.io/json-path-comparison/)
+
 [JSONPath]: https://goessner.net/articles/JsonPath/
 [reference implementations]: https://goessner.net/articles/JsonPath/index.html#e4

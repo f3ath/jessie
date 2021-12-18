@@ -99,6 +99,13 @@
       "paths": ["$[1]"],
       "pointers": ["/1"]
     }, {
+      "name": "object child, dot-notation, int value",
+      "selector": "$[?(@.id==42)].name",
+      "document": [{"id": 42, "name": "forty-two"}, {"id": 1, "name": "one"}],
+      "values": ["forty-two"],
+      "paths": ["$[0]['name']"],
+      "pointers": ["/0/name"]
+    }, {
       "name": "object child, combined",
       "selector": "$[?(@.foo['bar'] == 'b')]",
       "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": {"moo": 42}}, {}],
