@@ -20,5 +20,5 @@ class RootMatch implements JsonPathMatch {
   final pointer = JsonPointer();
 
   @override
-  final value;
+  final dynamic value;
 }

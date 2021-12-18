@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('Parser', () {
     group('Valid expressions', () {
-      [
+      for (final expr in [
         r'$.foo.bar',
         r'$.foo.*',
         r'$[0]',
@@ -32,17 +32,17 @@ void main() {
         r'$..book[0,1]',
         r'$..book[:2]',
         r'$.☺',
-      ].forEach((expr) {
+      ]) {
         test(expr, () {
           final parser = jsonPath.parse(expr);
           if (parser.isFailure) {
             fail(parser.message);
           }
         });
-      });
+      }
     });
     group('Invalid expressions', () {
-      [
+      for (final expr in [
         r'',
         r'$$',
         r'.foo',
@@ -59,13 +59,13 @@ void main() {
         r'$[:::]',
         r'$["foo"bar"]',
         r"$['foo'bar']",
-      ].forEach((expr) {
+      ]) {
         test(expr, () {
           try {
             expect(jsonPath.parse(expr).isFailure, isTrue);
           } on FormatException catch (_) {}
         });
-      });
+      }
     });
   });
 }

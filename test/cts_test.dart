@@ -8,7 +8,7 @@ void main() {
   final suite = jsonDecode(File('cts/cts.json').readAsStringSync());
   final tests = suite['tests'] as List;
   group('JSON Path Compliance Suite', () {
-    tests.forEach((t) {
+    for (final t in tests) {
       final String name = t['name'];
       final String selector = t['selector'];
       final document = t['document'];
@@ -26,6 +26,6 @@ void main() {
           expect(JsonPath(selector).readValues(document), equals(result!));
         }
       });
-    });
+    }
   });
 }

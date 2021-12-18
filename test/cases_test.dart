@@ -21,12 +21,12 @@ void main() {
       .forEach((file) {
     group(path.basenameWithoutExtension(file.path), () {
       final cases = jsonDecode(file.readAsStringSync());
-      (cases['tests'] as List).forEach((t) {
-        (t as Map).keys.forEach((key) {
+      for (final t in cases['tests'] as List) {
+        for (final key in (t as Map).keys) {
           if (!allowedFields.contains(key)) {
             throw 'Invalid key "$key"';
           }
-        });
+        }
 
         final name = t['name'];
         final values = t['values'];
@@ -59,7 +59,7 @@ void main() {
             throw 'No expectations found';
           }
         });
-      });
+      }
     });
   });
 }
