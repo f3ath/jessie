@@ -49,11 +49,11 @@ final _singleInner =
 
 // ***************************************************************************
 
-final doubleQuotedString =
-    (_doubleQuote & _doubleInner & _doubleQuote).map((value) => value[1]);
+final doubleQuotedString = (_doubleQuote & _doubleInner & _doubleQuote)
+    .map<String>((value) => value[1]);
 
-final singleQuotedString =
-    (_singleQuote & _singleInner & _singleQuote).map((value) => value[1]);
+final singleQuotedString = (_singleQuote & _singleInner & _singleQuote)
+    .map<String>((value) => value[1]);
 
 final dotString =
     (anyOf('-_') | letter() | digit() | range(0x80, 0x10FFF)).plus().flatten();

@@ -1,0 +1,66 @@
+{
+  "tests": [
+    {
+      "name": "true",
+      "selector": "$[?(true)]",
+      "document": [42],
+      "values": [42],
+      "paths": ["$[0]"],
+      "pointers": ["/0"]
+    }, {
+      "name": "non 0 means true",
+      "selector": "$[?(42)]",
+      "document": [42],
+      "values": [42],
+      "paths": ["$[0]"],
+      "pointers": ["/0"]
+    }, {
+      "name": "non-empty string (single) means true",
+      "selector": "$[?('hello')]",
+      "document": [42],
+      "values": [42],
+      "paths": ["$[0]"],
+      "pointers": ["/0"]
+    }, {
+      "name": "non-empty string (double) means true",
+      "selector": "$[?(\"world\")]",
+      "document": [42],
+      "values": [42],
+      "paths": ["$[0]"],
+      "pointers": ["/0"]
+    }, {
+      "name": "false",
+      "selector": "$[?(false)]",
+      "document": [42],
+      "values": [],
+      "paths": [],
+      "pointers": []
+    }, {
+      "name": "0 means false",
+      "selector": "$[?(0)]",
+      "document": [42],
+      "values": [],
+      "paths": [],
+      "pointers": []
+    }, {
+      "name": "empty string (single) means false",
+      "selector": "$[?('')]",
+      "document": [42],
+      "values": [],
+      "paths": [],
+      "pointers": []
+    }, {
+      "name": "empty string (double) means false",
+      "selector": "$[?(\"\")]",
+      "document": [42],
+      "values": [],
+      "paths": [],
+      "pointers": []
+    }, {
+      "name": "object itself",
+      "selector": "$[?(@)]",
+      "document": [null, false, true, 0, 1, -3.14, "", "hello", [], {}],
+      "values": [true, 1, -3.14, "hello", [], {}]
+    }
+  ]
+}
