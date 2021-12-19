@@ -46,25 +46,20 @@ void main() {
 
   print('All prices in the store:');
 
-  /// The following code will print:
-  ///
-  /// /store/book/0/price:	8.95
-  /// /store/book/1/price:	12.99
-  /// /store/book/2/price:	8.99
-  /// /store/book/3/price:	22.99
-  /// /store/bicycle/price:	19.95
   prices
       .read(document)
       .map((match) => '${match.pointer}:\t${match.value}')
       .forEach(print);
 
   print('Books under 10:');
+
   JsonPath(r'$.store.book[?(@.price < 10)].title')
       .read(document)
       .map((match) => '${match.pointer}:\t${match.value}')
       .forEach(print);
 
-  print("Book with letter 'a' in the author's name:");
+  print("Books with letter 'a' in the author's name:");
+
   JsonPath(r'$.store.book[?author].title', filters: {
     'author': (match) {
       final author = match.value['author'];
