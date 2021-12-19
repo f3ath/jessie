@@ -2,18 +2,13 @@ import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/selector/wildcard.dart';
 
 class ExpressionFilter extends Wildcard {
-  ExpressionFilter(this.eval);
+  ExpressionFilter(this.filter);
 
-  final Eval eval;
+  final Predicate filter;
 
   @override
   Iterable<JsonPathMatch> apply(JsonPathMatch match) =>
-      super.apply(match).where((match) {
-        final val = eval(match);
-        return (val == true ||
-            (val is num && val != 0) ||
-            (val is String && val.isNotEmpty));
-      });
+      super.apply(match).where(filter);
 }
 
-typedef Eval<T> = T Function(JsonPathMatch match);
+typedef Predicate = bool Function(JsonPathMatch match);

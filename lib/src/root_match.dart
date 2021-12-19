@@ -4,8 +4,7 @@ import 'package:rfc_6901/rfc_6901.dart';
 
 /// Creates a match for the root element
 class RootMatch implements JsonPathMatch {
-  RootMatch(this.value, Map<String, CallbackFilter> filters)
-      : context = MatchingContext(filters);
+  RootMatch(this.value, this.context);
 
   @override
   final MatchingContext context;
@@ -20,5 +19,5 @@ class RootMatch implements JsonPathMatch {
   final pointer = JsonPointer();
 
   @override
-  final value;
+  final dynamic value;
 }

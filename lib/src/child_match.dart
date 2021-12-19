@@ -19,7 +19,7 @@ class ChildMatch implements JsonPathMatch {
 
   /// The value
   @override
-  final value;
+  final dynamic value;
 
   /// JSONPath to this match
   @override

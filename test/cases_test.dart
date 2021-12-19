@@ -7,12 +7,13 @@ import 'package:test/test.dart';
 
 void main() {
   const allowedFields = {
-    'name',
-    'selector',
     'document',
-    'values',
+    'name',
     'paths',
-    'pointers'
+    'pointers',
+    'selector',
+    'skip',
+    'values',
   };
   Directory('test/cases')
       .listSync()
@@ -21,45 +22,53 @@ void main() {
       .forEach((file) {
     group(path.basenameWithoutExtension(file.path), () {
       final cases = jsonDecode(file.readAsStringSync());
-      (cases['tests'] as List).forEach((t) {
-        (t as Map).keys.forEach((key) {
+      for (final Map t in cases['tests'] as List) {
+        for (final key in t.keys) {
           if (!allowedFields.contains(key)) {
             throw 'Invalid key "$key"';
           }
-        });
+        }
 
+        final document = t['document'];
         final name = t['name'];
-        final values = t['values'];
         final paths = t['paths'];
         final pointers = t['pointers'];
-        final jp = JsonPath(t['selector']);
-        group(name, () {
+        final selector = t['selector'];
+        final skip = t['skip'];
+        final values = t['values'];
+        group(name ?? selector, () {
           if (values is List) {
             test('values', () {
-              expect(jp.readValues(t['document']), equals(values));
+              expect(
+                JsonPath(selector).readValues(document),
+                equals(values),
+              );
             });
           }
           if (paths is List) {
             test('paths', () {
-              expect(jp.read(t['document']).map((e) => e.path).toList(),
-                  equals(paths));
+              expect(
+                JsonPath(selector).read(document).map((e) => e.path).toList(),
+                equals(paths),
+              );
             });
           }
           if (pointers is List) {
             test('pointers', () {
               expect(
-                  jp
-                      .read(t['document'])
-                      .map((e) => e.pointer.toString())
-                      .toList(),
-                  equals(pointers));
+                JsonPath(selector)
+                    .read(document)
+                    .map((e) => e.pointer.toString())
+                    .toList(),
+                equals(pointers),
+              );
             });
           }
           if ([values, paths, pointers].every((_) => _ == null)) {
             throw 'No expectations found';
           }
-        });
-      });
+        }, skip: skip);
+      }
     });
   });
 }

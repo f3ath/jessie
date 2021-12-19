@@ -1,4 +1,4 @@
-import 'package:json_path/src/grammar/expression.dart' show expression;
+import 'package:json_path/src/grammar/expression.dart';
 import 'package:json_path/src/grammar/integer.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/selector.dart';
@@ -12,6 +12,7 @@ import 'package:json_path/src/selector/sequence.dart';
 import 'package:json_path/src/selector/union.dart';
 import 'package:json_path/src/selector/wildcard.dart';
 import 'package:petitparser/petitparser.dart';
+import 'package:json_path/src/it.dart' as it;
 
 final colon = char(':').trim();
 
@@ -22,7 +23,7 @@ final arraySlice =
         .map((value) =>
             ArraySlice(start: value[0], stop: value[2], step: value[3]?[1]));
 
-final arrayIndex = integer.map((value) => ArrayIndex(value));
+final arrayIndex = integer.map(ArrayIndex.new);
 
 final callback = (char('?') &
         ((char('_') | letter()) & (char('_') | letter() | digit()).star())
@@ -34,18 +35,17 @@ final wildcard = char('*').map((_) => const Wildcard());
 final unionElement = (arraySlice |
         arrayIndex |
         wildcard |
-        singleQuotedString.map((value) => Field(value)) |
-        doubleQuotedString.map((value) => Field(value)) |
+        singleQuotedString.map(Field.new) |
+        doubleQuotedString.map(Field.new) |
         callback |
-        expression.map((value) => ExpressionFilter(value)))
+        expression.map(ExpressionFilter.new))
     .trim();
 
-final subsequentUnionElement =
-    (char(',') & unionElement).map((value) => value.last);
+final subsequentUnionElement = (char(',') & unionElement).map(it.last);
 
 final unionContent = (unionElement & subsequentUnionElement.star()).map(
     (value) => [value.first as Selector]
-        .followedBy((value.last as List).map((v) => v as Selector)));
+        .followedBy((value.last as List).map((v) => v)));
 
 final union =
     (char('[') & unionContent & char(']')).map((value) => Union(value[1]));
@@ -57,7 +57,6 @@ final recursion = (string('..') & (wildcard | union | fieldName | endOfInput()))
         ? const Recursion()
         : Sequence([const Recursion(), value.last]));
 
-final dotMatcher =
-    (char('.') & (fieldName | wildcard)).map((value) => value.last);
+final dotMatcher = (char('.') & (fieldName | wildcard)).map(it.last);
 
 final selector = dotMatcher | union | recursion;

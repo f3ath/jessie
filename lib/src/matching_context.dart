@@ -1,17 +1,12 @@
-import 'package:json_path/src/filter_not_found.dart';
-import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/algebra.dart';
+import 'package:json_path/src/named_filter.dart';
 
 class MatchingContext {
-  const MatchingContext(this._filters);
+  const MatchingContext(this.filters, this.algebra);
 
   /// Named callback filters
-  final Map<String, CallbackFilter> _filters;
+  final Map<String, NamedFilter> filters;
 
-  CallbackFilter getFilter(String name) {
-    final filter = _filters[name];
-    if (filter == null) {
-      throw FilterNotFound('Callback filter "$name" not found');
-    }
-    return filter;
-  }
+  /// Rules to use for expressions evaluation.
+  final Algebra algebra;
 }

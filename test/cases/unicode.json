@@ -5,6 +5,11 @@
       "selector": "$.☺",
       "document": {"☺": "A", "b": "B"},
       "values": ["A"]
+    },{
+      "name": "dot field",
+      "selector": "$.屬性",
+      "document": { "\u5c6c\u6027": "value"},
+      "values": ["value"]
     }
   ]
 }

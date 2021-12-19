@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('Parser', () {
     group('Valid expressions', () {
-      [
+      for (final expr in [
         r'$.foo.bar',
         r'$.foo.*',
         r'$[0]',
@@ -32,40 +32,45 @@ void main() {
         r'$..book[0,1]',
         r'$..book[:2]',
         r'$.☺',
-      ].forEach((expr) {
+      ]) {
         test(expr, () {
           final parser = jsonPath.parse(expr);
           if (parser.isFailure) {
             fail(parser.message);
           }
         });
-      });
+      }
     });
     group('Invalid expressions', () {
-      [
-        r'',
+      for (final expr in [
+        r"$(key,more)",
+        r"$.",
+        r"$.[key]",
+        r"$['foo'bar']",
+        r"$['two'.'some']",
+        r"$[two.some]",
         r'$$',
-        r'.foo',
         r'$....',
         r'$...foo',
-        r'$[1+2]',
-        r'$[1874509822062987436598726432519879857164397163046130756769274369]',
         r'$["""]',
-        r'$["]',
-        r'$[1 1]',
-        r'$[]',
         r'$["\"]',
         r'$["\z"]',
-        r'$[:::]',
+        r'$["]',
         r'$["foo"bar"]',
-        r"$['foo'bar']",
-      ].forEach((expr) {
+        r'$[1 1]',
+        r'$[1+2]',
+        r'$[1874509822062987436598726432519879857164397163046130756769274369]',
+        r'$[:::]',
+        r'$[]',
+        r'',
+        r'.foo',
+      ]) {
         test(expr, () {
           try {
             expect(jsonPath.parse(expr).isFailure, isTrue);
           } on FormatException catch (_) {}
         });
-      });
+      }
     });
   });
 }
