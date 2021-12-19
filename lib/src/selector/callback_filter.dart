@@ -10,5 +10,5 @@ class CallbackFilter extends Wildcard {
   @override
   Iterable<JsonPathMatch> apply(JsonPathMatch match) =>
       super.apply(match).where(match.context.filters[name] ??
-      (throw FilterNotFound('Callback filter "$name" not found')));
+          (throw FilterNotFound('Callback filter "$name" not found')));
 }
