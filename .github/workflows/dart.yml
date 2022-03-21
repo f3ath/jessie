@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image:  google/dart:latest
+      image:  google/dart
     steps:
       - uses: actions/checkout@v2
       - name: Update submodules
