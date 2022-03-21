@@ -22,8 +22,13 @@ final _escapedControl = _escapedSlash |
     _escapedReturn |
     _escapedTab;
 
+// The parser does not seem to support Unicode 6.0 boundary (0x10FFFF).
+// We're limiting ourselves to Unicode 1.0 boundary (0xFFFF).
+final _unicodeBoundary = String.fromCharCode(0xFFFF);
+
+// Exclude double quote '"' and back slash '\'
 final _doubleUnescaped =
-    range(0x20, 0x21) | range(0x23, 0x5B) | range(0x5D, 0x10FFF);
+    range(' ', '!') | range('#', '[') | range(']', _unicodeBoundary);
 
 final _hexDigit = anyOf('0123456789ABCDEF');
 
@@ -37,8 +42,9 @@ final _doubleInner =
         .star()
         .map((value) => value.join(''));
 
+// Exclude single quote "'" and back slash "\"
 final _singleUnescaped =
-    range(0x20, 0x26) | range(0x28, 0x5B) | range(0x5D, 0x10FFF);
+    range(' ', '&') | range('(', '[') | range(']', _unicodeBoundary);
 
 final _escapedSingleQuote = (_escape & _singleQuote).map((_) => "'");
 
@@ -55,5 +61,9 @@ final doubleQuotedString = (_doubleQuote & _doubleInner & _doubleQuote)
 final singleQuotedString = (_singleQuote & _singleInner & _singleQuote)
     .map<String>((value) => value[1]);
 
-final dotString =
-    (anyOf('-_') | letter() | digit() | range(0x80, 0x10FFF)).plus().flatten();
+final dotString = (anyOf('-_') |
+        letter() |
+        digit() |
+        range(String.fromCharCode(0x80), _unicodeBoundary))
+    .plus()
+    .flatten();
