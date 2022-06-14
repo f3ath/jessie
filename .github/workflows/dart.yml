@@ -8,11 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image:  dart:stable
     steps:
       - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
       - name: Update submodules
         run: git submodule update --init --recursive
       - name: Print Dart version
@@ -24,6 +23,6 @@ jobs:
       - name: Analyzer
         run: dart analyze --fatal-infos --fatal-warnings
       - name: Tests
-        run: dart test --coverage=coverage
+        run: dart test --coverage=.coverage
       - name: Coverage
-        run: dart run coverage:format_coverage -l -c -i coverage --report-on=lib --packages=.packages | dart run check_coverage:check_coverage
+        run: dart run coverage:format_coverage -l -c -i .coverage --report-on=lib --packages=.dart_tool/package_config.json | dart run check_coverage:check_coverage

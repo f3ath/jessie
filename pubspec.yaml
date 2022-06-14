@@ -1,5 +1,5 @@
 name: json_path
-version: 0.4.0
+version: 0.4.1
 description: Implementation of JSONPath expressions like "$.store.book[2].price". Reads and writes values in parsed JSON objects.
 homepage: "https://github.com/f3ath/jessie"
 
@@ -11,11 +11,10 @@ dependencies:
   petitparser: ^5.0.0
 
 dev_dependencies:
-  lints: ^1.0.1
-  test: ^1.20.1
-  path: ^1.8.1
+  lints: ^2.0.0
+  test: ^1.21.1
+  path: ^1.8.2
   check_coverage: ^0.0.4
-  cider: ^0.1.0
 
 cider:
   link_template:

@@ -85,8 +85,8 @@ must be specified in the square brackets and prefixed by `?`. It also must be al
 
 ## Data manipulation
 Each `JsonPathMatch` produced by the `.read()` method contains the `.pointer` property which is a valid [JSON Pointer]
-and can be used to write/append/remove the referenced value. If you're looking for data manipulation only, 
-take a look at this [JSON Pointer implementation].
+and can be used to write/append/remove the referenced value. If you want the data manipulation only, 
+consider the [JSON Pointer implementation].
 
 ## References
 - [Standard development](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base)
