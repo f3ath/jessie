@@ -49,8 +49,7 @@ Parser<Predicate> _build() {
 
   final term = undefined();
 
-  final parens =
-      (char('(').trim() & term & char(')').trim()).map((_) => _[1]);
+  final parens = (char('(').trim() & term & char(')').trim()).map((_) => _[1]);
 
   final operand = parens | literal | node;
 
