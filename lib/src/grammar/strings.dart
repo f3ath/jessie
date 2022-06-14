@@ -30,7 +30,7 @@ final _unicodeBoundary = String.fromCharCode(0xFFFF);
 final _doubleUnescaped =
     range(' ', '!') | range('#', '[') | range(']', _unicodeBoundary);
 
-final _hexDigit = anyOf('0123456789ABCDEF');
+final _hexDigit = anyOf('0123456789ABCDEFabcdef');
 
 final _unicodeSymbol = (string(r'\u') & _hexDigit.repeat(4).flatten())
     .map((value) => String.fromCharCode(int.parse(value.last, radix: 16)));
