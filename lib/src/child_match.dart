@@ -8,13 +8,13 @@ class ChildMatch implements JsonPathMatch {
   /// Child match for an array element
   ChildMatch.index(int index, this.parent)
       : value = parent.value[index],
-        path = parent.path + '[' + index.toString() + ']',
+        path = '${parent.path}[$index]',
         pointer = JsonPointerSegment(index.toString(), parent.pointer);
 
   /// Child match for an object child
   ChildMatch.child(String key, this.parent)
       : value = parent.value[key],
-        path = parent.path + '[' + quote(key) + ']',
+        path = '${parent.path}[${quote(key)}]',
         pointer = JsonPointerSegment(key, parent.pointer);
 
   /// The value
