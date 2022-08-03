@@ -1,6 +1,7 @@
 import 'package:json_path/src/grammar/expression.dart';
-import 'package:json_path/src/grammar/integer.dart';
+import 'package:json_path/src/grammar/number.dart';
 import 'package:json_path/src/grammar/strings.dart';
+import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/array_index.dart';
 import 'package:json_path/src/selector/array_slice.dart';
@@ -25,13 +26,13 @@ final _arraySlice = (_maybeInteger &
         ArraySlice(start: value[0], stop: value[2], step: value[3]?[1]));
 
 final _arrayIndex = integer.map(ArrayIndex.new);
+final _callbackName =
+    (char('_') | letter()) & (char('_') | letter() | digit()).star();
 
-final _callback = (char('?') &
-        ((char('_') | letter()) & (char('_') | letter() | digit()).star())
-            .flatten())
-    .map((value) => CallbackFilter(value.last));
+final _callback =
+    _callbackName.flatten().skip(before: char('?')).map(CallbackFilter.new);
 
-final _wildcard = char('*').map((_) => const Wildcard());
+final _wildcard = char('*').value(const Wildcard());
 
 final _unionElement = (_arraySlice |
         _arrayIndex |
@@ -45,8 +46,8 @@ final _unionElement = (_arraySlice |
 final _subsequentUnionElement = _unionElement.skip(before: char(','));
 
 final _unionContent = (_unionElement & _subsequentUnionElement.star()).map(
-    (value) => [value.first as Selector]
-        .followedBy((value.last.cast<Selector>())));
+    (value) =>
+        [value.first as Selector].followedBy((value.last.cast<Selector>())));
 
 final _union =
     _unionContent.skip(before: char('['), after: char(']')).map(Union.new);
