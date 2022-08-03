@@ -11,4 +11,5 @@ class ExpressionFilter extends Wildcard {
       super.apply(match).where(filter);
 }
 
-typedef Predicate = bool Function(JsonPathMatch match);
+typedef Extractor<T> = T Function(JsonPathMatch match);
+typedef Predicate = Extractor<bool>;

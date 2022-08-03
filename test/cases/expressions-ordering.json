@@ -40,6 +40,18 @@
       "selector": "$[?(@ >= 'bar')]",
       "document": ["", "foo", "bar", "baz"],
       "values": ["foo", "bar", "baz"]
+    },
+    {
+      "name": "props comparison",
+      "selector": "$[?(@.foo < @.bar)]",
+      "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
+      "values": [{"foo": 1, "bar": 2}]
+    },
+    {
+      "name": "props comparison, boolean expression",
+      "selector": "$[?((@.foo < 2) || (@.foo > 2))]",
+      "document": [{"foo": 1}, {"foo": 2}, {"foo": 3}, {}],
+      "values": [{"foo": 1}, {"foo": 3}]
     }
   ]
 }
