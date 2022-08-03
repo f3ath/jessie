@@ -76,7 +76,7 @@ Parser<MatchMapper<bool>> _build() {
       .build()
       .skip(before: string('?('), after: char(')'))
       .map<MatchMapper<bool>>(
-          (eval) => (match) => match.context.algebra.isTruthy(eval(match)));
+          (mapper) => (match) => match.context.algebra.isTruthy(mapper(match)));
 }
 
 final expression = _build();

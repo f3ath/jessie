@@ -17,4 +17,3 @@ abstract class JsonPathMatch {
   /// The parent match
   JsonPathMatch? get parent;
 }
-
