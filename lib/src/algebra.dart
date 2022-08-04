@@ -1,6 +1,6 @@
 /// Evaluation rules used in expressions like `$[?(@.foo > 2)]`.
 /// Allows users to implement custom evaluation rules to emulate behavior
-/// in other programming languages, like JavaScript.
+/// in other programming languages, e.g. in JavaScript.
 abstract class Algebra {
   /// A set of rules with strictly typed operations.
   /// Throws [TypeError] when the operation is not applicable to operand types.

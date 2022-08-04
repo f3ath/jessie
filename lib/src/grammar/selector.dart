@@ -19,13 +19,13 @@ final _colon = char(':').trim();
 final _maybeInteger = integer.optional();
 
 final _arraySlice = (_maybeInteger &
-        _colon &
-        _maybeInteger &
-        (_colon & _maybeInteger).optional())
-    .map((value) =>
-        ArraySlice(start: value[0], stop: value[2], step: value[3]?[1]));
+        _maybeInteger.skip(before: _colon) &
+        _maybeInteger.skip(before: _colon).optional())
+    .map(
+        (value) => ArraySlice(start: value[0], stop: value[1], step: value[2]));
 
 final _arrayIndex = integer.map(ArrayIndex.new);
+
 final _callbackName =
     (char('_') | letter()) & (char('_') | letter() | digit()).star();
 
