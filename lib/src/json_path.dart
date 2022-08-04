@@ -1,8 +1,8 @@
 import 'package:json_path/src/algebra.dart';
 import 'package:json_path/src/grammar/json_path.dart';
 import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/match_predicate.dart';
 import 'package:json_path/src/matching_context.dart';
-import 'package:json_path/src/named_filter.dart';
 import 'package:json_path/src/root_match.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:petitparser/core.dart';
@@ -48,14 +48,14 @@ class JsonPath {
   final String expression;
 
   /// Named callback filters
-  final Map<String, NamedFilter> filters;
+  final Map<String, MatchPredicate> filters;
 
   /// Rules to use for expression evaluation.
   final Algebra algebra;
 
   /// Reads the given [document] object returning an Iterable of all matches found.
   Iterable<JsonPathMatch> read(document,
-          {Map<String, NamedFilter> filters = const {}, Algebra? algebra}) =>
+          {Map<String, MatchPredicate> filters = const {}, Algebra? algebra}) =>
       _selector.apply(RootMatch(
           document,
           MatchingContext(

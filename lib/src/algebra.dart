@@ -4,11 +4,11 @@
 abstract class Algebra {
   /// A set of rules with strictly typed operations.
   /// Throws [TypeError] when the operation is not applicable to operand types.
-  static const strict = _Strict();
+  static const Algebra strict = _Strict();
 
   /// A relaxed set of rules allowing some operations on not fully compatible types.
   /// E.g. `1 < "3"` would return false instead of throwing a [TypeError].
-  static const relaxed = _Relaxed();
+  static const Algebra relaxed = _Relaxed();
 
   /// True if [a] equals [b].
   bool eq(a, b);
