@@ -55,13 +55,17 @@ final _singleInner =
 
 // ***************************************************************************
 
-final doubleQuotedString = (_doubleQuote & _doubleInner & _doubleQuote)
+final doubleQuotedString = _doubleQuote
+    .seq(_doubleInner)
+    .seq(_doubleQuote)
     .map<String>((value) => value[1]);
 
 final singleQuotedString = (_singleQuote & _singleInner & _singleQuote)
     .map<String>((value) => value[1]);
 
-final dotString = (anyOf('-_') |
+final quotedString = singleQuotedString | doubleQuotedString;
+
+final unquotedString = (anyOf('-_') |
         letter() |
         digit() |
         range(String.fromCharCode(0x80), _unicodeBoundary))

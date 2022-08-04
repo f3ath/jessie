@@ -1,48 +1,48 @@
 /// Evaluation rules used in expressions like `$[?(@.foo > 2)]`.
 /// Allows users to implement custom evaluation rules to emulate behavior
-/// in other programming languages, like JavaScript.
+/// in other programming languages, e.g. in JavaScript.
 abstract class Algebra {
   /// A set of rules with strictly typed operations.
   /// Throws [TypeError] when the operation is not applicable to operand types.
-  static const strict = _Strict();
+  static const Algebra strict = _Strict();
 
   /// A relaxed set of rules allowing some operations on not fully compatible types.
   /// E.g. `1 < "3"` would return false instead of throwing a [TypeError].
-  static const relaxed = _Relaxed();
+  static const Algebra relaxed = _Relaxed();
 
   /// True if [a] equals [b].
-  bool eq(dynamic a, dynamic b);
+  bool eq(a, b);
 
   /// True if [a] is not equal to [b].
-  bool ne(dynamic a, dynamic b);
+  bool ne(a, b);
 
   /// True if [a] is strictly less than [b].
-  bool lt(dynamic a, dynamic b);
+  bool lt(a, b);
 
   /// True if [a] is less or equal to [b].
-  bool le(dynamic a, dynamic b);
+  bool le(a, b);
 
   /// True if [a] is strictly greater than [b].
-  bool gt(dynamic a, dynamic b);
+  bool gt(a, b);
 
   /// True if [a] is greater or equal to [b].
-  bool ge(dynamic a, dynamic b);
+  bool ge(a, b);
 
   /// True if both [a] and [b] are truthy.
-  bool and(dynamic a, dynamic b);
+  bool and(a, b);
 
   /// True if either [a] or [b] are truthy.
-  bool or(dynamic a, dynamic b);
+  bool or(a, b);
 
   /// Casts the [val] to bool.
-  bool isTruthy(dynamic val);
+  bool isTruthy(val);
 }
 
 class _Strict implements Algebra {
   const _Strict();
 
   @override
-  bool isTruthy(dynamic val) => val;
+  bool isTruthy(val) => val;
 
   @override
   bool eq(a, b) => a == b;
@@ -63,17 +63,17 @@ class _Strict implements Algebra {
   bool ne(a, b) => a != b;
 
   @override
-  bool and(dynamic a, dynamic b) => isTruthy(a) && isTruthy(b);
+  bool and(a, b) => isTruthy(a) && isTruthy(b);
 
   @override
-  bool or(dynamic a, dynamic b) => isTruthy(a) || isTruthy(b);
+  bool or(a, b) => isTruthy(a) || isTruthy(b);
 }
 
 class _Relaxed extends _Strict {
   const _Relaxed();
 
   @override
-  bool isTruthy(dynamic val) =>
+  bool isTruthy(val) =>
       val == true ||
       val is List ||
       val is Map ||

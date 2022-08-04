@@ -1,8 +1,12 @@
 import 'package:json_path/src/grammar/json_path.dart';
+import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('Parser', () {
+    test('Linter is happy', () {
+      expect(linter(jsonPath), isEmpty);
+    });
     group('Valid expressions', () {
       for (final expr in [
         r'$.foo.bar',

@@ -1,6 +1,7 @@
 import 'package:json_path/src/grammar/expression.dart';
-import 'package:json_path/src/grammar/integer.dart';
+import 'package:json_path/src/grammar/number.dart';
 import 'package:json_path/src/grammar/strings.dart';
+import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/array_index.dart';
 import 'package:json_path/src/selector/array_slice.dart';
@@ -12,51 +13,53 @@ import 'package:json_path/src/selector/sequence.dart';
 import 'package:json_path/src/selector/union.dart';
 import 'package:json_path/src/selector/wildcard.dart';
 import 'package:petitparser/petitparser.dart';
-import 'package:json_path/src/it.dart' as it;
 
-final colon = char(':').trim();
+final _colon = char(':').trim();
 
-final maybeInteger = integer.optional();
+final _maybeInteger = integer.optional();
 
-final arraySlice =
-    (maybeInteger & colon & maybeInteger & (colon & maybeInteger).optional())
-        .map((value) =>
-            ArraySlice(start: value[0], stop: value[2], step: value[3]?[1]));
+final _arraySlice = (_maybeInteger &
+        _maybeInteger.skip(before: _colon) &
+        _maybeInteger.skip(before: _colon).optional())
+    .map(
+        (value) => ArraySlice(start: value[0], stop: value[1], step: value[2]));
 
-final arrayIndex = integer.map(ArrayIndex.new);
+final _arrayIndex = integer.map(ArrayIndex.new);
 
-final callback = (char('?') &
-        ((char('_') | letter()) & (char('_') | letter() | digit()).star())
-            .flatten())
-    .map((value) => CallbackFilter(value.last));
+final _callbackName =
+    (char('_') | letter()) & (char('_') | letter() | digit()).star();
 
-final wildcard = char('*').map((_) => const Wildcard());
+final _callback =
+    _callbackName.flatten().skip(before: char('?')).map(CallbackFilter.new);
 
-final unionElement = (arraySlice |
-        arrayIndex |
-        wildcard |
+final _wildcard = char('*').value(const Wildcard());
+
+final _unionElement = (_arraySlice |
+        _arrayIndex |
+        _wildcard |
         singleQuotedString.map(Field.new) |
         doubleQuotedString.map(Field.new) |
-        callback |
+        _callback |
         expression.map(ExpressionFilter.new))
     .trim();
 
-final subsequentUnionElement = (char(',') & unionElement).map(it.last);
+final _subsequentUnionElement = _unionElement.skip(before: char(','));
 
-final unionContent = (unionElement & subsequentUnionElement.star()).map(
-    (value) => [value.first as Selector]
-        .followedBy((value.last as List).map((v) => v)));
+final _unionContent = (_unionElement & _subsequentUnionElement.star()).map(
+    (value) =>
+        [value.first as Selector].followedBy((value.last.cast<Selector>())));
 
-final union =
-    (char('[') & unionContent & char(']')).map((value) => Union(value[1]));
+final _union =
+    _unionContent.skip(before: char('['), after: char(']')).map(Union.new);
 
-final fieldName = dotString.map((value) => Field(value));
+final _fieldName = unquotedString.map(Field.new);
 
-final recursion = (string('..') & (wildcard | union | fieldName | endOfInput()))
-    .map((value) => (value.last == null)
+final _recursion = (_wildcard | _union | _fieldName | endOfInput())
+    .skip(before: string('..'))
+    .map((value) => (value == null)
         ? const Recursion()
-        : Sequence([const Recursion(), value.last]));
+        : Sequence([const Recursion(), value]));
 
-final dotMatcher = (char('.') & (fieldName | wildcard)).map(it.last);
+final _dotMatcher = (_fieldName | _wildcard).skip(before: char('.'));
 
-final selector = dotMatcher | union | recursion;
+final selector = _dotMatcher | _union | _recursion;

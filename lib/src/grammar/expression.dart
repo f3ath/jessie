@@ -1,97 +1,82 @@
 import 'package:json_path/json_path.dart';
-import 'package:json_path/src/grammar/integer.dart';
+import 'package:json_path/src/grammar/number.dart';
 import 'package:json_path/src/grammar/strings.dart';
-import 'package:json_path/src/selector/expression_filter.dart';
+import 'package:json_path/src/parser_ext.dart';
 import 'package:petitparser/petitparser.dart';
-import 'package:json_path/src/it.dart' as it;
 
-Parser<Predicate> _build() {
-  final trueLiteral = string('true').map(it.to(true));
-  final falseLiteral = string('false').map(it.to(false));
-  final nullLiteral = string('null').map(it.to(null));
-
-  final literal = (falseLiteral |
-          trueLiteral |
-          nullLiteral |
-          integer |
-          doubleQuotedString |
-          singleQuotedString)
-      .map((value) => (match) => value);
-
-  final index = (char('[') &
-          (integer | doubleQuotedString | singleQuotedString) &
-          char(']'))
-      .map((_) => _[1])
-      .map((key) => (v) {
-            if (key is int && v is List && key < v.length && key >= 0) {
-              return v[key];
-            } else if (key is String && v is Map && v.containsKey(key)) {
-              return v[key];
-            }
-          });
-
-  final dotName = (char('.') & dotString).map(it.last).map((key) => (v) {
-        if (v is Map && v.containsKey(key)) {
-          return v[key];
+Parser<MatchMapper<bool>> _build() {
+  getByIndex(int index) => (list) {
+        if (list is List && index < list.length && index >= 0) {
+          return list[index];
         }
-      });
+      };
+  getByKey(key) => (map) {
+        if (map is Map && map.containsKey(key)) {
+          return map[key];
+        }
+      };
+  final listElement =
+      integer.skip(before: char('['), after: char(']')).map(getByIndex);
 
-  final nodeFilter = (index | dotName)
+  final mapElement =
+      quotedString.skip(before: char('['), after: char(']')).map(getByKey);
+
+  final dotName = unquotedString.skip(before: char('.')).map(getByKey);
+
+  final nodeFilter = (listElement | mapElement | dotName)
       .plus()
-      .map(
-          (value) => value.reduce((value, element) => (v) => element(value(v))))
-      .map((value) => (match) => value(match.value));
+      .map((elements) =>
+          elements.reduce((value, element) => (v) => element(value(v))))
+      .map<MatchMapper>((value) => (match) => value(match.value));
 
-  final currentObject = char('@').map((_) => (match) => match.value);
+  final currentObject =
+      char('@').map<MatchMapper>((_) => (match) => match.value);
 
-  final node =
-      (currentObject & nodeFilter.optional()).map(it.lastWhere(it.isNotNull));
+  final node = (currentObject & nodeFilter.optional())
+      .map<MatchMapper>((v) => v.lastWhere((e) => e != null));
 
-  final term = undefined();
+  final builder = ExpressionBuilder<MatchMapper>();
+  builder.group()
+    ..primitive(string('null').value(null).toMatchMapper())
+    ..primitive(string('false').value(false).toMatchMapper())
+    ..primitive(string('true').value(true).toMatchMapper())
+    ..primitive(number.toMatchMapper())
+    ..primitive(quotedString.toMatchMapper())
+    ..primitive(node)
+    ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
 
-  final parens = (char('(').trim() & term & char(')').trim()).map((_) => _[1]);
-
-  final operand = parens | literal | node;
-
-  final eq = string('==')
-      .map<_BinaryOp>(it.to((algebra, left, right) => algebra.eq(left, right)));
-
-  final ne = string('!=')
-      .map<_BinaryOp>(it.to((algebra, left, tight) => algebra.ne(left, tight)));
-
-  final ge = string('>=')
-      .map<_BinaryOp>(it.to((algebra, left, right) => algebra.ge(left, right)));
-
-  final gt = string('>')
-      .map<_BinaryOp>(it.to((algebra, left, right) => algebra.gt(left, right)));
-
-  final le = string('<=')
-      .map<_BinaryOp>(it.to((algebra, left, right) => algebra.le(left, right)));
-
-  final lt = string('<')
-      .map<_BinaryOp>(it.to((algebra, left, right) => algebra.lt(left, right)));
-
-  final or = string('||')
-      .map<_BinaryOp>(it.to((algebra, left, right) => algebra.or(left, right)));
-
-  final and = string('&&').map<_BinaryOp>(
-      it.to((algebra, left, right) => algebra.and(left, right)));
-
-  final binaryOperator = eq | ne | ge | gt | le | lt | or | and;
-
-  final expression = (operand & binaryOperator.trim() & operand)
-      .map((value) => (JsonPathMatch match) {
-            final op = value[1];
-            return op(
-                match.context.algebra, value.first(match), value.last(match));
-          });
-
-  term.set(expression | operand);
-
-  return (string('?(') & term & char(')')).map((_) => _[1]).map<Predicate>(
-      (eval) => (match) => match.context.algebra.isTruthy(eval(match)));
+  builder.group().prefix(char('!').trim(),
+      (_, mapper) => (match) => !match.context.algebra.isTruthy(mapper(match)));
+  for (final operations in <
+      Map<Parser<String>, bool Function(dynamic, dynamic) Function(Algebra)>>[
+    {
+      string('=='): (a) => a.eq,
+      string('!='): (a) => a.ne,
+      string('<='): (a) => a.le,
+      string('<'): (a) => a.lt,
+      string('>='): (a) => a.ge,
+      string('>'): (a) => a.gt,
+    },
+    {
+      string('&&'): (a) => a.and,
+    },
+    {
+      string('||'): (a) => a.or,
+    },
+  ]) {
+    final group = builder.group();
+    operations.forEach((parser, operation) {
+      group.left(
+          parser.trim(),
+          (left, _, right) => (match) =>
+              operation(match.context.algebra)(left(match), right(match)));
+    });
+  }
+  return builder
+      .build()
+      .skip(before: string('?('), after: char(')'))
+      .map<MatchMapper<bool>>(
+          (mapper) => (match) => match.context.algebra.isTruthy(mapper(match)));
 }
-
-typedef _BinaryOp = bool Function(Algebra algebra, dynamic left, dynamic right);
 
 final expression = _build();
