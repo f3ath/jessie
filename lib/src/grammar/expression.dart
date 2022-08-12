@@ -47,15 +47,28 @@ Parser<MatchMapper<bool>> _build() {
 
   builder.group().prefix(char('!').trim(),
       (_, mapper) => (match) => !match.context.algebra.isTruthy(mapper(match)));
+
   for (final operations in <
-      Map<Parser<String>, bool Function(dynamic, dynamic) Function(Algebra)>>[
+      Map<Parser<String>,
+          dynamic Function(dynamic, dynamic) Function(Algebra)>>[
     {
-      string('=='): (a) => a.eq,
-      string('!='): (a) => a.ne,
+      string('*'): (a) => a.mul,
+      string('/'): (a) => a.div,
+      string('%'): (a) => a.mod,
+    },
+    {
+      string('-'): (a) => a.minus,
+      string('+'): (a) => a.plus,
+    },
+    {
       string('<='): (a) => a.le,
       string('<'): (a) => a.lt,
       string('>='): (a) => a.ge,
       string('>'): (a) => a.gt,
+    },
+    {
+      string('=='): (a) => a.eq,
+      string('!='): (a) => a.ne,
     },
     {
       string('&&'): (a) => a.and,

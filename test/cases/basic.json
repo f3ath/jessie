@@ -164,6 +164,11 @@
       "paths": ["$", "$['a']", "$['b']"],
       "pointers": ["", "/a", "/b"]
     }, {
+      "name": "double recursion",
+      "selector": "$..first..second",
+      "document": {"first":  [{"first":  1, "second":  2}, {"second": {}}, "second", "first"], "second": true},
+      "values": [2, {}]
+    }, {
       "name": "recursion wildcard",
       "selector": "$..*",
       "document": {"a": {"foo": "bar"}, "b": [42]},

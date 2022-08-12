@@ -36,6 +36,30 @@ abstract class Algebra {
 
   /// Casts the [val] to bool.
   bool isTruthy(val);
+
+  /// Result of `a + b`.
+  plus(a, b);
+
+  /// Result of `a - b`.
+  minus(a, b);
+
+  /// Result of `a * b`.
+  mul(a, b);
+
+  /// Result of `a / b`.
+  div(a, b);
+
+  /// Result of `a % b`.
+  mod(a, b);
+
+  /// Called when an attempt to apply an expression filter causes an [exception].
+  /// The most common case is when the expression is not applicable to the
+  /// data types in the document. This method may be used for debugging
+  /// or to implement custom filtration logic in some corner cases.
+  ///
+  /// Return true to accept the data and false otherwise. Most likely, you
+  /// want to return false here.
+  bool onException(exception);
 }
 
 class _Strict implements Algebra {
@@ -67,6 +91,24 @@ class _Strict implements Algebra {
 
   @override
   bool or(a, b) => isTruthy(a) || isTruthy(b);
+
+  @override
+  plus(a, b) => a + b;
+
+  @override
+  div(a, b) => a / b;
+
+  @override
+  minus(a, b) => a - b;
+
+  @override
+  mul(a, b) => a * b;
+
+  @override
+  mod(a, b) => a % b;
+
+  @override
+  bool onException(e) => false;
 }
 
 class _Relaxed extends _Strict {

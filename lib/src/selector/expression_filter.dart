@@ -9,5 +9,11 @@ class ExpressionFilter extends Wildcard {
 
   @override
   Iterable<JsonPathMatch> apply(JsonPathMatch match) =>
-      super.apply(match).where(filter);
+      super.apply(match).where((match) {
+        try {
+          return filter(match);
+        } catch (e) {
+          return match.context.algebra.onException(e);
+        }
+      });
 }

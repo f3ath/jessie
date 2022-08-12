@@ -65,7 +65,7 @@ final singleQuotedString = (_singleQuote & _singleInner & _singleQuote)
 
 final quotedString = singleQuotedString | doubleQuotedString;
 
-final unquotedString = (anyOf('-_') |
+final unquotedString = (anyOf('_') |
         letter() |
         digit() |
         range(String.fromCharCode(0x80), _unicodeBoundary))
