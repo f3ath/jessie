@@ -55,13 +55,11 @@ final _singleInner =
 
 // ***************************************************************************
 
-final doubleQuotedString = _doubleQuote
-    .seq(_doubleInner)
-    .seq(_doubleQuote)
-    .map<String>((value) => value[1]);
+final doubleQuotedString =
+    _doubleInner.skip(before: _doubleQuote, after: _doubleQuote);
 
-final singleQuotedString = (_singleQuote & _singleInner & _singleQuote)
-    .map<String>((value) => value[1]);
+final singleQuotedString =
+    _singleInner.skip(before: _singleQuote, after: _singleQuote);
 
 final quotedString = singleQuotedString | doubleQuotedString;
 
