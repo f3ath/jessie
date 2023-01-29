@@ -26,11 +26,7 @@ class Algebra {
   bool gt(a, b) => lt(b, a);
 
   /// True if [a] is less or equal to [b].
-  bool le(a, b) {
-    print(a);
-    print(b);
-    return lt(a, b) || eq(a, b);
-  }
+  bool le(a, b) => lt(a, b) || eq(a, b);
 
   /// True if [a] is strictly less than [b].
   bool lt(a, b) =>

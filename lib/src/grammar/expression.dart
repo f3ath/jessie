@@ -1,18 +1,19 @@
 import 'package:json_path/json_path.dart';
+import 'package:json_path/src/grammar/array_index.dart';
+import 'package:json_path/src/grammar/array_slice.dart';
+import 'package:json_path/src/grammar/dot_matcher.dart';
 import 'package:json_path/src/grammar/number.dart';
 import 'package:json_path/src/grammar/strings.dart';
+import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
-import 'package:json_path/src/selector/array_index.dart';
-import 'package:json_path/src/selector/array_slice.dart';
 import 'package:json_path/src/selector/field.dart';
 import 'package:json_path/src/selector/sequence.dart';
 import 'package:json_path/src/selector/union.dart';
-import 'package:json_path/src/selector/wildcard.dart';
 import 'package:petitparser/petitparser.dart';
 
-class MatchSet {
-  MatchSet(this.matches);
+class _MatchSet {
+  _MatchSet(this.matches);
 
   final Iterable<JsonPathMatch> matches;
 
@@ -26,49 +27,9 @@ class MatchSet {
 }
 
 Parser<MatchMapper<bool>> _build() {
-  getByIndex(int index) => (list) {
-        if (list is List && index < list.length && index >= 0) {
-          return list[index];
-        }
-      };
-  getByKey(key) => (map) {
-        if (map is Map && map.containsKey(key)) {
-          return map[key];
-        }
-      };
-  final listElement =
-      integer.skip(before: char('['), after: char(']')).map(getByIndex);
-
-  final mapElement =
-      quotedString.skip(before: char('['), after: char(']')).map(getByKey);
-
-  final dotName = unquotedString.skip(before: char('.')).map(getByKey);
-
-  // final nodeFilter = (listElement | mapElement | dotName)
-  //     .plus()
-  //     .map((elements) =>
-  //         elements.reduce((value, element) => (v) => element(value(v))))
-  //     .map<MatchMapper>((value) => (match) => value(match.value));
-
-  ///////////////////////////////////////////
-
-  final _colon = char(':').trim();
-
-  final _maybeInteger = integer.optional();
-
-  final _arraySlice = (_maybeInteger &
-          _maybeInteger.skip(before: _colon) &
-          _maybeInteger.skip(before: _colon).optional())
-      .map((value) =>
-          ArraySlice(start: value[0], stop: value[1], step: value[2]));
-
-  final _arrayIndex = integer.map(ArrayIndex.new);
-
-  final _wildcard = char('*').value(const Wildcard());
-
-  final _unionElement = (_arraySlice |
-          _arrayIndex |
-          _wildcard |
+  final _unionElement = (arraySlice |
+          arrayIndex |
+          wildcard |
           singleQuotedString.map(Field.new) |
           doubleQuotedString.map(Field.new))
       .trim();
@@ -82,11 +43,7 @@ Parser<MatchMapper<bool>> _build() {
   final _union =
       _unionContent.skip(before: char('['), after: char(']')).map(Union.new);
 
-  final _fieldName = unquotedString.map(Field.new);
-
-  final _dotMatcher = (_fieldName | _wildcard).skip(before: char('.'));
-
-  final selector = _dotMatcher | _union;
+  final selector = dotMatcher | _union;
 
   //////////////////////////////////////
 
@@ -98,24 +55,24 @@ Parser<MatchMapper<bool>> _build() {
   final node =
       (currentObject & nodeFilter.optional()).map<MatchMapper>((v) => (match) {
             final res = v.last == null ? [match] : [match].expand(v.last.apply);
-            return MatchSet(res.cast<JsonPathMatch>());
+            return _MatchSet(res.cast<JsonPathMatch>());
           });
 
   comparable(x, y) {
-    if (x is MatchSet && !x.isSingular) return false;
-    if (y is MatchSet && !y.isSingular) return false;
+    if (x is _MatchSet && !x.isSingular) return false;
+    if (y is _MatchSet && !y.isSingular) return false;
     return true;
   }
 
-  twoEmpty(x, y) => x is MatchSet && x.isEmpty && y is MatchSet && y.isEmpty;
+  twoEmpty(x, y) => x is _MatchSet && x.isEmpty && y is _MatchSet && y.isEmpty;
 
   valOf(x) {
-    if (x is MatchSet && x.isSingular) return x.value;
+    if (x is _MatchSet && x.isSingular) return x.value;
     return x;
   }
 
   boolOf(x) {
-    if (x is MatchSet) return x.isNotEmpty;
+    if (x is _MatchSet) return x.isNotEmpty;
     return x == true;
   }
 
@@ -136,8 +93,7 @@ Parser<MatchMapper<bool>> _build() {
     {
       string('=='): (a) => (x, y) =>
           twoEmpty(x, y) || (comparable(x, y) && a.eq(valOf(x), valOf(y))),
-      string('!='): (a) =>
-          (x, y) => a.ne(valOf(x), valOf(y)),
+      string('!='): (a) => (x, y) => a.ne(valOf(x), valOf(y)),
       string('<='): (a) =>
           (x, y) => comparable(x, y) && a.le(valOf(x), valOf(y)),
       string('<'): (a) =>
