@@ -2,21 +2,29 @@ import 'package:json_path/json_path.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Algebra.strict', () {
-    test('lt throws TypeError', () {
-      expect(() => Algebra.strict.lt(1, '2'), throwsA(isA<TypeError>()));
+  group('Algebra', () {
+    final algebra = Algebra.strict;
+
+    test(" 1 < '2' is false", () {
+      expect(algebra.lt(1, '2'), isFalse);
     });
-    test('le throws TypeError', () {
-      expect(() => Algebra.strict.le(1, '2'), throwsA(isA<TypeError>()));
+    test(" 1 <= '2' is false", () {
+      expect(algebra.le(1, '2'), isFalse);
     });
-    test('gt throws TypeError', () {
-      expect(() => Algebra.strict.gt(1, '2'), throwsA(isA<TypeError>()));
+    test(" 1 > '2' is false", () {
+      expect(algebra.gt(1, '2'), isFalse);
     });
-    test('ge throws TypeError', () {
-      expect(() => Algebra.strict.ge(1, '2'), throwsA(isA<TypeError>()));
+    test(" 1 >= '2' is false", () {
+      expect(algebra.ge(1, '2'), isFalse);
     });
-    test('isTruthy throws TypeError', () {
-      expect(() => Algebra.strict.isTruthy('foo'), throwsA(isA<TypeError>()));
+    test('[] == []', () {
+      expect(algebra.eq([], []), isTrue);
+    });
+    test('[1, 2] != [2, 1]', () {
+      expect(algebra.eq([1, 2], [2, 1]), isFalse);
+    });
+    test("{'a': 1, 'b': 2} == {'b': 2, 'a': 1}", () {
+      expect(algebra.eq({'a': 1, 'b': 2}, {'b': 2, 'a': 1}), isTrue);
     });
   });
 }

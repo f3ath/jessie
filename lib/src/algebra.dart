@@ -42,25 +42,36 @@ class _Strict implements Algebra {
   const _Strict();
 
   @override
-  bool isTruthy(val) => val;
+  bool isTruthy(val) => val == true;
 
   @override
-  bool eq(a, b) => a == b;
+  bool eq(a, b) =>
+      a == b ||
+      (a is List &&
+          b is List &&
+          a.length == b.length &&
+          List.generate(a.length, (i) => i).every((i) => eq(a[i], b[i]))) ||
+      (a is Map &&
+          b is Map &&
+          a.keys.length == b.keys.length &&
+          a.keys.every((k) => b.containsKey(k) && eq(a[k], b[k])));
 
   @override
-  bool ge(a, b) => a >= b;
+  bool ge(a, b) => gt(a, b) || eq(a, b);
 
   @override
-  bool gt(a, b) => a > b;
+  bool gt(a, b) => lt(b, a);
 
   @override
-  bool le(a, b) => a <= b;
+  bool le(a, b) => lt(a, b) || eq(a, b);
 
   @override
-  bool lt(a, b) => a < b;
+  bool lt(a, b) =>
+      (a is num && b is num && a.compareTo(b) < 0) ||
+      (a is String && b is String && a.compareTo(b) < 0);
 
   @override
-  bool ne(a, b) => a != b;
+  bool ne(a, b) => !eq(a, b);
 
   @override
   bool and(a, b) => isTruthy(a) && isTruthy(b);

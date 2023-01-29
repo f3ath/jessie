@@ -22,7 +22,7 @@ class JsonPath {
   /// });
   /// ```
   ///
-  /// The [algebra] is used to operate with values in evaluated expressions.
+  /// The [_algebra] is used to operate with values in evaluated expressions.
   /// The expression support is limited, you are encouraged to use the named callback
   /// filters instead. JSONPath expression evaluation is a grey area
   /// since the behavior differs per implementation. The relaxed algebra,
@@ -31,8 +31,8 @@ class JsonPath {
   ///
   /// Throws [FormatException] if the [expression] can not be parsed.
   JsonPath(this.expression,
-      {this.filters = const {}, this.algebra = Algebra.relaxed})
-      : _selector = _parse(expression);
+      {this.filters = const {}, Algebra algebra = Algebra.strict})
+      : _algebra = algebra, _selector = _parse(expression);
 
   static Selector _parse(String expression) {
     try {
@@ -51,7 +51,7 @@ class JsonPath {
   final Map<String, MatchPredicate> filters;
 
   /// Rules to use for expression evaluation.
-  final Algebra algebra;
+  final Algebra _algebra;
 
   /// Reads the given [document] object returning an Iterable of all matches found.
   Iterable<JsonPathMatch> read(document,
@@ -59,7 +59,7 @@ class JsonPath {
       _selector.apply(RootMatch(
           document,
           MatchingContext(
-              {...this.filters, ...filters}, algebra ?? this.algebra)));
+              {...this.filters, ...filters}, algebra ?? this._algebra)));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable readValues(json) => read(json).map((_) => _.value);
