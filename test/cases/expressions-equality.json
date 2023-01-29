@@ -102,7 +102,7 @@
     }, {
       "selector": "$[?(@.foo != @.bar)]",
       "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
-      "values": [{"foo": 1, "bar": 2},  {"foo": 1, "bro": 1}]
+      "values": [{"foo": 1, "bar": 2},  {"foo": 1, "bro": 1}, {}]
     }
   ]
 }
