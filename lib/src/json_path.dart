@@ -31,7 +31,7 @@ class JsonPath {
   ///
   /// Throws [FormatException] if the [expression] can not be parsed.
   JsonPath(this.expression,
-      {this.filters = const {}, Algebra algebra = Algebra.strict})
+      {this.filters = const {}, Algebra algebra = const Algebra()})
       : _algebra = algebra, _selector = _parse(expression);
 
   static Selector _parse(String expression) {

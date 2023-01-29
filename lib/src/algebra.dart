@@ -1,50 +1,13 @@
 /// Evaluation rules used in expressions like `$[?(@.foo > 2)]`.
 /// Allows users to implement custom evaluation rules to emulate behavior
 /// in other programming languages, e.g. in JavaScript.
-abstract class Algebra {
-  /// A set of rules with strictly typed operations.
-  /// Throws [TypeError] when the operation is not applicable to operand types.
-  static const Algebra strict = _Strict();
-
-  /// A relaxed set of rules allowing some operations on not fully compatible types.
-  /// E.g. `1 < "3"` would return false instead of throwing a [TypeError].
-  static const Algebra relaxed = _Relaxed();
-
-  /// True if [a] equals [b].
-  bool eq(a, b);
-
-  /// True if [a] is not equal to [b].
-  bool ne(a, b);
-
-  /// True if [a] is strictly less than [b].
-  bool lt(a, b);
-
-  /// True if [a] is less or equal to [b].
-  bool le(a, b);
-
-  /// True if [a] is strictly greater than [b].
-  bool gt(a, b);
-
-  /// True if [a] is greater or equal to [b].
-  bool ge(a, b);
-
-  /// True if both [a] and [b] are truthy.
-  bool and(a, b);
-
-  /// True if either [a] or [b] are truthy.
-  bool or(a, b);
+class Algebra {
+  const Algebra();
 
   /// Casts the [val] to bool.
-  bool isTruthy(val);
-}
-
-class _Strict implements Algebra {
-  const _Strict();
-
-  @override
   bool isTruthy(val) => val == true;
 
-  @override
+  /// True if [a] equals [b].
   bool eq(a, b) =>
       a == b ||
       (a is List &&
@@ -56,58 +19,26 @@ class _Strict implements Algebra {
           a.keys.length == b.keys.length &&
           a.keys.every((k) => b.containsKey(k) && eq(a[k], b[k])));
 
-  @override
+  /// True if [a] is greater or equal to [b].
   bool ge(a, b) => gt(a, b) || eq(a, b);
 
-  @override
+  /// True if [a] is strictly greater than [b].
   bool gt(a, b) => lt(b, a);
 
-  @override
+  /// True if [a] is less or equal to [b].
   bool le(a, b) => lt(a, b) || eq(a, b);
 
-  @override
+  /// True if [a] is strictly less than [b].
   bool lt(a, b) =>
       (a is num && b is num && a.compareTo(b) < 0) ||
       (a is String && b is String && a.compareTo(b) < 0);
 
-  @override
+  /// True if [a] is not equal to [b].
   bool ne(a, b) => !eq(a, b);
 
-  @override
+  /// True if both [a] and [b] are truthy.
   bool and(a, b) => isTruthy(a) && isTruthy(b);
 
-  @override
+  /// True if either [a] or [b] are truthy.
   bool or(a, b) => isTruthy(a) || isTruthy(b);
-}
-
-class _Relaxed extends _Strict {
-  const _Relaxed();
-
-  @override
-  bool isTruthy(val) =>
-      val == true ||
-      val is List ||
-      val is Map ||
-      (val is num && val != 0) ||
-      (val is String && val.isNotEmpty);
-
-  @override
-  bool ge(a, b) =>
-      (a is String && b is String && a.compareTo(b) >= 0) ||
-      (a is num && b is num && a >= b);
-
-  @override
-  bool gt(a, b) =>
-      (a is String && b is String && a.compareTo(b) > 0) ||
-      (a is num && b is num && a > b);
-
-  @override
-  bool le(a, b) =>
-      (a is String && b is String && a.compareTo(b) <= 0) ||
-      (a is num && b is num && a <= b);
-
-  @override
-  bool lt(a, b) =>
-      (a is String && b is String && a.compareTo(b) < 0) ||
-      (a is num && b is num && a < b);
 }
