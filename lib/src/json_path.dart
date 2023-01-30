@@ -32,15 +32,8 @@ class JsonPath {
   /// Throws [FormatException] if the [expression] can not be parsed.
   JsonPath(this.expression,
       {this.filters = const {}, Algebra algebra = const Algebra()})
-      : _algebra = algebra, _selector = _parse(expression);
-
-  static Selector _parse(String expression) {
-    try {
-      return jsonPath.parse(expression).value;
-    } on ParserException catch (e) {
-      throw FormatException('$e. Expression: ${e.source}');
-    }
-  }
+      : _algebra = algebra,
+        _selector = jsonPath.parse(expression).value;
 
   final Selector _selector;
 
@@ -56,10 +49,8 @@ class JsonPath {
   /// Reads the given [document] object returning an Iterable of all matches found.
   Iterable<JsonPathMatch> read(document,
           {Map<String, MatchPredicate> filters = const {}, Algebra? algebra}) =>
-      _selector.apply(RootMatch(
-          document,
-          MatchingContext(
-              {...this.filters, ...filters}, algebra ?? this._algebra)));
+      _selector.apply(RootMatch(document,
+          MatchingContext({...this.filters, ...filters}, algebra ?? _algebra)));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable readValues(json) => read(json).map((_) => _.value);

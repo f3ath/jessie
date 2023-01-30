@@ -5,6 +5,7 @@ import 'package:json_path/src/grammar/dot_matcher.dart';
 import 'package:json_path/src/grammar/number.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
+import 'package:json_path/src/match_mapper.dart';
 import 'package:json_path/src/match_set.dart';
 import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
@@ -14,12 +15,8 @@ import 'package:json_path/src/selector/union.dart';
 import 'package:petitparser/petitparser.dart';
 
 Parser<MatchMapper<bool>> _build() {
-  final unionElement = (arraySlice |
-          arrayIndex |
-          wildcard |
-          singleQuotedString.map(Field.new) |
-          doubleQuotedString.map(Field.new))
-      .trim();
+  final unionElement =
+      (arraySlice | arrayIndex | wildcard | quotedString.map(Field.new)).trim();
 
   final subsequentUnionElement = unionElement.skip(before: char(','));
 

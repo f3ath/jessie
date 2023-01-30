@@ -157,13 +157,6 @@
       "paths": ["$[0]", "$[1]", "$[2]"],
       "pointers": ["/0", "/1", "/2"]
     }, {
-      "name": "recursion",
-      "selector": "$..",
-      "document": {"a": {"foo": "bar"}, "b": [42]},
-      "values": [{"a": {"foo": "bar"}, "b": [42]}, {"foo": "bar"}, [42]],
-      "paths": ["$", "$['a']", "$['b']"],
-      "pointers": ["", "/a", "/b"]
-    }, {
       "name": "recursion wildcard",
       "selector": "$..*",
       "document": {"a": {"foo": "bar"}, "b": [42]},

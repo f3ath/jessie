@@ -1,4 +1,5 @@
 import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/match_mapper.dart';
 import 'package:petitparser/petitparser.dart';
 
 extension ParserExt<R> on Parser<R> {
@@ -9,4 +10,3 @@ extension ParserExt<R> on Parser<R> {
       map<MatchMapper<R>>((R r) => (_) => r);
 }
 
-typedef MatchMapper<T> = T Function(JsonPathMatch match);

@@ -22,8 +22,7 @@ final _callback =
 final _unionElement = (arraySlice |
         arrayIndex |
         wildcard |
-        singleQuotedString.map(Field.new) |
-        doubleQuotedString.map(Field.new) |
+        quotedString.map(Field.new) |
         _callback |
         expression.map(ExpressionFilter.new))
     .trim();
@@ -37,12 +36,8 @@ final _unionContent = (_unionElement & _subsequentUnionElement.star()).map(
 final _union =
     _unionContent.skip(before: char('['), after: char(']')).map(Union.new);
 
-final _fieldName = unquotedString.map(Field.new);
-
-final _recursion = (wildcard | _union | _fieldName | endOfInput())
+final _recursion = (wildcard | _union | memberNameShorthand)
     .skip(before: string('..'))
-    .map((value) => (value == null)
-        ? const Recursion()
-        : Sequence([const Recursion(), value]));
+    .map((value) => Sequence([const Recursion(), value]));
 
 final selector = dotMatcher | _union | _recursion;
