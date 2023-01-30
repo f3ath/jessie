@@ -5,6 +5,7 @@ import 'package:json_path/src/grammar/dot_matcher.dart';
 import 'package:json_path/src/grammar/number.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
+import 'package:json_path/src/match_set.dart';
 import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/field.dart';
@@ -12,71 +13,34 @@ import 'package:json_path/src/selector/sequence.dart';
 import 'package:json_path/src/selector/union.dart';
 import 'package:petitparser/petitparser.dart';
 
-class _MatchSet {
-  _MatchSet(this.matches);
-
-  final Iterable<JsonPathMatch> matches;
-
-  bool get isSingular => matches.length == 1;
-
-  bool get isEmpty => matches.isEmpty;
-
-  bool get isNotEmpty => matches.isNotEmpty;
-
-  get value => matches.single.value;
-}
-
 Parser<MatchMapper<bool>> _build() {
-  final _unionElement = (arraySlice |
+  final unionElement = (arraySlice |
           arrayIndex |
           wildcard |
           singleQuotedString.map(Field.new) |
           doubleQuotedString.map(Field.new))
       .trim();
 
-  final _subsequentUnionElement = _unionElement.skip(before: char(','));
+  final subsequentUnionElement = unionElement.skip(before: char(','));
 
-  final _unionContent = (_unionElement & _subsequentUnionElement.star()).map(
+  final unionContent = (unionElement & subsequentUnionElement.star()).map(
       (value) =>
           [value.first as Selector].followedBy((value.last.cast<Selector>())));
 
-  final _union =
-      _unionContent.skip(before: char('['), after: char(']')).map(Union.new);
+  final union =
+      unionContent.skip(before: char('['), after: char(']')).map(Union.new);
 
-  final selector = dotMatcher | _union;
-
-  //////////////////////////////////////
-
-  final nodeFilter =
-      selector.plus().map((value) => Sequence(value.cast<Selector>()));
-
-  final currentObject = char('@');
+  final nodeFilter = (dotMatcher | union)
+      .plus()
+      .map((value) => Sequence(value.cast<Selector>()));
 
   final node =
-      (currentObject & nodeFilter.optional()).map<MatchMapper>((v) => (match) {
+      (char('@') & nodeFilter.optional()).map<MatchMapper>((v) => (match) {
             final res = v.last == null ? [match] : [match].expand(v.last.apply);
-            return _MatchSet(res.cast<JsonPathMatch>());
+            return MatchSet(res.cast<JsonPathMatch>());
           });
 
-  comparable(x, y) {
-    if (x is _MatchSet && !x.isSingular) return false;
-    if (y is _MatchSet && !y.isSingular) return false;
-    return true;
-  }
-
-  twoEmpty(x, y) => x is _MatchSet && x.isEmpty && y is _MatchSet && y.isEmpty;
-
-  valOf(x) {
-    if (x is _MatchSet && x.isSingular) return x.value;
-    return x;
-  }
-
-  boolOf(x) {
-    if (x is _MatchSet) return x.isNotEmpty;
-    return x == true;
-  }
-
-  final builder = ExpressionBuilder();
+  final builder = ExpressionBuilder<MatchMapper>();
   builder.group()
     ..primitive(string('null').value(null).toMatchMapper())
     ..primitive(string('false').value(false).toMatchMapper())
@@ -86,42 +50,38 @@ Parser<MatchMapper<bool>> _build() {
     ..primitive(node)
     ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
 
-  builder.group().prefix(char('!').trim(),
-      (_, mapper) => (match) => !match.context.algebra.isTruthy(mapper(match)));
-  for (final operations in <
-      Map<Parser<String>, bool Function(dynamic, dynamic) Function(Algebra)>>[
+  builder.group().prefix(
+      char('!').trim(),
+      (_, mapper) =>
+          (JsonPathMatch match) => match.context.algebra.not(mapper(match)));
+
+  for (final precedenceGroup
+      in <Map<String, bool Function(dynamic, dynamic) Function(Algebra)>>[
     {
-      string('=='): (a) => (x, y) =>
-          twoEmpty(x, y) || (comparable(x, y) && a.eq(valOf(x), valOf(y))),
-      string('!='): (a) => (x, y) => a.ne(valOf(x), valOf(y)),
-      string('<='): (a) =>
-          (x, y) => comparable(x, y) && a.le(valOf(x), valOf(y)),
-      string('<'): (a) =>
-          (x, y) => comparable(x, y) && a.lt(valOf(x), valOf(y)),
-      string('>='): (a) =>
-          (x, y) => comparable(x, y) && a.ge(valOf(x), valOf(y)),
-      string('>'): (a) =>
-          (x, y) => comparable(x, y) && a.gt(valOf(x), valOf(y)),
+      '==': (a) => a.eq,
+      '!=': (a) => a.ne,
+      '<=': (a) => a.le,
+      '<': (a) => a.lt,
+      '>=': (a) => a.ge,
+      '>': (a) => a.gt,
     },
     {
-      string('&&'): (a) => (x, y) => a.and(boolOf(x), boolOf(y)),
+      '&&': (a) => a.and,
     },
     {
-      string('||'): (a) => (x, y) => a.or(boolOf(x), boolOf(y)),
+      '||': (a) => a.or,
     },
   ]) {
     final group = builder.group();
-    operations.forEach((parser, operation) {
+    precedenceGroup.forEach((expr, operation) {
       group.left(
-          parser.trim(),
+          string(expr).trim(),
           (left, _, right) => (match) =>
               operation(match.context.algebra)(left(match), right(match)));
     });
   }
-  return builder
-      .build()
-      .skip(before: string('?'))
-      .map<MatchMapper<bool>>((mapper) => (match) => boolOf(mapper(match)));
+  return builder.build().skip(before: string('?')).map<MatchMapper<bool>>(
+      (mapper) => (match) => match.context.algebra.isTruthy(mapper(match)));
 }
 
 final expression = _build();

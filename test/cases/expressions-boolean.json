@@ -17,15 +17,15 @@
       "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", "foo", true, [], {}, false],
       "values": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", "foo", true, [], {}, false]
     }, {
-      "name": "all truthy",
+      "name": "all that exist",
       "selector": "$[?(@)]",
       "document": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false],
       "values": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false]
     }, {
-      "name": "all falsy",
+      "name": "none that exist",
       "selector": "$[?(!@)]",
       "document": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false],
-      "values": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false]
+      "values": []
     }
   ]
 }
