@@ -35,15 +35,6 @@ class Algebra {
   /// True if [a] is not equal to [b].
   bool ne(a, b) => !eq(a, b);
 
-  /// True if both [a] and [b] are truthy.
-  bool and(a, b) => isTruthy(a) && isTruthy(b);
-
-  /// True if either [a] or [b] are truthy.
-  bool or(a, b) => isTruthy(a) || isTruthy(b);
-
-  /// True if a is false.
-  bool not(a) => !isTruthy(a);
-
   fun(String name, List args) {
     return MatchSet([]);
   }
