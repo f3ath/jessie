@@ -1,6 +1,6 @@
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/matching_context.dart';
-import 'package:json_path/src/quote.dart';
+import 'package:json_path/src/string_ext.dart';
 import 'package:rfc_6901/rfc_6901.dart';
 
 /// Creates a match for a child element
@@ -14,7 +14,7 @@ class ChildMatch implements JsonPathMatch {
   /// Child match for an object child
   ChildMatch.child(String key, this.parent)
       : value = parent.value[key],
-        path = '${parent.path}[${quote(key)}]',
+        path = '${parent.path}[${key.quoted()}]',
         pointer = JsonPointerSegment(key, parent.pointer);
 
   /// The value

@@ -8,6 +8,11 @@ void main() {
   final suite = jsonDecode(File('cts/cts.json').readAsStringSync());
   final tests = suite['tests'] as List;
   group('JSON Path Compliance Suite', () {
+    final skip = {
+      // TODO: remove after https://github.com/jsonpath-standard/jsonpath-compliance-test-suite/pull/15
+      'name shorthand, underscore start',
+      'name shorthand, underscore',
+    };
     for (final t in tests) {
       final String name = t['name'];
       final String selector = t['selector'];
@@ -17,16 +22,10 @@ void main() {
       test(name, () {
         if (invalid) {
           expect(() => JsonPath(selector), throwsFormatException);
-          // try {
-          //   JsonPath(selector);
-          //   // allows us to be less strict than CTS
-          // } on FormatException {
-          //   // do nothing as CTS expects us to throw
-          // }
         } else {
           expect(JsonPath(selector).readValues(document), equals(result!));
         }
-      });
+      }, skip: skip.contains(name));
     }
   });
 }

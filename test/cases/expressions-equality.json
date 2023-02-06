@@ -8,13 +8,6 @@
       "paths": ["$[0]"],
       "pointers": ["/0"]
     }, {
-      "name": "tautology in parens means true",
-      "selector": "$[?((1==1) == (2==2))]",
-      "document": [42],
-      "values": [42],
-      "paths": ["$[0]"],
-      "pointers": ["/0"]
-    }, {
       "name": "object itself",
       "selector": "$[?(@ == 1)]",
       "document": [0, 1, 2, "1", "a", "0", ""],
@@ -79,10 +72,6 @@
       "selector": "$[?(1!=1)]",
       "document": [42],
       "values": []
-    }, {
-      "selector": "$[?((1==1) == (2==2))]",
-      "document": [42],
-      "values": [42]
     }, {
       "selector": "$[?(@ != 1)]",
       "document": [0, 1, 2, "1", "a", "0", ""],

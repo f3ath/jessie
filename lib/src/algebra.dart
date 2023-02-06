@@ -44,6 +44,10 @@ class Algebra {
   /// True if a is false.
   bool not(a) => !isTruthy(a);
 
+  fun(String name, List args) {
+    return MatchSet([]);
+  }
+
   bool _deepEq(x, y) =>
       x == y ||
       (x is List &&

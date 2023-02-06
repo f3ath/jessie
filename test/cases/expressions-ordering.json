@@ -55,7 +55,7 @@
     },
     {
       "name": "props comparison, boolean AND",
-      "selector": "$[?(@.key>42 && @.key<44)]",
+      "selector": "$[?(@.key > 42 && @.key < 44)]",
       "document": [{"key": 42}, {"key": 43}, {"key": 44}],
       "values": [{"key": 43}]
     }
