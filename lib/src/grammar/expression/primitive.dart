@@ -13,7 +13,7 @@ final boolPrimitive = [
   _truePrimitive,
 ].toChoiceParser().cast<MatchMapper>();
 
-final primitive = [
+final Parser<MatchMapper> primitive = [
   _nullPrimitive,
   boolPrimitive,
   number.toMatchMapper(),

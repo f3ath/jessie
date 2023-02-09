@@ -6,7 +6,6 @@ import 'package:json_path/src/grammar/expression/callback.dart';
 import 'package:json_path/src/grammar/expression/primitive.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
-import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/match_mapper.dart';
 import 'package:json_path/src/match_set.dart';
 import 'package:json_path/src/selector.dart';
@@ -17,60 +16,64 @@ import 'package:json_path/src/selector/sequence.dart';
 import 'package:json_path/src/selector/union.dart';
 import 'package:petitparser/petitparser.dart';
 
-class JsonPathGrammarDefinition extends GrammarDefinition {
+class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
   JsonPathGrammarDefinition({Algebra algebra = const Algebra()})
       : _algebra = algebra;
 
   final Algebra _algebra;
 
   @override
-  Parser start() => _jsonPath.end();
+  Parser<Selector> start() => ref0(_jsonPath).end();
 
-  static final _unionElement = [
-    arraySlice,
-    arrayIndex,
-    wildcard,
-    quotedString.map(Field.new),
-    callback,
-    ref0(_expressionFilter),
-  ].toChoiceParser().trim();
+  Parser<Selector> _unionElement() => [
+        arraySlice,
+        arrayIndex,
+        wildcard,
+        quotedString.map(Field.new),
+        callback,
+        ref0(_expressionFilter),
+      ].toChoiceParser().trim();
 
-  static final _nextUnionElement = _unionElement.skip(before: char(','));
+  Parser<Selector> _nextUnionElement() =>
+      ref0(_unionElement).skip(before: char(','));
 
-  static final _unionContent = (_unionElement & _nextUnionElement.star())
-      .map((value) => [value.first as Selector].followedBy((value.last)));
+  Parser<Iterable<Selector>> _unionContent() =>
+      (ref0(_unionElement) & ref0(_nextUnionElement).star())
+          .map((value) => [value.first as Selector].followedBy((value.last)));
 
-  static final _union =
-      _unionContent.skip(before: char('['), after: char(']')).map(Union.new);
+  Parser<Selector> _union() => ref0(_unionContent)
+      .skip(before: char('['), after: char(']'))
+      .map(Union.new);
 
-  static final _recursion = [
-    wildcard,
-    _union,
-    memberNameShorthand,
-  ]
-      .toChoiceParser()
-      .skip(before: string('..'))
-      .map((value) => Sequence([const Recursion(), value]));
+  Parser<Selector> _recursion() => [
+        wildcard,
+        ref0(_union),
+        memberNameShorthand,
+      ]
+          .toChoiceParser()
+          .skip(before: string('..'))
+          .map((value) => Sequence([const Recursion(), value]));
 
-  static Parser<MatchMapper<bool>> _parenExpr() =>
-      _booleanExpr.skip(before: char('(').trim(), after: char(')').trim());
+  Parser<MatchMapper<bool>> _parenExpr() => ref0(_booleanExpr)
+      .skip(before: char('(').trim(), after: char(')').trim());
 
-  static Parser<MatchMapper<bool>> _negation(Parser p) =>
-      p.skip(before: char('!').trim()).map((mapper) =>
-          (match) => !match.context.algebra.isTruthy(mapper(match)));
+  Parser<MatchMapper<bool>> _negation(Parser p) => p
+      .skip(before: char('!').trim())
+      .map((mapper) => (match) => !_algebra.isTruthy(mapper(match)));
 
-  static final _comparable = [
-    primitive,
-    _relPath,
-    ref0(_parenExpr),
-  ].toChoiceParser();
+  Parser _comparable() => [
+        primitive,
+        ref0(_relPath),
+        ref0(_parenExpr),
+      ].toChoiceParser();
 
-  static final _eq = '==';
-  static final _ne = '!=';
-  static final _le = '<=';
-  static final _ge = '>=';
-  static final _lt = '<';
-  static final _gt = '>';
+  static const _eq = '==';
+  static const _ne = '!=';
+  static const _le = '<=';
+  static const _ge = '>=';
+  static const _lt = '<';
+  static const _gt = '>';
+
   static final _comparisonOperation = [
     string(_eq),
     string(_ne),
@@ -80,72 +83,68 @@ class JsonPathGrammarDefinition extends GrammarDefinition {
     string(_gt),
   ].toChoiceParser();
 
-  static Parser _comparison() =>
-      (_comparable & _comparisonOperation.trim() & _comparable).map((v) {
+  Parser _comparison() =>
+      (ref0(_comparable) & _comparisonOperation.trim() & ref0(_comparable))
+          .map((v) {
         final left = v[0];
-        final op = v[1];
         final right = v[2];
-
-        return (JsonPathMatch match) {
-          final a = match.context.algebra;
-          final opFunc = <String, bool Function(dynamic, dynamic)>{
-                _eq: a.eq,
-                _ne: a.ne,
-                _le: a.le,
-                _ge: a.ge,
-                _lt: a.lt,
-                _gt: a.gt,
-              }[op] ??
-              (throw StateError('Invalid op'));
-          return opFunc(left(match), right(match));
+        final operations = <String, bool Function(dynamic, dynamic)>{
+          _eq: _algebra.eq,
+          _ne: _algebra.ne,
+          _le: _algebra.le,
+          _ge: _algebra.ge,
+          _lt: _algebra.lt,
+          _gt: _algebra.gt,
         };
+        final op = operations[v[1]] ?? (throw StateError('Invalid op'));
+        return (JsonPathMatch match) => op(left(match), right(match));
       });
 
-  static final _booleanExpr = _logicalOrExpr;
+  Parser<MatchMapper<bool>> _booleanExpr() => ref0(_logicalOrExpr);
 
-  static final _logicalOrExpr = (_logicalAndExpr &
-          _logicalAndExpr.skip(before: string('||').trim()).star())
+  Parser<MatchMapper<bool>> _logicalOrExpr() => (ref0(_logicalAndExpr) &
+          ref0(_logicalAndExpr).skip(before: string('||').trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<MatchMapper<bool>>((value) => (match) => value
-          .any((element) => match.context.algebra.isTruthy(element(match))));
+      .map<MatchMapper<bool>>((value) =>
+          (match) => value.any((expr) => _algebra.isTruthy(expr(match))));
 
-  static final _logicalAndExpr = (_basicExpr &
-          _basicExpr.skip(before: string('&&').trim()).star())
+  Parser<MatchMapper<bool>> _logicalAndExpr() => (ref0(_basicExpr) &
+          ref0(_basicExpr).skip(before: string('&&').trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<MatchMapper<bool>>((value) => (match) => value
-          .every((element) => match.context.algebra.isTruthy(element(match))));
+      .map<MatchMapper<bool>>((value) =>
+          (match) => value.every((expr) => _algebra.isTruthy(expr(match))));
 
-  static Parser _negatable(Parser p) =>
-      [ref1(_negation, p), p].toChoiceParser();
+  Parser _negatable(Parser p) => [ref1(_negation, p), p].toChoiceParser();
 
-  static final _basicExpr = [
-    ref0(_comparison),
-    ref1(_negatable, ref0(_parenExpr)),
-    ref1(_negatable, _filterPath),
-  ].toChoiceParser();
+  Parser _basicExpr() => [
+        ref0(_comparison),
+        ref1(_negatable, ref0(_parenExpr)),
+        ref1(_negatable, ref0(_filterPath)),
+      ].toChoiceParser();
 
-  static final _filterPath = [
-    _relPath,
-    _jsonPath,
-    // TODO: add functionExpr
-  ].toChoiceParser();
+  Parser _filterPath() => [
+        ref0(_relPath),
+        ref0(_jsonPath),
+        // TODO: add functionExpr
+      ].toChoiceParser();
 
-  static Parser<Selector> _expressionFilter() =>
-      _booleanExpr.skip(before: string('?')).map((ExpressionFilter.new));
+  Parser<Selector> _expressionFilter() =>
+      ref0(_booleanExpr).skip(before: string('?')).map((ExpressionFilter.new));
 
-  static final _segment = [
-    dotMatcher,
-    _union,
-    _recursion,
-  ].toChoiceParser().cast<Selector>();
+  Parser<Selector> _segment() => [
+        dotMatcher,
+        ref0(_union),
+        ref0(_recursion),
+      ].toChoiceParser();
 
-  static final _segmentSequence = _segment.star().map(Sequence.new);
+  Parser<Selector> _segmentSequence() =>
+      ref0(_segment).star().map(Sequence.new);
 
-  static final _jsonPath = _segmentSequence.skip(before: char(r'$'));
+  Parser<Selector> _jsonPath() =>
+      ref0(_segmentSequence).skip(before: char(r'$'));
 
-  static final _relPath = _segmentSequence
-      .skip(before: char('@'))
-      .map<MatchMapper>(
+  Parser<MatchMapper<MatchSet>> _relPath() =>
+      ref0(_segmentSequence).skip(before: char('@')).map<MatchMapper<MatchSet>>(
           (sequence) => (match) => MatchSet([match].expand(sequence.apply)));
 }
 
