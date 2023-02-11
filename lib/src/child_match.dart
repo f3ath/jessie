@@ -1,5 +1,4 @@
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/matching_context.dart';
 import 'package:json_path/src/string_ext.dart';
 import 'package:rfc_6901/rfc_6901.dart';
 
@@ -28,9 +27,6 @@ class ChildMatch implements JsonPathMatch {
   /// JSON Pointer (RFC 6901) to this match
   @override
   final JsonPointer pointer;
-
-  @override
-  MatchingContext get context => parent.context;
 
   @override
   final JsonPathMatch parent;

@@ -8,10 +8,8 @@ void main() {
   final suite = jsonDecode(File('cts/cts.json').readAsStringSync());
   final tests = suite['tests'] as List;
   group('JSON Path Compliance Suite', () {
-    final skip = {
-      // TODO: remove after https://github.com/jsonpath-standard/jsonpath-compliance-test-suite/pull/15
-      'name shorthand, underscore start',
-      'name shorthand, underscore',
+    final skip = <String>{
+      // tests to skip
     };
     for (final t in tests) {
       final String name = t['name'];

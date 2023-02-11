@@ -1,13 +1,9 @@
 import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/matching_context.dart';
 import 'package:rfc_6901/rfc_6901.dart';
 
 /// Creates a match for the root element
 class RootMatch implements JsonPathMatch {
-  RootMatch(this.value, this.context);
-
-  @override
-  final MatchingContext context;
+  RootMatch(this.value);
 
   @override
   final parent = null;

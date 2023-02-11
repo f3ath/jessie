@@ -57,16 +57,4 @@ void main() {
       .read(document)
       .map((match) => '${match.pointer}:\t${match.value}')
       .forEach(print);
-
-  print("Books with letter 'a' in the author's name:");
-
-  JsonPath(r'$.store.book[?author].title', filters: {
-    'author': (match) {
-      final author = match.value['author'];
-      return author is String && author.contains('a');
-    }
-  })
-      .read(document)
-      .map((match) => '${match.pointer}:\t${match.value}')
-      .forEach(print);
 }

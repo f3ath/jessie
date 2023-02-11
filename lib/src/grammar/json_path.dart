@@ -2,7 +2,6 @@ import 'package:json_path/json_path.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/dot_matcher.dart';
-import 'package:json_path/src/grammar/expression/callback.dart';
 import 'package:json_path/src/grammar/expression/primitive.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
@@ -30,7 +29,6 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
         arrayIndex,
         wildcard,
         quotedString.map(Field.new),
-        callback,
         ref0(_expressionFilter),
       ].toChoiceParser().trim();
 
