@@ -7,7 +7,6 @@ import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/match_mapper.dart';
 import 'package:json_path/src/match_set.dart';
-import 'package:json_path/src/nothing.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/expression_filter.dart';
 import 'package:json_path/src/selector/field.dart';
@@ -86,27 +85,9 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
               _functionArguments().skip(before: char('('), after: char(')')))
           .map((value) {
         final name = value.first;
-        final args = value[1];
-        if (name == 'length') {
-          if (args.length != 1) {
-            throw FormatException('Expected exactly 1 argument');
-          }
-        }
-
-        return (match) {
-          if (name == 'length') {
-            final arg = args.single;
-            dynamic value = arg(match);
-            if (value is MatchSet && value.length == 1) {
-              value = value.value;
-            }
-            print('Length of $value');
-            if (value is String) return value.length;
-            if (value is List) return value.length;
-            if (value is MatchSet) return value.length;
-          }
-          return Nothing();
-        };
+        final List args = value[1];
+        final fun = _algebra.fun(name, args);
+        return (match) => fun.apply(match);
       });
 
   Parser _comparable() => [

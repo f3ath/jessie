@@ -1,3 +1,4 @@
+import 'package:json_path/src/expression_function.dart';
 import 'package:json_path/src/match_set.dart';
 
 /// Evaluation rules used in expressions like `$[?(@.foo > 2)]`.
@@ -35,8 +36,9 @@ class Algebra {
   /// True if [a] is not equal to [b].
   bool ne(a, b) => !eq(a, b);
 
-  fun(String name, List args) {
-    return MatchSet([]);
+  ExpressionFunction fun(String name, List args) {
+    if (name == 'length') return LengthFunction(args);
+    throw FormatException('Undefined function "$name"');
   }
 
   bool _deepEq(x, y) =>
