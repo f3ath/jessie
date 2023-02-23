@@ -11,4 +11,4 @@ final float =
         .flatten()
         .map(double.parse);
 
-final number = float | integer;
+final Parser<num> number = [float, integer].toChoiceParser();

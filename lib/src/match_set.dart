@@ -15,6 +15,11 @@ class MatchSet {
   /// True if not empty.
   bool get isNotEmpty => _matches.isNotEmpty;
 
+  /// The size of the set.
+  int get length => _matches.length;
+
   /// The value of a singular set.
+  /// Throws StateError if the set is not sungular;
   get value => _matches.single.value;
 }
+

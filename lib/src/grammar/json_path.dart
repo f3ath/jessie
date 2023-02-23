@@ -2,11 +2,12 @@ import 'package:json_path/json_path.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/dot_matcher.dart';
-import 'package:json_path/src/grammar/expression/primitive.dart';
+import 'package:json_path/src/grammar/expression/literal.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/match_mapper.dart';
 import 'package:json_path/src/match_set.dart';
+import 'package:json_path/src/nothing.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/expression_filter.dart';
 import 'package:json_path/src/selector/field.dart';
@@ -59,10 +60,60 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
       .skip(before: char('!').trim())
       .map((mapper) => (match) => !_algebra.isTruthy(mapper(match)));
 
+  Parser _functionArgument() => [
+        literal,
+        ref0(_filterPath),
+      ].toChoiceParser().trim();
+
+  Parser _functionNextArgument() =>
+      _functionArgument().skip(before: char(',').trim()).trim();
+
+  final _functionNameFirst = lowercase();
+  final _functionNameChar = [
+    char('_'),
+    digit(),
+    lowercase(),
+  ].toChoiceParser();
+
+  Parser<String> _functionName() =>
+      (_functionNameFirst & _functionNameChar.star()).flatten();
+
+  Parser<List> _functionArguments() =>
+      (_functionArgument() & _functionNextArgument().star())
+          .map((value) => [value.first, ...value[1]]);
+
+  Parser<MatchMapper> _functionExpr() => (_functionName() &
+              _functionArguments().skip(before: char('('), after: char(')')))
+          .map((value) {
+        final name = value.first;
+        final args = value[1];
+        if (name == 'length') {
+          if (args.length != 1) {
+            throw FormatException('Expected exactly 1 argument');
+          }
+        }
+
+        return (match) {
+          if (name == 'length') {
+            final arg = args.single;
+            dynamic value = arg(match);
+            if (value is MatchSet && value.length == 1) {
+              value = value.value;
+            }
+            print('Length of $value');
+            if (value is String) return value.length;
+            if (value is List) return value.length;
+            if (value is MatchSet) return value.length;
+          }
+          return Nothing();
+        };
+      });
+
   Parser _comparable() => [
-        primitive,
+        literal,
         ref0(_relPath),
         ref0(_parenExpr),
+        ref0(_functionExpr),
       ].toChoiceParser();
 
   static const _eq = '==';
@@ -118,12 +169,12 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
         ref0(_comparison),
         ref1(_negatable, ref0(_parenExpr)),
         ref1(_negatable, ref0(_filterPath)),
+        // ref0(_functionExpr),
       ].toChoiceParser();
 
   Parser _filterPath() => [
         ref0(_relPath),
         ref0(_jsonPath),
-        // TODO: add functionExpr
       ].toChoiceParser();
 
   Parser<Selector> _expressionFilter() =>
