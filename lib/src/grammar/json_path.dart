@@ -7,6 +7,7 @@ import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/match_mapper.dart';
 import 'package:json_path/src/match_set.dart';
+import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/expression_filter.dart';
 import 'package:json_path/src/selector/field.dart';
@@ -86,12 +87,12 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
           .map((value) {
         final name = value.first;
         final List args = value[1];
-        final fun = _algebra.fun(name, args);
+        final fun = _algebra.makeFunction(name, args);
         return (match) => fun.apply(match);
       });
 
   Parser _comparable() => [
-        literal,
+        literal.toMatchMapper(),
         ref0(_relPath),
         ref0(_parenExpr),
         ref0(_functionExpr),
@@ -150,7 +151,6 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
         ref0(_comparison),
         ref1(_negatable, ref0(_parenExpr)),
         ref1(_negatable, ref0(_filterPath)),
-        // ref0(_functionExpr),
       ].toChoiceParser();
 
   Parser _filterPath() => [
