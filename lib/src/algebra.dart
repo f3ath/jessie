@@ -1,6 +1,7 @@
-import 'package:json_path/src/expression_function/count.dart';
+import 'package:json_path/src/expression_function/count_function.dart';
 import 'package:json_path/src/expression_function/expression_function.dart';
-import 'package:json_path/src/expression_function/length.dart';
+import 'package:json_path/src/expression_function/length_function.dart';
+import 'package:json_path/src/expression_function/match_function.dart';
 import 'package:json_path/src/match_set.dart';
 
 /// Evaluation rules used in expressions like `$[?(@.foo > 2)]`.
@@ -40,8 +41,9 @@ class Algebra {
 
   /// Returns an instance of expression function with the given arguments.
   ExpressionFunction makeFunction(String name, List args) {
-    if (name == 'length') return Length(args);
-    if (name == 'count') return Count(args);
+    if (name == 'length') return LengthFunction.fromArgs(args);
+    if (name == 'count') return CountFunction.fromArgs(args);
+    if (name == 'match') return MatchFunction.fromArgs(args);
     throw FormatException('Undefined function "$name"');
   }
 
