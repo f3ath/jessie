@@ -5,7 +5,6 @@ import 'package:json_path/src/grammar/dot_matcher.dart';
 import 'package:json_path/src/grammar/expression/literal.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
-import 'package:json_path/src/match_mapper.dart';
 import 'package:json_path/src/match_set.dart';
 import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
@@ -53,8 +52,11 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
           .skip(before: string('..'))
           .map((value) => Sequence([const Recursion(), value]));
 
-  Parser<MatchMapper<bool>> _parenExpr() => ref0(_booleanExpr)
-      .skip(before: char('(').trim(), after: char(')').trim());
+  Parser<MatchMapper<bool>> _parenExpr() => ref1(
+        _negatable,
+        ref0(_logicalExpr)
+            .skip(before: char('(').trim(), after: char(')').trim()),
+      );
 
   Parser<MatchMapper<bool>> _negation(Parser p) => p
       .skip(before: char('!').trim())
@@ -84,21 +86,31 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
 
   Parser<MatchMapper> _functionExpr() => (_functionName() &
               _functionArguments().skip(before: char('('), after: char(')')))
-          .map((value) {
+          .where((value) {
+            // TODO: refactor
+        final name = value.first;
+        final List args = value[1];
+        try {
+          _algebra.makeFunction(name, args);
+          return true;
+        } on FormatException {
+          return false;
+        }
+      }).map((value) {
         final name = value.first;
         final List args = value[1];
         final fun = _algebra.makeFunction(name, args);
         return (match) => fun.apply(match);
       });
 
-  // Parser<MatchMapper<bool>> _predicateFunctionExpr() => (_functionName() &
-  //             _functionArguments().skip(before: char('('), after: char(')')))
-  //         .map((value) {
-  //       final name = value.first;
-  //       final List args = value[1];
-  //       final fun = _algebra.makePredicateFunction(name, args);
-  //       return (match) => fun.apply(match);
-  //     });
+  Parser<MatchMapper<bool>> _predicateFunctionExpr() => (_functionName() &
+              _functionArguments().skip(before: char('('), after: char(')')))
+          .map((value) {
+        final name = value.first;
+        final List args = value[1];
+        final fun = _algebra.makePredicateFunction(name, args);
+        return (match) => fun.apply(match);
+      });
 
   Parser _comparable() => [
         literal.toMatchMapper(),
@@ -113,7 +125,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
   static const _lt = '<';
   static const _gt = '>';
 
-  static final _comparisonOperation = [
+  static final _comparisonOp = [
     string(_eq),
     string(_ne),
     string(_le),
@@ -122,9 +134,8 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
     string(_gt),
   ].toChoiceParser();
 
-  Parser _comparison() =>
-      (ref0(_comparable) & _comparisonOperation.trim() & ref0(_comparable))
-          .map((v) {
+  Parser _comparisonExpr() =>
+      (ref0(_comparable) & _comparisonOp.trim() & ref0(_comparable)).map((v) {
         final left = v[0];
         final right = v[2];
         final operations = <String, bool Function(dynamic, dynamic)>{
@@ -139,7 +150,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
         return (JsonPathMatch match) => op(left(match), right(match));
       });
 
-  Parser<MatchMapper<bool>> _booleanExpr() => ref0(_logicalOrExpr);
+  Parser<MatchMapper<bool>> _logicalExpr() => ref0(_logicalOrExpr);
 
   Parser<MatchMapper<bool>> _logicalOrExpr() => (ref0(_logicalAndExpr) &
           ref0(_logicalAndExpr).skip(before: string('||').trim()).star())
@@ -147,19 +158,19 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
       .map<MatchMapper<bool>>((value) =>
           (match) => value.any((expr) => _algebra.isTruthy(expr(match))));
 
-  Parser<MatchMapper<bool>> _logicalAndExpr() => (ref0(_basicLogicalExpr) &
-          ref0(_basicLogicalExpr).skip(before: string('&&').trim()).star())
+  Parser<MatchMapper<bool>> _logicalAndExpr() => (ref0(_basicExpr) &
+          ref0(_basicExpr).skip(before: string('&&').trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
       .map<MatchMapper<bool>>((value) =>
           (match) => value.every((expr) => _algebra.isTruthy(expr(match))));
 
-  Parser _negatable(Parser p) => [ref1(_negation, p), p].toChoiceParser();
+  Parser<MatchMapper<bool>> _negatable(Parser<MatchMapper<bool>> p) =>
+      [ref1(_negation, p), p].toChoiceParser();
 
-  Parser _basicLogicalExpr() => [
-        ref0(_comparison),
-        ref1(_negatable, ref0(_parenExpr)),
-        ref1(_negatable, ref0(_filterPath)),
-        ref0(_functionExpr),
+  Parser _basicExpr() => [
+        ref0(_parenExpr),
+        ref0(_comparisonExpr),
+        ref0(_testExpr),
       ].toChoiceParser();
 
   Parser _filterPath() => [
@@ -167,13 +178,22 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
         ref0(_jsonPath),
       ].toChoiceParser();
 
-  Parser<MatchPredicate> _testExpr() => [
-        ref0(_booleanExpr),
-        // ref0(_functionExpr),
+  Parser<MatchMapper<bool>> _filterPathBool() => [
+        ref0(_relPath)
+            .map((value) => (match) => _algebra.isTruthy(value(match))),
+        ref0(_jsonPath)
+            .map((value) => (match) => _algebra.isTruthy(value.apply(match))),
       ].toChoiceParser();
 
+  Parser<MatchMapper<bool>> _testExpr() => ref1(
+      _negatable,
+      [
+        ref0(_filterPathBool),
+        ref0(_predicateFunctionExpr),
+      ].toChoiceParser());
+
   Parser<Selector> _expressionFilter() =>
-      ref0(_testExpr).skip(before: string('?')).map((ExpressionFilter.new));
+      ref0(_logicalExpr).skip(before: string('?')).map((ExpressionFilter.new));
 
   Parser<Selector> _segment() => [
         dotMatcher,

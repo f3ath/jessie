@@ -43,8 +43,20 @@ class Algebra {
   ExpressionFunction makeFunction(String name, List args) {
     if (name == 'length') return LengthFunction.fromArgs(args);
     if (name == 'count') return CountFunction.fromArgs(args);
-    if (name == 'match') return MatchFunction.fromArgs(args);
     throw FormatException('Undefined function "$name"');
+  }
+
+  /// TODO: refactor this craziness!!!
+  bool hasFunction(String name) {
+    if (name == 'length') return true;
+    if (name == 'count') return true;
+    return false;
+  }
+
+  /// Returns an instance of predicate expression function with the given arguments.
+  ExpressionFunction<bool> makePredicateFunction(String name, List args) {
+    if (name == 'match') return MatchFunction.fromArgs(args);
+    throw FormatException('Undefined predicate function "$name"');
   }
 
   bool _deepEq(x, y) =>

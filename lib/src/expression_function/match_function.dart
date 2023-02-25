@@ -16,10 +16,13 @@ class MatchFunction implements ExpressionFunction<bool> {
     if (value is! MatchMapper && value is! String) {
       throw FormatException('Invalid argument type');
     }
-    return MatchFunction(value, RegExp(regex));
+    if (regex is! MatchMapper && regex is! String) {
+      throw FormatException('Invalid argument type');
+    }
+    return MatchFunction(value, regex);
   }
 
-  final RegExp _regExp;
+  final Object _regExp;
   final Object _value;
 
   _resolve2(Object arg, JsonPathMatch match) {
@@ -39,7 +42,9 @@ class MatchFunction implements ExpressionFunction<bool> {
   @override
   bool apply(JsonPathMatch match) {
     final value = _resolve2(_value, match);
-    if (value is String) return _regExp.hasMatch(value);
+    final regExp = _resolve2(_regExp, match);
+
+    if (value is String) return RegExp(regExp).hasMatch(value);
     return false;
   }
 }
