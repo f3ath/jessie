@@ -1,4 +1,4 @@
-import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/node.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/wildcard.dart';
 
@@ -6,7 +6,7 @@ class Recursion implements Selector {
   const Recursion();
 
   @override
-  Iterable<JsonPathMatch> apply(JsonPathMatch match) sync* {
+  Iterable<Node> apply(Node match) sync* {
     yield match;
     yield* const Wildcard()
         .apply(match)

@@ -1,7 +1,7 @@
 import 'package:json_path/src/expression_function/expression_function.dart';
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/match_mapper.dart';
-import 'package:json_path/src/match_set.dart';
+import 'package:json_path/src/expression_function/resolvable.dart';
+import 'package:json_path/src/node.dart';
+import 'package:json_path/src/node_mapper.dart';
 
 class MatchFunction implements ExpressionFunction<bool> {
   MatchFunction(this._value, this._regExp, this._matchSubstring);
@@ -13,37 +13,23 @@ class MatchFunction implements ExpressionFunction<bool> {
     }
     final value = args.first;
     final regex = args.last;
-    if (value is! MatchMapper && value is! String) {
+    if (value is! NodeMapper && value is! String) {
       throw FormatException('Invalid argument type');
     }
-    if (regex is! MatchMapper && regex is! String) {
+    if (regex is! NodeMapper && regex is! String) {
       throw FormatException('Invalid argument type');
     }
-    return MatchFunction(value, regex, matchSubstring);
+    return MatchFunction(Resolvable(value), Resolvable(regex), matchSubstring);
   }
 
-  final Object _regExp;
-  final Object _value;
+  final Resolvable _regExp;
+  final Resolvable _value;
   final bool _matchSubstring;
 
-  _resolve2(Object arg, JsonPathMatch match) {
-    if (arg is MatchMapper) {
-      return _resolve(arg(match));
-    }
-    return arg;
-  }
-
-  _resolve(value) {
-    if (value is MatchSet && value.length == 1) {
-      value = value.value;
-    }
-    return value;
-  }
-
   @override
-  bool apply(JsonPathMatch match) {
-    final value = _resolve2(_value, match);
-    final regExp = _resolve2(_regExp, match);
+  bool apply(Node match) {
+    final value = _value.resolve(match);
+    final regExp = _regExp.resolve(match);
 
     if (value is String && regExp is String) {
       final prefix = _matchSubstring ? '' : r'^';

@@ -1,10 +1,9 @@
 import 'package:json_path/src/expression_function/expression_function.dart';
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/match_mapper.dart';
-import 'package:json_path/src/match_set.dart';
+import 'package:json_path/src/node.dart';
+import 'package:json_path/src/node_mapper.dart';
 
 class CountFunction implements ExpressionFunction {
-  CountFunction(this._arg);
+  CountFunction(this._mapper);
 
   static CountFunction fromArgs(List args) {
     if (args.length != 1) {
@@ -12,14 +11,14 @@ class CountFunction implements ExpressionFunction {
       throw FormatException('Wrong number of arguments');
     }
     final arg = args.single;
-    if (arg is! MatchMapper<MatchSet>) {
+    if (arg is! NodeMapper<Iterable<Node>>) {
       throw FormatException('Invalid argument type');
     }
     return CountFunction(arg);
   }
 
-  final MatchMapper<MatchSet> _arg;
+  final NodeMapper<Iterable<Node>> _mapper;
 
   @override
-  apply(JsonPathMatch match) => _arg(match).length;
+  apply(Node match) => _mapper(match).length;
 }

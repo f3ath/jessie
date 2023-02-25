@@ -1,4 +1,4 @@
-import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/node.dart';
 import 'package:json_path/src/selector.dart';
 
 class Union implements Selector {
@@ -7,6 +7,6 @@ class Union implements Selector {
   final Iterable<Selector> _elements;
 
   @override
-  Iterable<JsonPathMatch> apply(JsonPathMatch match) =>
+  Iterable<Node> apply(Node match) =>
       _elements.map((e) => e.apply(match)).expand((_) => _);
 }

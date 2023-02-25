@@ -1,4 +1,4 @@
-import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/node.dart';
 import 'package:json_path/src/selector.dart';
 
 class Sequence implements Selector {
@@ -11,8 +11,7 @@ class Sequence implements Selector {
   final _Filter _filter;
 
   @override
-  Iterable<JsonPathMatch> apply(JsonPathMatch match) => _filter([match]);
+  Iterable<Node> apply(Node match) => _filter([match]);
 }
 
-typedef _Filter = Iterable<JsonPathMatch> Function(
-    Iterable<JsonPathMatch> matches);
+typedef _Filter = Iterable<Node> Function(Iterable<Node> matches);

@@ -1,6 +1,6 @@
 import 'package:json_path/src/grammar/json_path.dart';
-import 'package:json_path/src/json_path_match.dart';
-import 'package:json_path/src/root_match.dart';
+import 'package:json_path/src/node.dart';
+import 'package:json_path/src/root_node.dart';
 import 'package:json_path/src/selector.dart';
 
 /// A JSONPath expression
@@ -34,8 +34,7 @@ class JsonPath {
   final String expression;
 
   /// Reads the given [document] object returning an Iterable of all matches found.
-  Iterable<JsonPathMatch> read(document) =>
-      _selector.apply(RootMatch(document));
+  Iterable<Node> read(document) => _selector.apply(RootNode(document));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable readValues(json) => read(json).map((_) => _.value);

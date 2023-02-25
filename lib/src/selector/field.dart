@@ -1,5 +1,4 @@
-import 'package:json_path/src/child_match.dart';
-import 'package:json_path/src/json_path_match.dart';
+import 'package:json_path/src/node.dart';
 import 'package:json_path/src/selector.dart';
 
 class Field implements Selector {
@@ -8,10 +7,10 @@ class Field implements Selector {
   final String name;
 
   @override
-  Iterable<JsonPathMatch> apply(JsonPathMatch match) sync* {
+  Iterable<Node> apply(Node match) sync* {
     final value = match.value;
     if (value is Map && value.containsKey(name)) {
-      yield ChildMatch.child(name, match);
+      yield match.child(name);
     }
   }
 }

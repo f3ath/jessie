@@ -1,11 +1,11 @@
 import 'package:json_path/json_path.dart';
+import 'package:json_path/src/expression_function/function_call.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/dot_matcher.dart';
 import 'package:json_path/src/grammar/expression/literal.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
-import 'package:json_path/src/match_set.dart';
 import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
 import 'package:json_path/src/selector/expression_filter.dart';
@@ -52,13 +52,13 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
           .skip(before: string('..'))
           .map((value) => Sequence([const Recursion(), value]));
 
-  Parser<MatchMapper<bool>> _parenExpr() => ref1(
+  Parser<NodeMapper<bool>> _parenExpr() => ref1(
         _negatable,
         ref0(_logicalExpr)
             .skip(before: char('(').trim(), after: char(')').trim()),
       );
 
-  Parser<MatchMapper<bool>> _negation(Parser p) => p
+  Parser<NodeMapper<bool>> _negation(Parser p) => p
       .skip(before: char('!').trim())
       .map((mapper) => (match) => !_algebra.isTruthy(mapper(match)));
 
@@ -84,33 +84,25 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
   Parser<String> _functionName() =>
       (_functionNameFirst & _functionNameChar.star()).flatten();
 
-  Parser<MatchMapper> _functionExpr() => (_functionName() &
+  Parser<NodeMapper> _functionExpr() => (_functionName() &
               _functionArguments().skip(before: char('('), after: char(')')))
-          .where((value) {
-            // TODO: refactor
-        final name = value.first;
-        final List args = value[1];
+          .map((value) => FunctionCall(value[0], value[1]))
+          .where((call) {
+        // TODO: refactor
         try {
-          _algebra.makeFunction(name, args);
+          _algebra.makeFunction(call);
           return true;
         } on FormatException {
           return false;
         }
-      }).map((value) {
-        final name = value.first;
-        final List args = value[1];
-        final fun = _algebra.makeFunction(name, args);
-        return (match) => fun.apply(match);
+      }).map((call) {
+        return _algebra.makeFunction(call);
       });
 
-  Parser<MatchMapper<bool>> _predicateFunctionExpr() => (_functionName() &
-              _functionArguments().skip(before: char('('), after: char(')')))
-          .map((value) {
-        final name = value.first;
-        final List args = value[1];
-        final fun = _algebra.makePredicateFunction(name, args);
-        return (match) => fun.apply(match);
-      });
+  Parser<NodeMapper<bool>> _predicateFunctionExpr() => (_functionName() &
+          _functionArguments().skip(before: char('('), after: char(')')))
+      .map((value) => FunctionCall(value[0], value[1]))
+      .map((call) => _algebra.makePredicateFunction(call));
 
   Parser _comparable() => [
         literal.toMatchMapper(),
@@ -147,24 +139,24 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
           _gt: _algebra.gt,
         };
         final op = operations[v[1]] ?? (throw StateError('Invalid op'));
-        return (JsonPathMatch match) => op(left(match), right(match));
+        return (Node match) => op(left(match), right(match));
       });
 
-  Parser<MatchMapper<bool>> _logicalExpr() => ref0(_logicalOrExpr);
+  Parser<NodeMapper<bool>> _logicalExpr() => ref0(_logicalOrExpr);
 
-  Parser<MatchMapper<bool>> _logicalOrExpr() => (ref0(_logicalAndExpr) &
+  Parser<NodeMapper<bool>> _logicalOrExpr() => (ref0(_logicalAndExpr) &
           ref0(_logicalAndExpr).skip(before: string('||').trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<MatchMapper<bool>>((value) =>
+      .map<NodeMapper<bool>>((value) =>
           (match) => value.any((expr) => _algebra.isTruthy(expr(match))));
 
-  Parser<MatchMapper<bool>> _logicalAndExpr() => (ref0(_basicExpr) &
+  Parser<NodeMapper<bool>> _logicalAndExpr() => (ref0(_basicExpr) &
           ref0(_basicExpr).skip(before: string('&&').trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<MatchMapper<bool>>((value) =>
+      .map<NodeMapper<bool>>((value) =>
           (match) => value.every((expr) => _algebra.isTruthy(expr(match))));
 
-  Parser<MatchMapper<bool>> _negatable(Parser<MatchMapper<bool>> p) =>
+  Parser<NodeMapper<bool>> _negatable(Parser<NodeMapper<bool>> p) =>
       [ref1(_negation, p), p].toChoiceParser();
 
   Parser _basicExpr() => [
@@ -178,14 +170,14 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
         ref0(_jsonPath),
       ].toChoiceParser();
 
-  Parser<MatchMapper<bool>> _filterPathBool() => [
+  Parser<NodeMapper<bool>> _filterPathBool() => [
         ref0(_relPath)
             .map((value) => (match) => _algebra.isTruthy(value(match))),
         ref0(_jsonPath)
             .map((value) => (match) => _algebra.isTruthy(value.apply(match))),
       ].toChoiceParser();
 
-  Parser<MatchMapper<bool>> _testExpr() => ref1(
+  Parser<NodeMapper<bool>> _testExpr() => ref1(
       _negatable,
       [
         ref0(_filterPathBool),
@@ -207,9 +199,9 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
   Parser<Selector> _jsonPath() =>
       ref0(_segmentSequence).skip(before: char(r'$'));
 
-  Parser<MatchMapper<MatchSet>> _relPath() =>
-      ref0(_segmentSequence).skip(before: char('@')).map<MatchMapper<MatchSet>>(
-          (sequence) => (match) => MatchSet([match].expand(sequence.apply)));
+  Parser<NodeMapper<Iterable<Node>>> _relPath() => ref0(_segmentSequence)
+      .skip(before: char('@'))
+      .map((sequence) => (match) => [match].expand(sequence.apply));
 }
 
 final jsonPath = JsonPathGrammarDefinition().build();
