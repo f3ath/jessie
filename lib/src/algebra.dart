@@ -55,7 +55,12 @@ class Algebra {
 
   /// Returns an instance of predicate expression function with the given arguments.
   ExpressionFunction<bool> makePredicateFunction(String name, List args) {
-    if (name == 'match') return MatchFunction.fromArgs(args);
+    if (name == 'match') {
+      return MatchFunction.fromArgs(args, matchSubstring: false);
+    }
+    if (name == 'search') {
+      return MatchFunction.fromArgs(args, matchSubstring: true);
+    }
     throw FormatException('Undefined predicate function "$name"');
   }
 

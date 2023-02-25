@@ -4,9 +4,9 @@ import 'package:json_path/src/match_mapper.dart';
 import 'package:json_path/src/match_set.dart';
 
 class MatchFunction implements ExpressionFunction<bool> {
-  MatchFunction(this._value, this._regExp);
+  MatchFunction(this._value, this._regExp, this._matchSubstring);
 
-  static MatchFunction fromArgs(List args) {
+  static MatchFunction fromArgs(List args, {bool matchSubstring = false}) {
     if (args.length != 2) {
       // TODO: exception type should be different. ArgumentError maybe?
       throw FormatException('Wrong number of arguments');
@@ -19,11 +19,12 @@ class MatchFunction implements ExpressionFunction<bool> {
     if (regex is! MatchMapper && regex is! String) {
       throw FormatException('Invalid argument type');
     }
-    return MatchFunction(value, regex);
+    return MatchFunction(value, regex, matchSubstring);
   }
 
   final Object _regExp;
   final Object _value;
+  final bool _matchSubstring;
 
   _resolve2(Object arg, JsonPathMatch match) {
     if (arg is MatchMapper) {
@@ -44,7 +45,15 @@ class MatchFunction implements ExpressionFunction<bool> {
     final value = _resolve2(_value, match);
     final regExp = _resolve2(_regExp, match);
 
-    if (value is String) return RegExp(regExp).hasMatch(value);
+    if (value is String && regExp is String) {
+      final prefix = _matchSubstring ? '' : r'^';
+      final suffix = _matchSubstring ? '' : r'$';
+      try {
+        return RegExp(prefix + regExp + suffix).hasMatch(value);
+      } on FormatException {
+        return false;
+      }
+    }
     return false;
   }
 }
