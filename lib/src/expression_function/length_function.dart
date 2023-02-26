@@ -1,11 +1,11 @@
 import 'package:json_path/src/expression_function/expression_function.dart';
 import 'package:json_path/src/expression_function/fun_def.dart';
 import 'package:json_path/src/expression_function/resolvable.dart';
+import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_mapper.dart';
-import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
-class LengthFunction implements ExpressionFunction {
+class LengthFunction implements ExpressionFunction<ValueType> {
   LengthFunction(this._arg);
 
   static final fun = FunDef([
@@ -25,12 +25,12 @@ class LengthFunction implements ExpressionFunction {
   final Resolvable _arg;
 
   @override
-  apply(Node match) {
-    final value = _arg.resolve(match);
-    if (value is String) return value.length;
-    if (value is List) return value.length;
-    if (value is Map) return value.length;
-    return Nothing();
+  ValueType apply(Node node) {
+    final value = _arg.resolve(node);
+    if (value is String) return Value(value.length);
+    if (value is List) return Value(value.length);
+    if (value is Map) return Value(value.length);
+    return const Nothing();
   }
 }
 

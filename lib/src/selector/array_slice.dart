@@ -11,10 +11,12 @@ class ArraySlice implements Selector {
   final int step;
 
   @override
-  Iterable<Node> apply(Node match) sync* {
-    final value = match.value;
+  Iterable<Node> apply(Node node) sync* {
+    final value = node.value;
     if (value is List) {
-      yield* _SliceIterator().iterate(value, start, stop, step).map(match.at);
+      yield* _SliceIterator()
+          .iterate(value, start, stop, step)
+          .map(node.valueAt);
     }
   }
 }

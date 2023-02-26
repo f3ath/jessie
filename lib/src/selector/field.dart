@@ -7,10 +7,10 @@ class Field implements Selector {
   final String name;
 
   @override
-  Iterable<Node> apply(Node match) sync* {
-    final value = match.value;
+  Iterable<Node> apply(Node node) sync* {
+    final value = node.value;
     if (value is Map && value.containsKey(name)) {
-      yield match.child(name);
+      yield node.child(name);
     }
   }
 }

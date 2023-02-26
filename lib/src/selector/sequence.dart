@@ -5,13 +5,13 @@ class Sequence implements Selector {
   Sequence(Iterable<Selector> selectors)
       : _filter = selectors.fold<_Filter>(
             (_) => _,
-            (filter, selector) => (matches) =>
-                filter(matches).map(selector.apply).expand((_) => _));
+            (filter, selector) => (nodes) =>
+                filter(nodes).map(selector.apply).expand((_) => _));
 
   final _Filter _filter;
 
   @override
-  Iterable<Node> apply(Node match) => _filter([match]);
+  Iterable<Node> apply(Node node) => _filter([node]);
 }
 
-typedef _Filter = Iterable<Node> Function(Iterable<Node> matches);
+typedef _Filter = Iterable<Node> Function(Iterable<Node> nodes);

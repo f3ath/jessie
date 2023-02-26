@@ -5,13 +5,13 @@ class Wildcard implements Selector {
   const Wildcard();
 
   @override
-  Iterable<Node> apply(Node match) sync* {
-    final value = match.value;
+  Iterable<Node> apply(Node node) sync* {
+    final value = node.value;
     if (value is Map) {
-      yield* value.entries.map((e) => match.child(e.key));
+      yield* value.entries.map((e) => node.child(e.key));
     }
     if (value is List) {
-      yield* value.asMap().entries.map((e) => match.at(e.key));
+      yield* value.asMap().entries.map((e) => node.valueAt(e.key));
     }
   }
 }

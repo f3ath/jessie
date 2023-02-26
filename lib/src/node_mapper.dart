@@ -1,3 +1,3 @@
 import 'package:json_path/src/node.dart';
 
-typedef NodeMapper<T> = T Function(Node match);
+typedef NodeMapper<T> = T Function(Node node);

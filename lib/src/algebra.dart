@@ -2,9 +2,9 @@ import 'package:json_path/src/expression_function/count_function.dart';
 import 'package:json_path/src/expression_function/function_call.dart';
 import 'package:json_path/src/expression_function/length_function.dart';
 import 'package:json_path/src/expression_function/match_function.dart';
+import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_mapper.dart';
-import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 /// Evaluation rules used in expressions like `$[?(@.foo > 2)]`.
 /// Allows users to implement custom evaluation rules to diverge from the
@@ -13,7 +13,11 @@ class Algebra {
   const Algebra();
 
   /// Casts the [val] to bool.
-  bool isTruthy(val) => val is Iterable<Node> ? val.isNotEmpty : (val == true);
+  bool isTruthy(val) {
+    if (val is LogicalType) return val.asBool;
+    if (val is Iterable<Node>) return val.isNotEmpty; // TODO: refactor
+    return val == true;
+  }
 
   /// True if [a] equals [b].
   bool eq(a, b) {
@@ -54,7 +58,7 @@ class Algebra {
   }
 
   /// Returns an instance of predicate expression function with the given arguments.
-  NodeMapper<bool> makePredicateFunction(FunctionCall call) {
+  NodeMapper<LogicalType> makePredicateFunction(FunctionCall call) {
     if (call.name == 'match') {
       return MatchFunction.fromArgs(call.args, matchSubstring: false).apply;
     }
@@ -76,6 +80,7 @@ class Algebra {
           a.keys.every((k) => b.containsKey(k) && eq(a[k], b[k])));
 
   _valOf(x) {
+    if (x is Value) return x.value;
     if (x is Iterable<Node>) {
       if (x.length == 1) return x.single.value;
       return Nothing();

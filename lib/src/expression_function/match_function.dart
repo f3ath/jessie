@@ -1,9 +1,10 @@
 import 'package:json_path/src/expression_function/expression_function.dart';
 import 'package:json_path/src/expression_function/resolvable.dart';
+import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_mapper.dart';
 
-class MatchFunction implements ExpressionFunction<bool> {
+class MatchFunction implements ExpressionFunction<LogicalType> {
   MatchFunction(this._value, this._regExp, this._matchSubstring);
 
   static MatchFunction fromArgs(List args, {bool matchSubstring = false}) {
@@ -27,19 +28,19 @@ class MatchFunction implements ExpressionFunction<bool> {
   final bool _matchSubstring;
 
   @override
-  bool apply(Node match) {
-    final value = _value.resolve(match);
-    final regExp = _regExp.resolve(match);
+  LogicalType apply(Node node) {
+    final value = _value.resolve(node);
+    final regExp = _regExp.resolve(node);
 
     if (value is String && regExp is String) {
       final prefix = _matchSubstring ? '' : r'^';
       final suffix = _matchSubstring ? '' : r'$';
       try {
-        return RegExp(prefix + regExp + suffix).hasMatch(value);
+        return LogicalType(RegExp(prefix + regExp + suffix).hasMatch(value));
       } on FormatException {
-        return false;
+        return LogicalType(false);
       }
     }
-    return false;
+    return LogicalType(false);
   }
 }

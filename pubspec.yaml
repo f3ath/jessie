@@ -9,7 +9,6 @@ environment:
 dependencies:
   rfc_6901: ^0.1.1
   petitparser: ^5.0.0
-  maybe_just_nothing: ^0.4.0
 
 dev_dependencies:
   lints: ^2.0.0

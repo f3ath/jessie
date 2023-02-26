@@ -7,12 +7,12 @@ class ArrayIndex implements Selector {
   final int offset;
 
   @override
-  Iterable<Node> apply(Node match) sync* {
-    final value = match.value;
+  Iterable<Node> apply(Node node) sync* {
+    final value = node.value;
     if (value is List) {
       final index = offset < 0 ? value.length + offset : offset;
       if (index >= 0 && index < value.length) {
-        yield match.at(index);
+        yield node.valueAt(index);
       }
     }
   }

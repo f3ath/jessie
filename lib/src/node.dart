@@ -20,7 +20,7 @@ class Node {
   final Node? parent;
 
   /// A JSON array element.
-  Node at(int index) => Node(value[index],
+  Node valueAt(int index) => Node(value[index],
       parent: this,
       path: '$path[$index]',
       pointer: JsonPointerSegment(index.toString(), pointer));

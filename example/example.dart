@@ -48,13 +48,13 @@ void main() {
 
   prices
       .read(document)
-      .map((match) => '${match.pointer}:\t${match.value}')
+      .map((node) => '${node.pointer}:\t${node.value}')
       .forEach(print);
 
   print('Books under 10:');
 
   JsonPath(r'$.store.book[?(@.price < 10)].title')
       .read(document)
-      .map((match) => '${match.pointer}:\t${match.value}')
+      .map((node) => '${node.pointer}:\t${node.value}')
       .forEach(print);
 }

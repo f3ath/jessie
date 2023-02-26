@@ -1,8 +1,9 @@
 import 'package:json_path/src/expression_function/expression_function.dart';
+import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_mapper.dart';
 
-class CountFunction implements ExpressionFunction {
+class CountFunction implements ExpressionFunction<ValueType> {
   CountFunction(this._mapper);
 
   static CountFunction fromArgs(List args) {
@@ -20,5 +21,5 @@ class CountFunction implements ExpressionFunction {
   final NodeMapper<Iterable<Node>> _mapper;
 
   @override
-  apply(Node match) => _mapper(match).length;
+  Value apply(Node node) => Value(_mapper(node).length);
 }

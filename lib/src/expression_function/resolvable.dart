@@ -1,16 +1,12 @@
+import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_mapper.dart';
-import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 abstract class Resolvable {
   factory Resolvable(dynamic val) =>
       val is NodeMapper ? _Dynamic(val) : _Static(val);
 
-  // final dynamic _val;
-
-  resolve(Node match); // => _resolveMapper(_val, match);
-
-// _resolveMapper(v, JsonPathMatch match) => (v is MatchMapper) ? v(match) : v;
+  resolve(Node node);
 }
 
 class _Static implements Resolvable {
@@ -19,7 +15,7 @@ class _Static implements Resolvable {
   final dynamic _value;
 
   @override
-  resolve(Node match) => _value;
+  resolve(Node node) => _value;
 }
 
 class _Dynamic implements Resolvable {
@@ -28,12 +24,12 @@ class _Dynamic implements Resolvable {
   final NodeMapper _mapper;
 
   @override
-  resolve(Node match) => _valOf(_mapper(match));
+  resolve(Node node) => _valOf(_mapper(node));
 
   _valOf(x) {
     if (x is Iterable<Node>) {
       if (x.length == 1) return x.single.value;
-      return Nothing();
+      return const Nothing();
     }
     return x;
   }

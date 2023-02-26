@@ -7,6 +7,5 @@ class Union implements Selector {
   final Iterable<Selector> _elements;
 
   @override
-  Iterable<Node> apply(Node match) =>
-      _elements.map((e) => e.apply(match)).expand((_) => _);
+  Iterable<Node> apply(Node node) => _elements.expand((e) => e.apply(node));
 }

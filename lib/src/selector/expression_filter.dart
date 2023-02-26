@@ -8,5 +8,5 @@ class ExpressionFilter extends Wildcard {
   final NodeMapper<bool> filter;
 
   @override
-  Iterable<Node> apply(Node match) => super.apply(match).where(filter);
+  Iterable<Node> apply(Node node) => super.apply(node).where(filter);
 }
