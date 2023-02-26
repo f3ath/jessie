@@ -37,7 +37,3 @@ class LengthFunction implements ExpressionFunction<ValueType> {
 abstract class FunFactory<T> {
   NodeMapper<T> getFun();
 }
-//
-// class LengthFun implements FunFactory<int> {
-//
-// }

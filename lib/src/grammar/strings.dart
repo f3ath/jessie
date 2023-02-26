@@ -1,5 +1,5 @@
 import 'package:json_path/src/parser_ext.dart';
-import 'package:json_path/src/selector/field.dart';
+import 'package:json_path/src/selector.dart';
 import 'package:petitparser/petitparser.dart';
 
 final _escape = char(r'\');
@@ -73,4 +73,4 @@ final _nameChar = digit() | _nameFirst;
 final quotedString = (_singleQuotedString | _doubleQuotedString).cast<String>();
 
 final memberNameShorthand =
-    (_nameFirst & _nameChar.star()).flatten().map(Field.new);
+    (_nameFirst & _nameChar.star()).flatten().map(fieldSelector);

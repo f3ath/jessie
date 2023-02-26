@@ -2,55 +2,50 @@ import 'package:json_path/json_path.dart';
 import 'package:json_path/src/expression_function/function_call.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
-import 'package:json_path/src/grammar/dot_matcher.dart';
+import 'package:json_path/src/grammar/dot_name.dart';
 import 'package:json_path/src/grammar/expression/literal.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selector.dart';
-import 'package:json_path/src/selector/expression_filter.dart';
-import 'package:json_path/src/selector/field.dart';
-import 'package:json_path/src/selector/recursion.dart';
-import 'package:json_path/src/selector/sequence.dart';
-import 'package:json_path/src/selector/union.dart';
 import 'package:petitparser/petitparser.dart';
 
-class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
+class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   JsonPathGrammarDefinition({Algebra algebra = const Algebra()})
       : _algebra = algebra;
 
   final Algebra _algebra;
 
   @override
-  Parser<Selector> start() => ref0(_jsonPath).end();
+  Parser<NodeSelector> start() => ref0(_jsonPath).end();
 
-  Parser<Selector> _unionElement() => [
+  Parser<NodeSelector> _unionElement() => [
         arraySlice,
         arrayIndex,
         wildcard,
-        quotedString.map(Field.new),
+        quotedString.map(fieldSelector),
         ref0(_expressionFilter),
       ].toChoiceParser().trim();
 
-  Parser<Selector> _nextUnionElement() =>
+  Parser<NodeSelector> _nextUnionElement() =>
       ref0(_unionElement).skip(before: char(','));
 
-  Parser<Iterable<Selector>> _unionContent() =>
-      (ref0(_unionElement) & ref0(_nextUnionElement).star())
-          .map((value) => [value.first as Selector].followedBy((value.last)));
+  Parser<Iterable<NodeSelector>> _unionContent() => (ref0(_unionElement) &
+          ref0(_nextUnionElement).star())
+      .map((value) => [value.first as NodeSelector].followedBy((value.last)));
 
-  Parser<Selector> _union() => ref0(_unionContent)
+  Parser<NodeSelector> _union() => ref0(_unionContent)
       .skip(before: char('['), after: char(']'))
-      .map(Union.new);
+      .map(unionSelector);
 
-  Parser<Selector> _recursion() => [
+  Parser<NodeSelector> _recursion() => [
         wildcard,
         ref0(_union),
         memberNameShorthand,
       ]
           .toChoiceParser()
           .skip(before: string('..'))
-          .map((value) => Sequence([const Recursion(), value]));
+          .map((value) => sequenceSelector([selectAllRecursively, value]));
 
   Parser<NodeMapper<bool>> _parenExpr() => ref1(
         _negatable,
@@ -168,14 +163,13 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
 
   Parser _filterPath() => [
         ref0(_relPath),
-        ref0(_jsonPath),
+        ref0(_absPath),
       ].toChoiceParser();
 
   Parser<NodeMapper<bool>> _filterPathBool() => [
-        ref0(_relPath)
-            .map((value) => (node) => _algebra.isTruthy(value(node))),
-        ref0(_jsonPath)
-            .map((value) => (node) => _algebra.isTruthy(value.apply(node))),
+        ref0(_relPath).map((value) => (node) => _algebra.isTruthy(value(node))),
+        ref0(_absPath)
+            .map((selector) => (node) => _algebra.isTruthy(selector(node))),
       ].toChoiceParser();
 
   Parser<NodeMapper<bool>> _testExpr() => ref1(
@@ -185,24 +179,27 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Selector> {
         ref0(_predicateFunctionExpr),
       ].toChoiceParser());
 
-  Parser<Selector> _expressionFilter() =>
-      ref0(_logicalExpr).skip(before: string('?')).map((ExpressionFilter.new));
+  Parser<NodeSelector> _expressionFilter() =>
+      ref0(_logicalExpr).skip(before: string('?')).map((filterSelector));
 
-  Parser<Selector> _segment() => [
-        dotMatcher,
+  Parser<NodeSelector> _segment() => [
+        dotName,
         ref0(_union),
         ref0(_recursion),
       ].toChoiceParser();
 
-  Parser<Selector> _segmentSequence() =>
-      ref0(_segment).star().map(Sequence.new);
+  Parser<NodeSelector> _segmentSequence() =>
+      ref0(_segment).star().map(sequenceSelector);
 
-  Parser<Selector> _jsonPath() =>
+  Parser<NodeSelector> _jsonPath() =>
       ref0(_segmentSequence).skip(before: char(r'$'));
 
-  Parser<NodeMapper<Iterable<Node>>> _relPath() => ref0(_segmentSequence)
+  Parser<NodeSelector> _absPath() =>
+      ref0(_segmentSequence).skip(before: char(r'$'));
+
+  Parser<NodeSelector> _relPath() => ref0(_segmentSequence)
       .skip(before: char('@'))
-      .map((sequence) => (node) => [node].expand(sequence.apply));
+      .map((sequence) => (node) => [node].expand(sequence));
 }
 
-final jsonPath = JsonPathGrammarDefinition().build<Selector>();
+final jsonPath = JsonPathGrammarDefinition().build<NodeSelector>();
