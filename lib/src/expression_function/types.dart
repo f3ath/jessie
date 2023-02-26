@@ -6,6 +6,16 @@ class LogicalType {
   LogicalType(this.asBool);
 
   final bool asBool;
+
+  LogicalType and(LogicalType other) => LogicalType(asBool && other.asBool);
+
+  LogicalType or(LogicalType other) => LogicalType(asBool || other.asBool);
+
+  LogicalType not() => LogicalType(!asBool);
+}
+
+extension ToLogicalType on bool {
+  LogicalType get asLogicalType => LogicalType(this);
 }
 
 abstract class ValueType {
@@ -16,7 +26,7 @@ abstract class ValueType {
   dynamic get value;
 }
 
-abstract class NodesType implements Iterable<Node>, LogicalType, ValueType {}
+abstract class NodesType implements Iterable<Node> {}
 
 class Value implements ValueType {
   Value(this.value);
@@ -39,20 +49,9 @@ class Nothing implements ValueType {
 }
 
 class Nodes with IterableMixin<Node> implements NodesType {
-  Nodes(this._nodes)
-      : asBool = _nodes.isNotEmpty,
-        isNothing = _nodes.length != 1;
+  Nodes(this._nodes);
 
   final Iterable<Node> _nodes;
-
-  @override
-  final bool asBool;
-
-  @override
-  final bool isNothing;
-
-  @override
-  get value => _nodes.single.value;
 
   @override
   Iterator<Node> get iterator => _nodes.iterator;

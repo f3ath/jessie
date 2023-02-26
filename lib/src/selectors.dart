@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/types/node_mapper.dart';
+import 'package:json_path/src/types/node_test.dart';
 import 'package:json_path/src/types/node_selector.dart';
 
 NodeSelector arrayIndexSelector(int offset) => (node) sync* {
@@ -14,18 +15,15 @@ NodeSelector arrayIndexSelector(int offset) => (node) sync* {
       }
     };
 
-NodeSelector arraySliceSelector({int? start, int? stop, int? step}) {
-  step ??= 1;
-
-  return (node) sync* {
-    final value = node.value;
-    if (value is List) {
-      yield* _SliceIterator()
-          .iterate(value, start, stop, step)
-          .map(node.valueAt);
-    }
-  };
-}
+NodeSelector arraySliceSelector({int? start, int? stop, int? step}) =>
+    (node) sync* {
+      final value = node.value;
+      if (value is List) {
+        yield* _SliceIterator()
+            .iterate(value, start, stop, step ?? 1)
+            .map(node.valueAt);
+      }
+    };
 
 NodeSelector fieldSelector(String name) => (node) sync* {
       final value = node.value;
@@ -63,12 +61,11 @@ Iterable<Node> selectAllRecursively(Node node) sync* {
       .expand((_) => _);
 }
 
-NodeSelector filterSelector(NodeMapper<bool> predicate) =>
-    (node) => selectAll(node).where(predicate);
+NodeSelector testSelector(NodeTest predicate) =>
+    (node) => selectAll(node).where((el) => predicate(el).asBool);
 
 class _SliceIterator {
-  Iterable<int> iterate(List list, int? start, int? stop, int? step) sync* {
-    step ??= 1;
+  Iterable<int> iterate(List list, int? start, int? stop, int step) sync* {
     if (step > 0) {
       yield* _iterateForward(list, start ?? 0, stop ?? list.length, step);
     }

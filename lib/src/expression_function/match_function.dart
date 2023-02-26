@@ -36,11 +36,11 @@ class MatchFunction implements ExpressionFunction<LogicalType> {
       final prefix = _matchSubstring ? '' : r'^';
       final suffix = _matchSubstring ? '' : r'$';
       try {
-        return LogicalType(RegExp(prefix + regExp + suffix).hasMatch(value));
+        return RegExp(prefix + regExp + suffix).hasMatch(value).asLogicalType;
       } on FormatException {
-        return LogicalType(false);
+        return false.asLogicalType;
       }
     }
-    return LogicalType(false);
+    return false.asLogicalType;
   }
 }
