@@ -1,9 +1,8 @@
 import 'dart:math';
 
-import 'package:json_path/json_path.dart';
-
-/// Selects zero or more subnodes from the JSON [node].
-typedef NodeSelector = NodeMapper<Iterable<Node>>;
+import 'package:json_path/src/node.dart';
+import 'package:json_path/src/types/node_mapper.dart';
+import 'package:json_path/src/types/node_selector.dart';
 
 NodeSelector arrayIndexSelector(int offset) => (node) sync* {
       final value = node.value;
@@ -35,8 +34,6 @@ NodeSelector fieldSelector(String name) => (node) sync* {
       }
     };
 
-typedef _Filter = Iterable<Node> Function(Iterable<Node> nodes);
-
 Iterable<Node> selectAll(Node node) sync* {
   final value = node.value;
   if (value is Map) {
@@ -55,6 +52,8 @@ NodeSelector sequenceSelector(Iterable<NodeSelector> selectors) {
       (filter, selector) => (nodes) => filter(nodes).expand(selector));
   return (node) => filter([node]);
 }
+
+typedef _Filter = Iterable<Node> Function(Iterable<Node> nodes);
 
 Iterable<Node> selectAllRecursively(Node node) sync* {
   yield node;

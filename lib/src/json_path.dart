@@ -1,6 +1,6 @@
 import 'package:json_path/src/grammar/json_path.dart';
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/selector.dart';
+import 'package:json_path/src/types/node_selector.dart';
 
 /// A JSONPath expression
 class JsonPath {

@@ -2,7 +2,7 @@ import 'package:json_path/src/expression_function/expression_function.dart';
 import 'package:json_path/src/expression_function/resolvable.dart';
 import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/node_mapper.dart';
+import 'package:json_path/src/types/node_mapper.dart';
 
 class MatchFunction implements ExpressionFunction<LogicalType> {
   MatchFunction(this._value, this._regExp, this._matchSubstring);

@@ -4,7 +4,7 @@ import 'package:json_path/src/expression_function/length_function.dart';
 import 'package:json_path/src/expression_function/match_function.dart';
 import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/node_mapper.dart';
+import 'package:json_path/src/types/node_mapper.dart';
 
 /// Evaluation rules used in expressions like `$[?(@.foo > 2)]`.
 /// Allows users to implement custom evaluation rules to diverge from the

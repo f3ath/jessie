@@ -3,7 +3,7 @@ import 'package:json_path/src/expression_function/fun_def.dart';
 import 'package:json_path/src/expression_function/resolvable.dart';
 import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/node_mapper.dart';
+import 'package:json_path/src/types/node_mapper.dart';
 
 class LengthFunction implements ExpressionFunction<ValueType> {
   LengthFunction(this._arg);

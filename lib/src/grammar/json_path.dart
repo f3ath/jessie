@@ -7,7 +7,9 @@ import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/parser_ext.dart';
-import 'package:json_path/src/selector.dart';
+import 'package:json_path/src/selectors.dart';
+import 'package:json_path/src/types/node_predicate.dart';
+import 'package:json_path/src/types/node_selector.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
@@ -47,13 +49,13 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
           .skip(before: string('..'))
           .map((value) => sequenceSelector([selectAllRecursively, value]));
 
-  Parser<NodeMapper<bool>> _parenExpr() => ref1(
+  Parser<NodePredicate> _parenExpr() => ref1(
         _negatable,
         ref0(_logicalExpr)
             .skip(before: char('(').trim(), after: char(')').trim()),
       );
 
-  Parser<NodeMapper<bool>> _negation(Parser p) => p
+  Parser<NodePredicate> _negation(Parser p) => p
       .skip(before: char('!').trim())
       .map((mapper) => (node) => !_algebra.isTruthy(mapper(node)));
 
@@ -94,7 +96,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         return _algebra.makeFunction(call);
       });
 
-  Parser<NodeMapper<bool>> _predicateFunctionExpr() => (_functionName() &
+  Parser<NodePredicate> _predicateFunctionExpr() => (_functionName() &
           _functionArguments().skip(before: char('('), after: char(')')))
       .map((value) => FunctionCall(value[0], value[1]))
       .map((call) => _algebra.makePredicateFunction(call))
@@ -124,7 +126,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
     string(_gt),
   ].toChoiceParser();
 
-  Parser<NodeMapper<bool>> _comparisonExpr() =>
+  Parser<NodePredicate> _comparisonExpr() =>
       (ref0(_comparable) & _comparisonOp.trim() & ref0(_comparable)).map((v) {
         final left = v[0];
         final right = v[2];
@@ -140,24 +142,24 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         return (Node node) => op(left(node), right(node));
       });
 
-  Parser<NodeMapper<bool>> _logicalExpr() => ref0(_logicalOrExpr);
+  Parser<NodePredicate> _logicalExpr() => ref0(_logicalOrExpr);
 
-  Parser<NodeMapper<bool>> _logicalOrExpr() => (ref0(_logicalAndExpr) &
+  Parser<NodePredicate> _logicalOrExpr() => (ref0(_logicalAndExpr) &
           ref0(_logicalAndExpr).skip(before: string(_or).trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<NodeMapper<bool>>((value) =>
+      .map<NodePredicate>((value) =>
           (node) => value.any((expr) => _algebra.isTruthy(expr(node))));
 
-  Parser<NodeMapper<bool>> _logicalAndExpr() => (ref0(_basicExpr) &
+  Parser<NodePredicate> _logicalAndExpr() => (ref0(_basicExpr) &
           ref0(_basicExpr).skip(before: string(_and).trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<NodeMapper<bool>>((value) =>
+      .map<NodePredicate>((value) =>
           (node) => value.every((expr) => _algebra.isTruthy(expr(node))));
 
-  Parser<NodeMapper<bool>> _negatable(Parser<NodeMapper<bool>> p) =>
+  Parser<NodePredicate> _negatable(Parser<NodePredicate> p) =>
       [ref1(_negation, p), p].toChoiceParser();
 
-  Parser<NodeMapper<bool>> _basicExpr() => [
+  Parser<NodePredicate> _basicExpr() => [
         ref0(_parenExpr),
         ref0(_comparisonExpr),
         ref0(_testExpr),
@@ -168,13 +170,13 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         ref0(_absPath),
       ].toChoiceParser();
 
-  Parser<NodeMapper<bool>> _filterPathBool() => [
+  Parser<NodePredicate> _filterPathBool() => [
         ref0(_relPath).map((value) => (node) => _algebra.isTruthy(value(node))),
         ref0(_absPath)
             .map((selector) => (node) => _algebra.isTruthy(selector(node))),
       ].toChoiceParser();
 
-  Parser<NodeMapper<bool>> _testExpr() => ref1(
+  Parser<NodePredicate> _testExpr() => ref1(
       _negatable,
       [
         ref0(_filterPathBool),
