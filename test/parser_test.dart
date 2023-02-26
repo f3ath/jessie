@@ -3,6 +3,8 @@ import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 void main() {
+  final jsonPath = JsonPathGrammarDefinition().build();
+
   group('Parser', () {
     test('Linter is happy', () {
       expect(linter(jsonPath), isEmpty);

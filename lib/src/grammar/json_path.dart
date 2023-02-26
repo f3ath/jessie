@@ -3,7 +3,7 @@ import 'package:json_path/src/expression_function/function_call.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/dot_name.dart';
-import 'package:json_path/src/grammar/expression/literal.dart';
+import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/parser_ext.dart';
@@ -17,7 +17,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   final Algebra _algebra;
 
   @override
-  Parser<NodeSelector> start() => ref0(_jsonPath).end();
+  Parser<NodeSelector> start() => ref0(_absPath).end();
 
   Parser<NodeSelector> _unionElement() => [
         arraySlice,
@@ -112,6 +112,8 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   static const _ge = '>=';
   static const _lt = '<';
   static const _gt = '>';
+  static const _and = '&&';
+  static const _or = '||';
 
   static final _comparisonOp = [
     string(_eq),
@@ -141,13 +143,13 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   Parser<NodeMapper<bool>> _logicalExpr() => ref0(_logicalOrExpr);
 
   Parser<NodeMapper<bool>> _logicalOrExpr() => (ref0(_logicalAndExpr) &
-          ref0(_logicalAndExpr).skip(before: string('||').trim()).star())
+          ref0(_logicalAndExpr).skip(before: string(_or).trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
       .map<NodeMapper<bool>>((value) =>
           (node) => value.any((expr) => _algebra.isTruthy(expr(node))));
 
   Parser<NodeMapper<bool>> _logicalAndExpr() => (ref0(_basicExpr) &
-          ref0(_basicExpr).skip(before: string('&&').trim()).star())
+          ref0(_basicExpr).skip(before: string(_and).trim()).star())
       .map((value) => [value.first].followedBy(value.last ?? []))
       .map<NodeMapper<bool>>((value) =>
           (node) => value.every((expr) => _algebra.isTruthy(expr(node))));
@@ -180,7 +182,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
       ].toChoiceParser());
 
   Parser<NodeSelector> _expressionFilter() =>
-      ref0(_logicalExpr).skip(before: string('?')).map((filterSelector));
+      ref0(_logicalExpr).skip(before: string('?')).map(filterSelector);
 
   Parser<NodeSelector> _segment() => [
         dotName,
@@ -191,15 +193,11 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   Parser<NodeSelector> _segmentSequence() =>
       ref0(_segment).star().map(sequenceSelector);
 
-  Parser<NodeSelector> _jsonPath() =>
-      ref0(_segmentSequence).skip(before: char(r'$'));
-
   Parser<NodeSelector> _absPath() =>
       ref0(_segmentSequence).skip(before: char(r'$'));
 
-  Parser<NodeSelector> _relPath() => ref0(_segmentSequence)
-      .skip(before: char('@'))
-      .map((sequence) => (node) => [node].expand(sequence));
+  Parser<NodeSelector> _relPath() =>
+      ref0(_segmentSequence).skip(before: char('@'));
 }
 
 final jsonPath = JsonPathGrammarDefinition().build<NodeSelector>();

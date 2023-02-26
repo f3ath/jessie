@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:json_path/json_path.dart';
 
-/// Selects zero or more nodes from the JSON [document].
-typedef NodeSelector = Iterable<Node> Function(Node document);
+/// Selects zero or more subnodes from the JSON [node].
+typedef NodeSelector = NodeMapper<Iterable<Node>>;
 
 NodeSelector arrayIndexSelector(int offset) => (node) sync* {
       final value = node.value;

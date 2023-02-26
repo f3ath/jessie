@@ -61,8 +61,6 @@ final _doubleQuotedString =
 final _singleQuotedString =
     _singleInner.skip(before: _singleQuote, after: _singleQuote);
 
-// ***************************************************************************
-
 final _nameFirst =
     (char('_') | letter() | range(String.fromCharCode(0x80), _unicodeBoundary))
         .plus()
