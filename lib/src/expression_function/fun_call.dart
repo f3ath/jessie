@@ -1,5 +1,5 @@
-class FunctionCall {
-  FunctionCall(this.name, this.args);
+class FunCall {
+  FunCall(this.name, this.args);
 
   final String name;
   final List args;

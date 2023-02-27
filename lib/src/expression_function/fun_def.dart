@@ -1,4 +1,6 @@
 import 'package:json_path/src/expression_function/arg_validator.dart';
+import 'package:json_path/src/expression_function/types.dart';
+import 'package:json_path/src/types/node_mapper.dart';
 
 class FunDef {
   FunDef(Iterable<ArgValidator> args) : _expected = args.toList();
@@ -10,8 +12,14 @@ class FunDef {
     if (args.length != _expected.length) {
       return ['${_expected.length} argument(s) expected, found ${args.length}'];
     }
-    return Iterable<int>.generate(_expected.length)
-        .expand((i) => _expected[i](args[i]).map((e) => 'Arg #$i: $e'))
-        .toList();
+    return Iterable<int>.generate(_expected.length).expand((i) {
+      final check = _expected[i];
+      final arg = args[i];
+      if (arg is NodeMapper<Nodes>) {
+        // Can not check in parse-time
+        return <String>[];
+      }
+      return check(arg).map((e) => 'Arg #$i: $e');
+    }).toList();
   }
 }

@@ -2,7 +2,17 @@ import 'dart:collection';
 
 import 'package:json_path/src/node.dart';
 
-class LogicalType {
+/// Anything that can be passed to a function.
+abstract class FunArgType {
+  ValueType get asValue;
+}
+
+/// Anything that converts to [LogicalType].
+abstract class LogicalCompatible {
+  LogicalType get asLogical;
+}
+
+class LogicalType implements LogicalCompatible {
   LogicalType(this.asBool);
 
   final bool asBool;
@@ -12,13 +22,12 @@ class LogicalType {
   LogicalType or(LogicalType other) => LogicalType(asBool || other.asBool);
 
   LogicalType not() => LogicalType(!asBool);
+
+  @override
+  LogicalType get asLogical => this;
 }
 
-extension ToLogicalType on bool {
-  LogicalType get asLogicalType => LogicalType(this);
-}
-
-abstract class ValueType {
+abstract class ValueType<T> implements FunArgType {
   /// True if this is Nothing.
   bool get isNothing;
 
@@ -26,26 +35,33 @@ abstract class ValueType {
   dynamic get value;
 }
 
-abstract class NodesType implements Iterable<Node> {}
+abstract class NodesType
+    implements Iterable<Node>, FunArgType, LogicalCompatible {}
 
-class Value implements ValueType {
+class Value<T> implements ValueType<T> {
   Value(this.value);
 
   @override
-  final dynamic value;
+  final T value;
 
   @override
   final isNothing = false;
+
+  @override
+  ValueType get asValue => this;
 }
 
-class Nothing implements ValueType {
+class Nothing<T> implements ValueType<T> {
   const Nothing();
 
   @override
   final isNothing = true;
 
   @override
-  get value => throw StateError('There is no spoon');
+  T get value => throw StateError('There is no spoon');
+
+  @override
+  ValueType get asValue => this;
 }
 
 class Nodes with IterableMixin<Node> implements NodesType {
@@ -55,4 +71,10 @@ class Nodes with IterableMixin<Node> implements NodesType {
 
   @override
   Iterator<Node> get iterator => _nodes.iterator;
+
+  @override
+  ValueType get asValue => length == 1 ? Value(single.value) : Nothing();
+
+  @override
+  LogicalType get asLogical => LogicalType(isNotEmpty);
 }

@@ -27,7 +27,7 @@ class _Dynamic implements Resolvable {
   resolve(Node node) => _valOf(_mapper(node));
 
   _valOf(x) {
-    if (x is Iterable<Node>) {
+    if (x is Nodes) {
       if (x.length == 1) return x.single.value;
       return const Nothing();
     }

@@ -1,21 +1,23 @@
 import 'package:json_path/json_path.dart';
-import 'package:json_path/src/expression_function/function_call.dart';
+import 'package:json_path/src/expression_function/fun_call.dart';
 import 'package:json_path/src/expression_function/types.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/dot_name.dart';
+import 'package:json_path/src/grammar/function_name.dart';
 import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/parser_ext.dart';
 import 'package:json_path/src/selectors.dart';
-import 'package:json_path/src/types/node_test.dart';
+import 'package:json_path/src/types/node_mapper.dart';
 import 'package:json_path/src/types/node_selector.dart';
+import 'package:json_path/src/types/node_test.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
-  JsonPathGrammarDefinition({Algebra algebra = const Algebra()})
-      : _algebra = algebra;
+  JsonPathGrammarDefinition({Algebra? algebra})
+      : _algebra = algebra ?? Algebra();
 
   final Algebra _algebra;
 
@@ -27,15 +29,16 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         arrayIndex,
         wildcard,
         quotedString.map(fieldSelector),
-        ref0(_expressionFilter),
+        ref0(_expressionFilter)
       ].toChoiceParser().trim();
 
   Parser<NodeSelector> _nextUnionElement() =>
       ref0(_unionElement).skip(before: char(','));
 
-  Parser<Iterable<NodeSelector>> _unionContent() => (ref0(_unionElement) &
-          ref0(_nextUnionElement).star())
-      .map((value) => [value.first as NodeSelector].followedBy((value.last)));
+  Parser<Iterable<NodeSelector>> _unionContent() => [
+        ref0(_unionElement).map((v) => [v]),
+        ref0(_nextUnionElement).star()
+      ].toSequenceParser().map((v) => v.expand((e) => e));
 
   Parser<NodeSelector> _union() => ref0(_unionContent)
       .skip(before: char('['), after: char(']'))
@@ -60,128 +63,86 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
       .skip(before: char('!').trim())
       .map((mapper) => (node) => mapper(node).not());
 
-  Parser _functionArgument() => [
+  Parser _funArgument() => [
         literal,
         ref0(_filterPath),
       ].toChoiceParser().trim();
 
-  Parser _functionNextArgument() =>
-      _functionArgument().skip(before: char(',').trim()).trim();
+  Parser _funNextArgument() =>
+      _funArgument().skip(before: char(',').trim()).trim();
 
-  Parser<List> _functionArguments() =>
-      (_functionArgument() & _functionNextArgument().star())
-          .map((value) => [value.first, ...value[1]]);
+  Parser<List> _functionArguments() => [
+        _funArgument().map((v) => [v]),
+        _funNextArgument().star()
+      ].toSequenceParser().map((v) => v.expand((e) => e).toList());
 
-  final _functionNameFirst = lowercase();
-  final _functionNameChar = [
-    char('_'),
-    digit(),
-    lowercase(),
-  ].toChoiceParser();
-
-  Parser<String> _functionName() =>
-      (_functionNameFirst & _functionNameChar.star()).flatten();
-
-  Parser<NodeMapper> _functionExpr() => (_functionName() &
+  Parser<NodeMapper> _funExpr() => (functionName &
               _functionArguments().skip(before: char('('), after: char(')')))
-          .map((value) => FunctionCall(value[0], value[1]))
-          .where((call) {
-        // TODO: refactor
-        try {
-          _algebra.makeFunction(call);
-          return true;
-        } on FormatException {
-          return false;
-        }
-      }).map((call) {
-        return _algebra.makeFunction(call);
+          .map((v) => FunCall(v[0], v[1]))
+          .tryMap((call) {
+        return _algebra.makeFun(call);
       });
 
-  Parser<NodeTest> _predicateFunctionExpr() => (_functionName() &
-          _functionArguments().skip(before: char('('), after: char(')')))
-      .map((value) => FunctionCall(value[0], value[1]))
-      .map((call) => _algebra.makePredicateFunction(call));
+  Parser<NodeTest> _testFunExpr() => (functionName &
+              _functionArguments().skip(before: char('('), after: char(')')))
+          .map((v) => FunCall(v[0], v[1]))
+          .tryMap((call) {
+        return _algebra.makeTestFun(call);
+      });
 
-  Parser _comparable() => [
+  Parser<NodeMapper> _comparable() => [
         literal.toNodeMapper(),
         ref0(_relPath),
-        ref0(_functionExpr),
+        ref0(_funExpr),
       ].toChoiceParser();
 
-  static const _eq = '==';
-  static const _ne = '!=';
-  static const _le = '<=';
-  static const _ge = '>=';
-  static const _lt = '<';
-  static const _gt = '>';
-  static const _and = '&&';
-  static const _or = '||';
+  static final _cmpOp =
+      ['==', '!=', '<=', '>=', '<', '>'].map(string).toChoiceParser().trim();
 
-  static final _comparisonOp = [
-    string(_eq),
-    string(_ne),
-    string(_le),
-    string(_ge),
-    string(_lt),
-    string(_gt),
-  ].toChoiceParser();
-
-  Parser<NodeTest> _comparisonExpr() =>
-      (ref0(_comparable) & _comparisonOp.trim() & ref0(_comparable)).map((v) {
+  Parser<NodeTest> _cmpExpr() =>
+      (ref0(_comparable) & _cmpOp & ref0(_comparable)).map((v) {
         final left = v[0];
+        final op = v[1];
         final right = v[2];
-        final operations = <String, bool Function(dynamic, dynamic)>{
-          _eq: _algebra.eq,
-          _ne: _algebra.ne,
-          _le: _algebra.le,
-          _ge: _algebra.ge,
-          _lt: _algebra.lt,
-          _gt: _algebra.gt,
-        };
-        final op = operations[v[1]] ?? (throw StateError('Invalid op'));
-        return (Node node) => op(left(node), right(node)).asLogicalType;
+        return (node) => _algebra.test(op, left(node), right(node));
       });
 
   Parser<NodeTest> _logicalExpr() => ref0(_logicalOrExpr);
 
-  Parser<NodeTest> _logicalOrExpr() => (ref0(_logicalAndExpr) &
-          ref0(_logicalAndExpr).skip(before: string(_or).trim()).star())
-      .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<NodeTest>((value) => (node) =>
-          value.any((expr) => _algebra.isTruthy(expr(node))).asLogicalType);
+  Parser<NodeTest> _logicalOrExpr() => [
+        ref0(_logicalAndExpr).map((v) => [v]),
+        ref0(_logicalAndExpr).skip(before: string('||').trim()).star(),
+      ].toSequenceParser().map((v) => v.expand((e) => e)).map((tests) =>
+          (node) => LogicalType(tests.any((test) => test(node).asBool)));
 
-  Parser<NodeTest> _logicalAndExpr() => (ref0(_basicExpr) &
-          ref0(_basicExpr).skip(before: string(_and).trim()).star())
-      .map((value) => [value.first].followedBy(value.last ?? []))
-      .map<NodeTest>((value) => (node) =>
-          value.every((expr) => _algebra.isTruthy(expr(node))).asLogicalType);
+  Parser<NodeTest> _logicalAndExpr() => [
+        ref0(_basicExpr).map((v) => [v]),
+        ref0(_basicExpr).skip(before: string('&&').trim()).star(),
+      ].toSequenceParser().map((v) => v.expand((e) => e)).map((tests) =>
+          (node) => LogicalType(tests.every((test) => test(node).asBool)));
 
   Parser<NodeTest> _negatable(Parser<NodeTest> p) =>
       [ref1(_negation, p), p].toChoiceParser();
 
   Parser<NodeTest> _basicExpr() => [
         ref0(_parenExpr),
-        ref0(_comparisonExpr),
+        ref0(_cmpExpr),
         ref0(_testExpr),
       ].toChoiceParser();
 
-  Parser _filterPath() => [
+  Parser<NodeMapper<Nodes>> _filterPath() => [
         ref0(_relPath),
         ref0(_absPath),
       ].toChoiceParser();
 
-  Parser<NodeTest> _filterPathBool() => [
-        ref0(_relPath).map(
-            (value) => (node) => _algebra.isTruthy(value(node)).asLogicalType),
-        ref0(_absPath).map((selector) =>
-            (node) => _algebra.isTruthy(selector(node)).asLogicalType),
-      ].toChoiceParser();
+  Parser<NodeTest> _existenceTest() =>
+      ref0(_filterPath).map((selector) => (node) => selector(node).asLogical);
 
   Parser<NodeTest> _testExpr() => ref1(
       _negatable,
       [
-        ref0(_filterPathBool),
-        ref0(_predicateFunctionExpr),
+        ref0(_existenceTest),
+        ref0(_testFunExpr),
       ].toChoiceParser());
 
   Parser<NodeSelector> _expressionFilter() =>
@@ -193,13 +154,15 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         ref0(_recursion),
       ].toChoiceParser();
 
-  Parser<NodeSelector> _segmentSequence() =>
-      ref0(_segment).star().map(sequenceSelector);
+  Parser<NodeMapper<Nodes>> _segmentSequence() => ref0(_segment)
+      .star()
+      .map(sequenceSelector)
+      .map((selector) => (node) => Nodes(selector(node)));
 
-  Parser<NodeSelector> _absPath() =>
+  Parser<NodeMapper<Nodes>> _absPath() =>
       ref0(_segmentSequence).skip(before: char(r'$'));
 
-  Parser<NodeSelector> _relPath() =>
+  Parser<NodeMapper<Nodes>> _relPath() =>
       ref0(_segmentSequence).skip(before: char('@'));
 }
 

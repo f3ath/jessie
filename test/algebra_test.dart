@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Algebra', () {
-    const algebra = Algebra();
+    final algebra = Algebra();
 
     test(" 1 < '2' is false", () {
       expect(algebra.lt(1, '2'), isFalse);

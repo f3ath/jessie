@@ -4,7 +4,7 @@ description: Implementation of JSONPath expressions like "$.store.book[2].price"
 homepage: "https://github.com/f3ath/jessie"
 
 environment:
-  sdk: '>=2.16.0 <3.0.0'
+  sdk: '>=2.18.0 <3.0.0'
 
 dependencies:
   rfc_6901: ^0.1.1
