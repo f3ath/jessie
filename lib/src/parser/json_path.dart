@@ -1,25 +1,61 @@
-import 'package:json_path/json_path.dart';
-import 'package:json_path/src/expression_function/fun_call.dart';
-import 'package:json_path/src/expression_function/types.dart';
-import 'package:json_path/src/grammar/array_index.dart';
-import 'package:json_path/src/grammar/array_slice.dart';
-import 'package:json_path/src/grammar/dot_name.dart';
-import 'package:json_path/src/grammar/function_name.dart';
-import 'package:json_path/src/grammar/literal.dart';
-import 'package:json_path/src/grammar/strings.dart';
-import 'package:json_path/src/grammar/wildcard.dart';
-import 'package:json_path/src/parser_ext.dart';
+import 'package:json_path/src/parser/array_index.dart';
+import 'package:json_path/src/parser/array_slice.dart';
+import 'package:json_path/src/parser/compare.dart';
+import 'package:json_path/src/parser/dot_name.dart';
+import 'package:json_path/src/parser/fun/count_fun.dart';
+import 'package:json_path/src/parser/fun/fun_call.dart';
+import 'package:json_path/src/parser/fun/fun_factory.dart';
+import 'package:json_path/src/parser/fun/length_fun.dart';
+import 'package:json_path/src/parser/fun/match_fun.dart';
+import 'package:json_path/src/parser/fun/type_system.dart';
+import 'package:json_path/src/parser/function_name.dart';
+import 'package:json_path/src/parser/literal.dart';
+import 'package:json_path/src/parser/parser_ext.dart';
+import 'package:json_path/src/parser/strings.dart';
+import 'package:json_path/src/parser/types/node_mapper.dart';
+import 'package:json_path/src/parser/types/node_selector.dart';
+import 'package:json_path/src/parser/types/node_test.dart';
+import 'package:json_path/src/parser/wildcard.dart';
 import 'package:json_path/src/selectors.dart';
-import 'package:json_path/src/types/node_mapper.dart';
-import 'package:json_path/src/types/node_selector.dart';
-import 'package:json_path/src/types/node_test.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
-  JsonPathGrammarDefinition({Algebra? algebra})
-      : _algebra = algebra ?? Algebra();
+  JsonPathGrammarDefinition();
 
-  final Algebra _algebra;
+  final fact = <FunFactory>[
+    LengthFunFactory(),
+    CountFunFactory(),
+    MatchFunFactory(),
+    SearchFunFactory(),
+  ];
+
+  /// Returns an instance of expression function with the given arguments.
+  NodeMapper makeFun(FunCall call) {
+    for (final f in fact) {
+      if (f.name == call.name && f is! FunFactory<LogicalType>) {
+        try {
+          return f.makeFun(call.args);
+        } on Exception {
+          continue;
+        }
+      }
+    }
+    throw Exception();
+  }
+
+  /// Returns an instance of test function with the given arguments.
+  NodeTest makeTestFun(FunCall call) {
+    for (final f in fact) {
+      if (f.name == call.name && f is FunFactory<LogicalType>) {
+        try {
+          return f.makeFun(call.args);
+        } on Exception {
+          continue;
+        }
+      }
+    }
+    throw Exception();
+  }
 
   @override
   Parser<NodeSelector> start() => ref0(_absPath).end();
@@ -80,14 +116,14 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
               _functionArguments().skip(before: char('('), after: char(')')))
           .map((v) => FunCall(v[0], v[1]))
           .tryMap((call) {
-        return _algebra.makeFun(call);
+        return makeFun(call);
       });
 
   Parser<NodeTest> _testFunExpr() => (functionName &
               _functionArguments().skip(before: char('('), after: char(')')))
           .map((v) => FunCall(v[0], v[1]))
           .tryMap((call) {
-        return _algebra.makeTestFun(call);
+        return makeTestFun(call);
       });
 
   Parser<NodeMapper> _comparable() => [
@@ -104,7 +140,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         final left = v[0];
         final op = v[1];
         final right = v[2];
-        return (node) => _algebra.test(op, left(node), right(node));
+        return (node) => LogicalType(compare(op, left(node), right(node)));
       });
 
   Parser<NodeTest> _logicalExpr() => ref0(_logicalOrExpr);
@@ -166,4 +202,5 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
       ref0(_segmentSequence).skip(before: char('@'));
 }
 
-final jsonPath = JsonPathGrammarDefinition().build<NodeSelector>();
+Parser<NodeSelector> jsonPathParser() =>
+    JsonPathGrammarDefinition().build<NodeSelector>();

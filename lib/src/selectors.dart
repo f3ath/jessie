@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/types/node_selector.dart';
-import 'package:json_path/src/types/node_test.dart';
+import 'package:json_path/src/node_ext.dart';
+import 'package:json_path/src/parser/types/node_selector.dart';
+import 'package:json_path/src/parser/types/node_test.dart';
 
 NodeSelector arrayIndexSelector(int offset) => (node) sync* {
       final value = node.value;

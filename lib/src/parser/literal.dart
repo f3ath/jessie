@@ -1,5 +1,5 @@
-import 'package:json_path/src/grammar/number.dart';
-import 'package:json_path/src/grammar/strings.dart';
+import 'package:json_path/src/parser/number.dart';
+import 'package:json_path/src/parser/strings.dart';
 import 'package:petitparser/parser.dart';
 
 final Parser literal = [

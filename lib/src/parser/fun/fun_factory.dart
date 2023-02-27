@@ -1,4 +1,4 @@
-import 'package:json_path/src/types/node_mapper.dart';
+import 'package:json_path/src/parser/types/node_mapper.dart';
 
 abstract class FunFactory<T> {
   String get name;

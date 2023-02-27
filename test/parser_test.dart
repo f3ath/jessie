@@ -1,4 +1,4 @@
-import 'package:json_path/src/grammar/json_path.dart';
+import 'package:json_path/src/parser/json_path.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 

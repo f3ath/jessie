@@ -28,9 +28,6 @@ class LogicalType implements LogicalCompatible {
 }
 
 abstract class ValueType<T> implements FunArgType {
-  /// True if this is Nothing.
-  bool get isNothing;
-
   /// Returns the value or throws [StateError].
   dynamic get value;
 }
@@ -45,17 +42,11 @@ class Value<T> implements ValueType<T> {
   final T value;
 
   @override
-  final isNothing = false;
-
-  @override
   ValueType get asValue => this;
 }
 
 class Nothing<T> implements ValueType<T> {
   const Nothing();
-
-  @override
-  final isNothing = true;
 
   @override
   T get value => throw StateError('There is no spoon');

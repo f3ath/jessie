@@ -1,7 +1,7 @@
-import 'package:json_path/src/expression_function/fun_factory.dart';
-import 'package:json_path/src/expression_function/resolvable.dart';
-import 'package:json_path/src/expression_function/types.dart';
-import 'package:json_path/src/types/node_mapper.dart';
+import 'package:json_path/src/parser/fun/fun_factory.dart';
+import 'package:json_path/src/parser/fun/resolvable.dart';
+import 'package:json_path/src/parser/fun/type_system.dart';
+import 'package:json_path/src/parser/types/node_mapper.dart';
 
 class LengthFunFactory implements FunFactory<ValueType<int>> {
   @override

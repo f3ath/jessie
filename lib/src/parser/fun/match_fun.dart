@@ -1,8 +1,8 @@
-import 'package:json_path/src/expression_function/fun_factory.dart';
-import 'package:json_path/src/expression_function/resolvable.dart';
-import 'package:json_path/src/expression_function/types.dart';
+import 'package:json_path/src/parser/fun/fun_factory.dart';
+import 'package:json_path/src/parser/fun/resolvable.dart';
+import 'package:json_path/src/parser/fun/type_system.dart';
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/types/node_mapper.dart';
+import 'package:json_path/src/parser/types/node_mapper.dart';
 
 class MatchFun {
   MatchFun(this._value, this._regExp, this._matchSubstring);
