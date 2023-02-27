@@ -21,4 +21,3 @@ class RootNode implements Node {
   @override
   final parent = null;
 }
-

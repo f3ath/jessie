@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_ext.dart';
-import 'package:json_path/src/parser/types/node_selector.dart';
-import 'package:json_path/src/parser/types/node_test.dart';
+import 'package:json_path/src/parser/types.dart';
 
 NodeSelector arrayIndexSelector(int offset) => (node) sync* {
       final value = node.value;
@@ -61,7 +60,7 @@ Iterable<Node> selectAllRecursively(Node node) sync* {
       .expand((_) => _);
 }
 
-NodeSelector testSelector(NodeTest predicate) =>
+NodeSelector filterSelector(LogicalExpression predicate) =>
     (node) => selectAll(node).where((el) => predicate(el).asBool);
 
 class _SliceIterator {

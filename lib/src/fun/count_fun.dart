@@ -1,6 +1,6 @@
-import 'package:json_path/src/parser/fun/fun_factory.dart';
-import 'package:json_path/src/parser/fun/type_system.dart';
-import 'package:json_path/src/parser/types/node_mapper.dart';
+import 'package:json_path/src/fun/fun_factory.dart';
+import 'package:json_path/src/fun/type_system.dart';
+import 'package:json_path/src/parser/types.dart';
 
 class CountFunFactory implements FunFactory<ValueType<int>> {
   @override
@@ -10,7 +10,7 @@ class CountFunFactory implements FunFactory<ValueType<int>> {
   NodeMapper<ValueType<int>> makeFun(List args) {
     InvalidArgCount.check(name, args, 1);
     final arg = args.single;
-    if (arg is! NodeMapper<Nodes>) {
+    if (arg is! NodesExpression) {
       throw FormatException('Invalid arg type');
     }
     return (node) => Value(arg(node).length);

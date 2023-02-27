@@ -1,8 +1,8 @@
-import 'package:json_path/src/parser/fun/fun_factory.dart';
-import 'package:json_path/src/parser/fun/resolvable.dart';
-import 'package:json_path/src/parser/fun/type_system.dart';
+import 'package:json_path/src/fun/fun_factory.dart';
+import 'package:json_path/src/fun/resolvable.dart';
+import 'package:json_path/src/fun/type_system.dart';
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/parser/types/node_mapper.dart';
+import 'package:json_path/src/parser/types.dart';
 
 class MatchFun {
   MatchFun(this._value, this._regExp, this._matchSubstring);
@@ -32,7 +32,7 @@ abstract class _CommonFactory implements FunFactory<LogicalType> {
   bool get matchSubstring;
 
   @override
-  NodeMapper<LogicalType> makeFun(List args) {
+  LogicalExpression makeFun(List args) {
     InvalidArgCount.check(name, args, 2);
 
     final value = args.first;

@@ -13,6 +13,4 @@ abstract class Node {
 
   /// The parent node
   Node? get parent;
-
 }
-

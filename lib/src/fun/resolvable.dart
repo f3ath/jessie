@@ -1,6 +1,6 @@
-import 'package:json_path/src/parser/fun/type_system.dart';
+import 'package:json_path/src/fun/type_system.dart';
 import 'package:json_path/src/node.dart';
-import 'package:json_path/src/parser/types/node_mapper.dart';
+import 'package:json_path/src/parser/types.dart';
 
 abstract class Resolvable {
   factory Resolvable(dynamic val) =>
@@ -27,7 +27,7 @@ class _Dynamic implements Resolvable {
   resolve(Node node) => _valOf(_mapper(node));
 
   _valOf(x) {
-    if (x is Nodes) {
+    if (x is NodesType) {
       if (x.length == 1) return x.single.value;
       return const Nothing();
     }

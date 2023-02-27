@@ -1,20 +1,16 @@
+import 'package:json_path/src/fun/fun_call.dart';
+import 'package:json_path/src/fun/fun_repository.dart';
+import 'package:json_path/src/fun/type_system.dart';
 import 'package:json_path/src/parser/array_index.dart';
 import 'package:json_path/src/parser/array_slice.dart';
+import 'package:json_path/src/parser/cmp_operator.dart';
 import 'package:json_path/src/parser/compare.dart';
 import 'package:json_path/src/parser/dot_name.dart';
-import 'package:json_path/src/parser/fun/count_fun.dart';
-import 'package:json_path/src/parser/fun/fun_call.dart';
-import 'package:json_path/src/parser/fun/fun_factory.dart';
-import 'package:json_path/src/parser/fun/length_fun.dart';
-import 'package:json_path/src/parser/fun/match_fun.dart';
-import 'package:json_path/src/parser/fun/type_system.dart';
-import 'package:json_path/src/parser/function_name.dart';
+import 'package:json_path/src/parser/fun_name.dart';
 import 'package:json_path/src/parser/literal.dart';
 import 'package:json_path/src/parser/parser_ext.dart';
 import 'package:json_path/src/parser/strings.dart';
-import 'package:json_path/src/parser/types/node_mapper.dart';
-import 'package:json_path/src/parser/types/node_selector.dart';
-import 'package:json_path/src/parser/types/node_test.dart';
+import 'package:json_path/src/parser/types.dart';
 import 'package:json_path/src/parser/wildcard.dart';
 import 'package:json_path/src/selectors.dart';
 import 'package:petitparser/petitparser.dart';
@@ -22,40 +18,7 @@ import 'package:petitparser/petitparser.dart';
 class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   JsonPathGrammarDefinition();
 
-  final fact = <FunFactory>[
-    LengthFunFactory(),
-    CountFunFactory(),
-    MatchFunFactory(),
-    SearchFunFactory(),
-  ];
-
-  /// Returns an instance of expression function with the given arguments.
-  NodeMapper makeFun(FunCall call) {
-    for (final f in fact) {
-      if (f.name == call.name && f is! FunFactory<LogicalType>) {
-        try {
-          return f.makeFun(call.args);
-        } on Exception {
-          continue;
-        }
-      }
-    }
-    throw Exception();
-  }
-
-  /// Returns an instance of test function with the given arguments.
-  NodeTest makeTestFun(FunCall call) {
-    for (final f in fact) {
-      if (f.name == call.name && f is FunFactory<LogicalType>) {
-        try {
-          return f.makeFun(call.args);
-        } on Exception {
-          continue;
-        }
-      }
-    }
-    throw Exception();
-  }
+  final _fun = FunRepository();
 
   @override
   Parser<NodeSelector> start() => ref0(_absPath).end();
@@ -89,15 +52,15 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
           .skip(before: string('..'))
           .map((value) => sequenceSelector([selectAllRecursively, value]));
 
-  Parser<NodeTest> _parenExpr() => ref1(
+  Parser<LogicalExpression> _parenExpr() => ref1(
         _negatable,
         ref0(_logicalExpr)
             .skip(before: char('(').trim(), after: char(')').trim()),
       );
 
-  Parser<NodeTest> _negation(Parser<NodeTest> p) => p
+  Parser<LogicalExpression> _negation(Parser<LogicalExpression> p) => p
       .skip(before: char('!').trim())
-      .map((mapper) => (node) => mapper(node).not());
+      .map((mapper) => (node) => LogicalType(!mapper(node).asBool));
 
   Parser _funArgument() => [
         literal,
@@ -112,77 +75,71 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         _funNextArgument().star()
       ].toSequenceParser().map((v) => v.expand((e) => e).toList());
 
-  Parser<NodeMapper> _funExpr() => (functionName &
-              _functionArguments().skip(before: char('('), after: char(')')))
+  Parser<T> _funCall<T>(T Function(FunCall) funMaker) =>
+      (funName & _functionArguments().skip(before: char('('), after: char(')')))
           .map((v) => FunCall(v[0], v[1]))
-          .tryMap((call) {
-        return makeFun(call);
-      });
+          .tryMap(funMaker);
 
-  Parser<NodeTest> _testFunExpr() => (functionName &
-              _functionArguments().skip(before: char('('), after: char(')')))
-          .map((v) => FunCall(v[0], v[1]))
-          .tryMap((call) {
-        return makeTestFun(call);
-      });
+  Parser<ValueExpression> _comparableFunExpr() =>
+      ref1(_funCall, _fun.makeComparableFun);
 
-  Parser<NodeMapper> _comparable() => [
-        literal.toNodeMapper(),
-        ref0(_relPath),
-        ref0(_funExpr),
+  Parser<LogicalExpression> _logicalFunExpr() =>
+      ref1(_funCall, _fun.makeLogicalFun);
+
+  Parser<ValueExpression> _comparable() => [
+        literal.map(Value.new).toNodeMapper(),
+        ref0(_relPath).map(nodesToValue),
+        ref0(_comparableFunExpr),
       ].toChoiceParser();
 
-  static final _cmpOp =
-      ['==', '!=', '<=', '>=', '<', '>'].map(string).toChoiceParser().trim();
-
-  Parser<NodeTest> _cmpExpr() =>
-      (ref0(_comparable) & _cmpOp & ref0(_comparable)).map((v) {
+  Parser<LogicalExpression> _cmpExpr() =>
+      (ref0(_comparable) & cmpOperator & ref0(_comparable)).map((v) {
         final left = v[0];
         final op = v[1];
         final right = v[2];
-        return (node) => LogicalType(compare(op, left(node), right(node)));
+        return (node) => compare(op, left(node), right(node));
       });
 
-  Parser<NodeTest> _logicalExpr() => ref0(_logicalOrExpr);
+  Parser<LogicalExpression> _logicalExpr() => ref0(_logicalOrExpr);
 
-  Parser<NodeTest> _logicalOrExpr() => [
+  Parser<LogicalExpression> _logicalOrExpr() => [
         ref0(_logicalAndExpr).map((v) => [v]),
         ref0(_logicalAndExpr).skip(before: string('||').trim()).star(),
       ].toSequenceParser().map((v) => v.expand((e) => e)).map((tests) =>
           (node) => LogicalType(tests.any((test) => test(node).asBool)));
 
-  Parser<NodeTest> _logicalAndExpr() => [
+  Parser<LogicalExpression> _logicalAndExpr() => [
         ref0(_basicExpr).map((v) => [v]),
         ref0(_basicExpr).skip(before: string('&&').trim()).star(),
       ].toSequenceParser().map((v) => v.expand((e) => e)).map((tests) =>
           (node) => LogicalType(tests.every((test) => test(node).asBool)));
 
-  Parser<NodeTest> _negatable(Parser<NodeTest> p) =>
+  Parser<LogicalExpression> _negatable(Parser<LogicalExpression> p) =>
       [ref1(_negation, p), p].toChoiceParser();
 
-  Parser<NodeTest> _basicExpr() => [
+  Parser<LogicalExpression> _basicExpr() => [
         ref0(_parenExpr),
         ref0(_cmpExpr),
         ref0(_testExpr),
       ].toChoiceParser();
 
-  Parser<NodeMapper<Nodes>> _filterPath() => [
+  Parser<NodesExpression> _filterPath() => [
         ref0(_relPath),
         ref0(_absPath),
       ].toChoiceParser();
 
-  Parser<NodeTest> _existenceTest() =>
+  Parser<LogicalExpression> _existenceTest() =>
       ref0(_filterPath).map((selector) => (node) => selector(node).asLogical);
 
-  Parser<NodeTest> _testExpr() => ref1(
+  Parser<LogicalExpression> _testExpr() => ref1(
       _negatable,
       [
         ref0(_existenceTest),
-        ref0(_testFunExpr),
+        ref0(_logicalFunExpr),
       ].toChoiceParser());
 
   Parser<NodeSelector> _expressionFilter() =>
-      ref0(_logicalExpr).skip(before: string('?')).map(testSelector);
+      ref0(_logicalExpr).skip(before: string('?')).map(filterSelector);
 
   Parser<NodeSelector> _segment() => [
         dotName,
@@ -190,15 +147,15 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
         ref0(_recursion),
       ].toChoiceParser();
 
-  Parser<NodeMapper<Nodes>> _segmentSequence() => ref0(_segment)
+  Parser<NodesExpression> _segmentSequence() => ref0(_segment)
       .star()
       .map(sequenceSelector)
-      .map((selector) => (node) => Nodes(selector(node)));
+      .map((selector) => (node) => NodesType(selector(node)));
 
-  Parser<NodeMapper<Nodes>> _absPath() =>
+  Parser<NodesExpression> _absPath() =>
       ref0(_segmentSequence).skip(before: char(r'$'));
 
-  Parser<NodeMapper<Nodes>> _relPath() =>
+  Parser<NodesExpression> _relPath() =>
       ref0(_segmentSequence).skip(before: char('@'));
 }
 

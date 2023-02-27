@@ -1,4 +1,4 @@
-import 'package:json_path/src/parser/types/node_mapper.dart';
+import 'package:json_path/src/parser/types.dart';
 import 'package:petitparser/petitparser.dart';
 
 extension ParserExt<R> on Parser<R> {
