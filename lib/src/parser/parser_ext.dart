@@ -10,8 +10,6 @@ extension ParserExt<R> on Parser<R> {
   Parser<T> tryMap<T>(T Function(R r) mapper) => TryMapParser(this, mapper);
 }
 
-/// A parser that performs a transformation with a given function on the
-/// successful parse result of the delegate.
 class TryMapParser<T, R> extends DelegateParser<T, R> {
   TryMapParser(super.delegate, this.callback);
 

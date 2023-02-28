@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:json_path/src/fun/types/logical_expression.dart';
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_ext.dart';
 import 'package:json_path/src/parser/types.dart';

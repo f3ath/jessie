@@ -3,8 +3,12 @@ import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
 import 'package:json_path/src/fun/length_fun.dart';
 import 'package:json_path/src/fun/match_fun.dart';
-import 'package:json_path/src/fun/type_system.dart';
-import 'package:json_path/src/parser/types.dart';
+import 'package:json_path/src/fun/types/logical.dart';
+import 'package:json_path/src/fun/types/logical_expression.dart';
+import 'package:json_path/src/fun/types/nodes.dart';
+import 'package:json_path/src/fun/types/nodes_expression.dart';
+import 'package:json_path/src/fun/types/value.dart';
+import 'package:json_path/src/fun/types/value_expression.dart';
 
 class FunRepository {
   final fact = <FunFactory>[
@@ -19,10 +23,10 @@ class FunRepository {
     for (final f in fact) {
       if (f.name == call.name) {
         try {
-          if (f is FunFactory<ValueType>) {
+          if (f is FunFactory<Value>) {
             return f.makeFun(call.args);
           }
-          if (f is FunFactory<NodesType>) {
+          if (f is FunFactory<Nodes>) {
             return nodesToValue(f.makeFun(call.args));
           }
         } on Exception {
@@ -38,10 +42,10 @@ class FunRepository {
     for (final f in fact) {
       if (f.name == call.name) {
         try {
-          if (f is FunFactory<LogicalType>) {
+          if (f is FunFactory<Logical>) {
             return f.makeFun(call.args);
           }
-          if (f is FunFactory<NodesType>) {
+          if (f is FunFactory<Nodes>) {
             return nodesToLogical(f.makeFun(call.args));
           }
         } on Exception {
@@ -53,6 +57,7 @@ class FunRepository {
   }
 }
 
-LogicalExpression nodesToLogical(NodesExpression fun) => fun.map((v) => v.asLogical);
+LogicalExpression nodesToLogical(NodesExpression fun) =>
+    fun.map((v) => v.asLogical);
 
 ValueExpression nodesToValue(NodesExpression fun) => fun.map((v) => v.asValue);

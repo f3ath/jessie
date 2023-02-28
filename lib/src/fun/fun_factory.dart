@@ -1,11 +1,10 @@
 import 'package:json_path/src/node_mapper.dart';
-import 'package:json_path/src/parser/types.dart';
 
 abstract class FunFactory<T> {
   String get name;
 
   /// Creates a function with the [args].
-  NodeMapper<T> makeFun(List args);
+  NodeMapper<T> makeFun(List<NodeMapper> args);
 }
 
 class InvalidArgCount extends FormatException {
