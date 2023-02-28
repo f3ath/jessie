@@ -1,6 +1,7 @@
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_repository.dart';
 import 'package:json_path/src/fun/type_system.dart';
+import 'package:json_path/src/node_mapper.dart';
 import 'package:json_path/src/parser/array_index.dart';
 import 'package:json_path/src/parser/array_slice.dart';
 import 'package:json_path/src/parser/cmp_operator.dart';
@@ -13,15 +14,16 @@ import 'package:json_path/src/parser/strings.dart';
 import 'package:json_path/src/parser/types.dart';
 import 'package:json_path/src/parser/wildcard.dart';
 import 'package:json_path/src/selectors.dart';
+import 'package:json_path/src/static_node_mapper.dart';
 import 'package:petitparser/petitparser.dart';
 
-class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
+class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
   JsonPathGrammarDefinition();
 
   final _fun = FunRepository();
 
   @override
-  Parser<NodeSelector> start() => ref0(_absPath).end();
+  Parser<NodesExpression> start() => ref0(_absPath).end();
 
   Parser<NodeSelector> _unionElement() => [
         arraySlice,
@@ -60,10 +62,10 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
 
   Parser<LogicalExpression> _negation(Parser<LogicalExpression> p) => p
       .skip(before: char('!').trim())
-      .map((mapper) => (node) => LogicalType(!mapper(node).asBool));
+      .map((mapper) => mapper.map((v) => v.not()));
 
   Parser _funArgument() => [
-        literal,
+        literal.map((value) => StaticNodeMapper(Value(value))),
         ref0(_filterPath),
       ].toChoiceParser().trim();
 
@@ -94,10 +96,11 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
 
   Parser<LogicalExpression> _cmpExpr() =>
       (ref0(_comparable) & cmpOperator & ref0(_comparable)).map((v) {
-        final left = v[0];
-        final op = v[1];
-        final right = v[2];
-        return (node) => compare(op, left(node), right(node));
+        final NodeMapper<ValueType> left = v[0];
+        final String op = v[1];
+        final NodeMapper<ValueType> right = v[2];
+
+        return left.flatMap(right, (l, r) => compare(op, l, r));
       });
 
   Parser<LogicalExpression> _logicalExpr() => ref0(_logicalOrExpr);
@@ -105,14 +108,14 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   Parser<LogicalExpression> _logicalOrExpr() => [
         ref0(_logicalAndExpr).map((v) => [v]),
         ref0(_logicalAndExpr).skip(before: string('||').trim()).star(),
-      ].toSequenceParser().map((v) => v.expand((e) => e)).map((tests) =>
-          (node) => LogicalType(tests.any((test) => test(node).asBool)));
+      ].toSequenceParser().map((v) => v.expand((e) => e)).map(
+          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a.or(b))));
 
   Parser<LogicalExpression> _logicalAndExpr() => [
         ref0(_basicExpr).map((v) => [v]),
         ref0(_basicExpr).skip(before: string('&&').trim()).star(),
-      ].toSequenceParser().map((v) => v.expand((e) => e)).map((tests) =>
-          (node) => LogicalType(tests.every((test) => test(node).asBool)));
+      ].toSequenceParser().map((v) => v.expand((e) => e)).map(
+          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a.and(b))));
 
   Parser<LogicalExpression> _negatable(Parser<LogicalExpression> p) =>
       [ref1(_negation, p), p].toChoiceParser();
@@ -129,7 +132,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
       ].toChoiceParser();
 
   Parser<LogicalExpression> _existenceTest() =>
-      ref0(_filterPath).map((selector) => (node) => selector(node).asLogical);
+      ref0(_filterPath).map((selector) => selector.map((v) => v.asLogical));
 
   Parser<LogicalExpression> _testExpr() => ref1(
       _negatable,
@@ -150,7 +153,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
   Parser<NodesExpression> _segmentSequence() => ref0(_segment)
       .star()
       .map(sequenceSelector)
-      .map((selector) => (node) => NodesType(selector(node)));
+      .map((selector) => NodeMapper((node) => NodesType(selector(node))));
 
   Parser<NodesExpression> _absPath() =>
       ref0(_segmentSequence).skip(before: char(r'$'));
@@ -159,5 +162,5 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodeSelector> {
       ref0(_segmentSequence).skip(before: char('@'));
 }
 
-Parser<NodeSelector> jsonPathParser() =>
-    JsonPathGrammarDefinition().build<NodeSelector>();
+Parser<NodesExpression> jsonPathParser() =>
+    JsonPathGrammarDefinition().build<NodesExpression>();

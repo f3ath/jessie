@@ -1,5 +1,6 @@
 import 'package:json_path/src/fun/fun_factory.dart';
 import 'package:json_path/src/fun/type_system.dart';
+import 'package:json_path/src/node_mapper.dart';
 import 'package:json_path/src/parser/types.dart';
 
 class CountFunFactory implements FunFactory<ValueType<int>> {
@@ -13,6 +14,6 @@ class CountFunFactory implements FunFactory<ValueType<int>> {
     if (arg is! NodesExpression) {
       throw FormatException('Invalid arg type');
     }
-    return (node) => Value(arg(node).length);
+    return arg.map((v)=> Value(v.length));
   }
 }

@@ -1,9 +1,8 @@
 import 'package:json_path/src/fun/type_system.dart';
 import 'package:json_path/src/node.dart';
+import 'package:json_path/src/node_mapper.dart';
 
-typedef NodeMapper<T> = T Function(Node node);
-
-typedef NodeSelector = NodeMapper<Iterable<Node>>;
+typedef NodeSelector = Iterable<Node> Function(Node node);
 
 typedef LogicalExpression = NodeMapper<LogicalType>;
 typedef ValueExpression = NodeMapper<ValueType>;

@@ -1,25 +1,29 @@
 import 'package:json_path/src/fun/fun_factory.dart';
-import 'package:json_path/src/fun/resolvable.dart';
 import 'package:json_path/src/fun/type_system.dart';
 import 'package:json_path/src/node.dart';
+import 'package:json_path/src/node_mapper.dart';
 import 'package:json_path/src/parser/types.dart';
+import 'package:json_path/src/static_node_mapper.dart';
 
 class MatchFun {
   MatchFun(this._value, this._regExp, this._matchSubstring);
 
-  final Resolvable _regExp;
-  final Resolvable _value;
+  final NodesOrValue _regExp;
+  final NodesOrValue _value;
   final bool _matchSubstring;
 
   LogicalType apply(Node node) {
     final value = _value.resolve(node);
     final regExp = _regExp.resolve(node);
+    if (value is Nothing || regExp is Nothing) return LogicalType(false);
 
-    if (value is String && regExp is String) {
+    final v = value.value;
+    final r = regExp.value;
+    if (v is String && r is String) {
       final prefix = _matchSubstring ? '' : r'^';
       final suffix = _matchSubstring ? '' : r'$';
       try {
-        return LogicalType(RegExp(prefix + regExp + suffix).hasMatch(value));
+        return LogicalType(RegExp(prefix + r + suffix).hasMatch(v));
       } on FormatException {
         return LogicalType(false);
       }
@@ -37,13 +41,18 @@ abstract class _CommonFactory implements FunFactory<LogicalType> {
 
     final value = args.first;
     final regex = args.last;
-    if (value is! NodeMapper && value is! String) {
-      throw FormatException('Invalid argument type');
+    if (value is StaticNodeMapper &&
+        value.value is! Nothing &&
+        value.value.value is! String) {
+      throw FormatException('Invalid value');
     }
-    if (regex is! NodeMapper && regex is! String) {
-      throw FormatException('Invalid argument type');
+    if (regex is StaticNodeMapper &&
+        regex.value is! Nothing &&
+        regex.value.value is! String) {
+      throw FormatException('Invalid value');
     }
-    return MatchFun(Resolvable(value), Resolvable(regex), matchSubstring).apply;
+    return NodeMapper(MatchFun(NodesOrValue(value), NodesOrValue(regex), matchSubstring)
+        .apply);
   }
 }
 
@@ -60,4 +69,32 @@ class SearchFunFactory extends _CommonFactory {
   final name = 'search';
   @override
   final matchSubstring = true;
+}
+
+/// TODO: rename this
+class NodesOrValue {
+  NodesOrValue(this._v) {
+    _checkType(_v);
+  }
+
+  static void _checkType(v) {
+    if (!(v is NodesType ||
+        v is ValueType ||
+        v is NodesExpression ||
+        v is ValueExpression)) {
+      throw ArgumentError('Invalid type of $v: (${v.runtimeType}');
+    }
+  }
+
+  final Object _v;
+
+  ValueType resolve(Node node) => _resolve(_v, node);
+
+  ValueType _resolve(dynamic v, Node node) {
+    if (v is ValueType) return v;
+    if (v is NodesType) return v.asValue;
+    if (v is ValueExpression) return v.apply(node);
+    if (v is NodesExpression) return v.apply(node).asValue;
+    throw StateError('Invalid type ${v.runtimeType}');
+  }
 }

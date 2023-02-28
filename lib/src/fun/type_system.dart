@@ -8,6 +8,14 @@ class LogicalType {
   final bool asBool;
 }
 
+extension LogicalTypeExt on LogicalType {
+  LogicalType and(LogicalType other) => LogicalType(asBool && other.asBool);
+
+  LogicalType or(LogicalType other) => LogicalType(asBool || other.asBool);
+
+  LogicalType not() => LogicalType(!asBool);
+}
+
 class NodesType with IterableMixin<Node> {
   NodesType(this._nodes);
 

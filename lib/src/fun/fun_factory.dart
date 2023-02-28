@@ -1,3 +1,4 @@
+import 'package:json_path/src/node_mapper.dart';
 import 'package:json_path/src/parser/types.dart';
 
 abstract class FunFactory<T> {

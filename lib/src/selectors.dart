@@ -61,7 +61,7 @@ Iterable<Node> selectAllRecursively(Node node) sync* {
 }
 
 NodeSelector filterSelector(LogicalExpression predicate) =>
-    (node) => selectAll(node).where((el) => predicate(el).asBool);
+    (node) => selectAll(node).where((el) => predicate.apply(el).asBool);
 
 class _SliceIterator {
   Iterable<int> iterate(List list, int? start, int? stop, int step) sync* {

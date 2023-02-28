@@ -14,13 +14,13 @@ class JsonPath {
 
   static final _defaultParser = jsonPathParser();
 
-  final NodeSelector _selector;
+  final NodesExpression _selector;
 
   /// JSONPath expression.
   final String expression;
 
   /// Reads the given [json] object returning an Iterable of all matches found.
-  Iterable<Node> read(json) => _selector(RootNode(json));
+  Iterable<Node> read(json) => _selector.apply(RootNode(json));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable<dynamic> readValues(json) => read(json).map((node) => node.value);

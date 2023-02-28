@@ -53,8 +53,6 @@ class FunRepository {
   }
 }
 
-LogicalExpression nodesToLogical(NodesExpression fun) =>
-    (node) => fun(node).asLogical;
+LogicalExpression nodesToLogical(NodesExpression fun) => fun.map((v) => v.asLogical);
 
-ValueExpression nodesToValue(NodesExpression fun) =>
-    (node) => fun(node).asValue;
+ValueExpression nodesToValue(NodesExpression fun) => fun.map((v) => v.asValue);
