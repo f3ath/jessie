@@ -20,7 +20,7 @@ class JsonPath {
   final String expression;
 
   /// Reads the given [json] object returning an Iterable of all matches found.
-  Iterable<Node> read(json) => _selector.apply(RootNode(json));
+  Iterable<Node> read(json) => _selector.applyTo(RootNode(json));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   Iterable<dynamic> readValues(json) => read(json).map((node) => node.value);

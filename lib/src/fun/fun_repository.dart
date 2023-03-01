@@ -19,45 +19,38 @@ class FunRepository {
   ];
 
   /// Returns a function to use in comparable context.
-  ValueExpression makeComparableFun(FunCall call) {
-    for (final f in fact) {
-      if (f.name == call.name) {
-        try {
-          if (f is FunFactory<Value>) {
-            return f.makeFun(call.args);
-          }
-          if (f is FunFactory<Nodes>) {
-            return nodesToValue(f.makeFun(call.args));
-          }
-        } on Exception {
-          continue;
+  ValueExpression makeComparableFun(FunCall call) => _findFactory(call, (fun) {
+        if (fun is FunFactory<Value, dynamic>) {
+          return fun.build(call.args);
         }
-      }
-    }
-    throw Exception();
-  }
+        if (fun is FunFactory<Nodes, dynamic>) {
+          return fun.build(call.args).asValueExpression;
+        }
+      });
 
   /// Returns a function to use in logical expressions.
-  LogicalExpression makeLogicalFun(FunCall call) {
-    for (final f in fact) {
-      if (f.name == call.name) {
-        try {
-          if (f is FunFactory<Logical>) {
-            return f.makeFun(call.args);
-          }
-          if (f is FunFactory<Nodes>) {
-            return nodesToLogical(f.makeFun(call.args));
-          }
-        } on Exception {
-          continue;
+  LogicalExpression makeLogicalFun(FunCall call) => _findFactory(call, (fun) {
+        if (fun is FunFactory<Logical, dynamic>) {
+          return fun.build(call.args);
         }
+        if (fun is FunFactory<Nodes, dynamic>) {
+          return fun.build(call.args).asLogicalExpression;
+        }
+      });
+
+  T _findFactory<T>(FunCall call, T? Function(FunFactory fun) tryBuild) {
+    for (final factory in fact) {
+      if (factory.name != call.name || factory.argCount != call.args.length) {
+        continue;
+      }
+      try {
+        final fun = tryBuild(factory);
+        if (fun == null) continue;
+        return fun;
+      } on Exception {
+        continue;
       }
     }
-    throw Exception();
+    throw Exception('No implementation for $call found');
   }
 }
-
-LogicalExpression nodesToLogical(NodesExpression fun) =>
-    fun.map((v) => v.asLogical);
-
-ValueExpression nodesToValue(NodesExpression fun) => fun.map((v) => v.asValue);

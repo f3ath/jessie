@@ -3,17 +3,17 @@ import 'package:json_path/src/fun/types/nodes_expression.dart';
 import 'package:json_path/src/fun/types/value.dart';
 import 'package:json_path/src/node_mapper.dart';
 
-class CountFunFactory implements FunFactory<Value<int>> {
-  @override
-  final name = 'count';
+class CountFunFactory extends FunFactory<Value<int>, NodesExpression> {
+  CountFunFactory() : super('count', 1);
 
   @override
-  NodeMapper<Value<int>> makeFun(List<NodeMapper> args) {
-    InvalidArgCount.check(name, args, 1);
+  NodesExpression convertArgs(List<NodeMapper> args) {
     final arg = args.single;
-    if (arg is! NodesExpression) {
-      throw FormatException('Invalid arg type');
-    }
-    return arg.map((v) => Value(v.length));
+    if (arg is NodesExpression) return arg;
+    throw FormatException('Invalid arg type');
   }
+
+  @override
+  NodeMapper<Value<int>> apply(NodesExpression arg) =>
+      arg.map((v) => Value(v.length));
 }

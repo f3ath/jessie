@@ -93,7 +93,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
 
   Parser<ValueExpression> _comparable() => [
         literal,
-        ref0(_relPath).map(nodesToValue),
+        ref0(_relPath).map((it) => it.asValueExpression),
         ref0(_comparableFunExpr),
       ].toChoiceParser();
 
@@ -135,7 +135,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
       ].toChoiceParser();
 
   Parser<LogicalExpression> _existenceTest() =>
-      ref0(_filterPath).map((selector) => selector.map((v) => v.asLogical));
+      ref0(_filterPath).map((value) => value.asLogicalExpression);
 
   Parser<LogicalExpression> _testExpr() => ref1(
       _negatable,

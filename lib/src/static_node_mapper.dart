@@ -8,18 +8,17 @@ class StaticNodeMapper<T> implements NodeMapper<T> {
   final T value;
 
   @override
-  T apply(Node node) => value;
+  T applyTo(Node node) => value;
 
   @override
   NodeMapper<R> map<R>(R Function(T v) mapper) =>
       StaticNodeMapper(mapper(value));
 
   @override
-  NodeMapper<R> flatMap<R, M1>(
-      NodeMapper<M1> m1, R Function(T v, M1 m1) mapper) {
-    if (m1 is StaticNodeMapper<M1>) {
-      return StaticNodeMapper(mapper(value, m1.value));
+  NodeMapper<R> flatMap<R, M>(NodeMapper<M> m, R Function(T v, M m) mapper) {
+    if (m is StaticNodeMapper<M>) {
+      return StaticNodeMapper(mapper(value, m.value));
     }
-    return NodeMapper((node) => mapper(value, m1.apply(node)));
+    return NodeMapper((node) => mapper(value, m.applyTo(node)));
   }
 }

@@ -5,14 +5,17 @@ class NodeMapper<T> {
 
   final T Function(Node) _map;
 
-  T apply(Node node) => _map(node);
+  T applyTo(Node node) => _map(node);
 
-  /// Monadic mapper.
+  /// Creates a new [NodeMapper] by applying the [mapper] function
+  /// to the value produced by this mapper.
   NodeMapper<R> map<R>(R Function(T v) mapper) =>
-      NodeMapper((node) => mapper(apply(node)));
+      NodeMapper((node) => mapper(applyTo(node)));
 
-  /// Monadic mapper.
-  NodeMapper<R> flatMap<R, O1>(
-          NodeMapper<O1> other, R Function(T self, O1 other) mapper) =>
-      NodeMapper((node) => mapper(apply(node), other.apply(node)));
+  /// Creates a new [NodeMapper] from the [other] [NodeMapper] and the
+  /// [mapper] function. The [mapper] function is applied to the values
+  /// produced by this an the [other] [NodeMapper].
+  NodeMapper<R> flatMap<R, M>(
+          NodeMapper<M> other, R Function(T self, M other) mapper) =>
+      NodeMapper((node) => mapper(applyTo(node), other.applyTo(node)));
 }

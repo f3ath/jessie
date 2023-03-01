@@ -8,73 +8,80 @@ import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_mapper.dart';
 import 'package:json_path/src/static_node_mapper.dart';
 
-class MatchFunFactory extends _CommonFactory {
-  @override
-  final name = 'match';
-  @override
-  final substring = false;
+class MatchFunFactory extends StringMatchingFunFactory {
+  MatchFunFactory() : super('match', false);
 }
 
-class SearchFunFactory extends _CommonFactory {
-  @override
-  final name = 'search';
-  @override
-  final substring = true;
+class SearchFunFactory extends StringMatchingFunFactory {
+  SearchFunFactory() : super('search', true);
 }
 
-abstract class _CommonFactory implements FunFactory<Logical> {
-  bool get substring;
+class Arg {
+  Arg(this.value, this.regex);
+
+  final NodeMapper regex;
+  final NodeMapper value;
+}
+
+abstract class StringMatchingFunFactory extends FunFactory<Logical, Arg> {
+  StringMatchingFunFactory(String name, this.substring) : super(name, 2);
+
+  final bool substring;
 
   @override
-  LogicalExpression makeFun(List<NodeMapper> args) {
-    InvalidArgCount.check(name, args, 2);
+  Arg convertArgs(List<NodeMapper> args) => Arg(args[0], args[1]);
 
-    final value = args.first;
-    final regex = args.last;
+  @override
+  LogicalExpression apply(Arg arg) {
+    final value = arg.value;
+    final regex = arg.regex;
 
-    // Static type checking
-    _checkStaticTypes(value);
-    _checkStaticTypes(regex);
+    // Static type checking and extraction
+    final staticValue = _getStaticValue(value);
+    final staticRegex = _getStaticValue(regex);
 
-    if (value is StaticNodeMapper<Value> && regex is StaticNodeMapper<Value>) {
-      return regex.value
-          .flatMap(value.value, (r, v) => _match(r, v, substring))
-          .map(Logical.new)
-          .map(StaticNodeMapper.new)
-          .orElse(() => throw FormatException('Invalid value'));
+    // If all args are available statically,
+    // we can return the result right away.
+    if (staticValue != null && staticRegex != null) {
+      final hasMatch = _match(staticRegex, staticValue, substring);
+      return StaticNodeMapper(Logical(hasMatch));
     }
 
     return NodeMapper((node) {
       final v = _resolve(value, node);
       final r = _resolve(regex, node);
-
-      return Logical(v
-          .map((v) => r.map((r) {
-                if (v is String && r is String) {
-                  try {
-                    return _match(r, v, substring);
-                  } on FormatException {
-                    return false;
-                  }
-                }
-                return false;
-              }).orElse(() => false))
-          .orElse(() => false));
+      final hasMatch = v
+          .map((v) => r
+              .map((r) => _typeSafeMatch(v, r, substring))
+              .orElse(() => false)) // Regex is Nothing
+          .orElse(() => false); // Value is nothing
+      return Logical(hasMatch);
     });
   }
 
-  void _checkStaticTypes(value) {
+  /// Returns the value if it is available at parse time.
+  String? _getStaticValue(value) {
     if (value is StaticNodeMapper<Value>) {
-      value.value
+      return value.value
           .whereType<String>()
           .orElse(() => throw FormatException('Invalid type'));
     }
+    return null;
   }
 
   Value _resolve(NodeMapper v, Node node) {
-    if (v is ValueExpression) return v.apply(node);
-    if (v is NodesExpression) return v.apply(node).asValue;
-    throw StateError('Invalid type ${v.runtimeType}');
+    if (v is ValueExpression) return v.applyTo(node);
+    if (v is NodesExpression) return v.applyTo(node).asValue;
+    throw ArgumentError('Invalid type ${v.runtimeType}');
+  }
+
+  bool _typeSafeMatch(value, regex, bool substring) {
+    if (value is! String || regex is! String) return false;
+    try {
+      return _match(regex, value, substring);
+    } on FormatException {
+      return false; // Invalid regex
+    }
   }
 
   bool _match(String regExp, String string, bool substring) =>
