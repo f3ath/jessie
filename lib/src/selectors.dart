@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:json_path/src/fun/types/logical_expression.dart';
+import 'package:json_path/src/fun/types/bool_expression.dart';
 import 'package:json_path/src/node.dart';
 import 'package:json_path/src/node_ext.dart';
 import 'package:json_path/src/parser/types.dart';
@@ -61,8 +61,8 @@ Iterable<Node> selectAllRecursively(Node node) sync* {
       .expand((_) => _);
 }
 
-NodeSelector filterSelector(LogicalExpression predicate) =>
-    (node) => selectAll(node).where((el) => predicate.applyTo(el).asBool);
+NodeSelector filterSelector(BoolExpression predicate) =>
+    (node) => selectAll(node).where(predicate.applyTo);
 
 class _SliceIterator {
   Iterable<int> iterate(List list, int? start, int? stop, int step) sync* {

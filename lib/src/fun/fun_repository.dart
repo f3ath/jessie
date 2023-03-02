@@ -3,12 +3,11 @@ import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
 import 'package:json_path/src/fun/length_fun.dart';
 import 'package:json_path/src/fun/match_fun.dart';
-import 'package:json_path/src/fun/types/logical.dart';
-import 'package:json_path/src/fun/types/logical_expression.dart';
+import 'package:json_path/src/fun/types/bool_expression.dart';
 import 'package:json_path/src/fun/types/nodes.dart';
 import 'package:json_path/src/fun/types/nodes_expression.dart';
-import 'package:json_path/src/fun/types/value.dart';
 import 'package:json_path/src/fun/types/value_expression.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 class FunRepository {
   final fact = <FunFactory>[
@@ -20,22 +19,24 @@ class FunRepository {
 
   /// Returns a function to use in comparable context.
   ValueExpression makeComparableFun(FunCall call) => _findFactory(call, (fun) {
-        if (fun is FunFactory<Value, dynamic>) {
+        if (fun is FunFactory<Maybe, dynamic>) {
           return fun.build(call.args);
         }
         if (fun is FunFactory<Nodes, dynamic>) {
           return fun.build(call.args).asValueExpression;
         }
+        return null;
       });
 
   /// Returns a function to use in logical expressions.
-  LogicalExpression makeLogicalFun(FunCall call) => _findFactory(call, (fun) {
-        if (fun is FunFactory<Logical, dynamic>) {
+  BoolExpression makeLogicalFun(FunCall call) => _findFactory(call, (fun) {
+        if (fun is FunFactory<bool, dynamic>) {
           return fun.build(call.args);
         }
         if (fun is FunFactory<Nodes, dynamic>) {
           return fun.build(call.args).asLogicalExpression;
         }
+        return null;
       });
 
   T _findFactory<T>(FunCall call, T? Function(FunFactory fun) tryBuild) {

@@ -38,11 +38,15 @@ void main() {
         r'$..book[0,1]',
         r'$..book[:2]',
         r'$.☺',
+        r'$[?@ > count($)]',
+        r'$[?@ > count($.bar)]',
+        r'$[?@.foo > $.bar]',
       ]) {
         test(expr, () {
           final parser = jsonPath.parse(expr);
           if (parser.isFailure) {
-            fail(parser.message);
+            fail(
+                '${parser.message}, buffer: "${parser.buffer}", pos: ${parser.position}');
           }
         });
       }

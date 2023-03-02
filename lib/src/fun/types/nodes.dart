@@ -1,9 +1,7 @@
 import 'dart:collection';
 
-import 'package:json_path/src/fun/types/logical.dart';
-import 'package:json_path/src/fun/types/nothing.dart';
-import 'package:json_path/src/fun/types/value.dart';
 import 'package:json_path/src/node.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 /// Nodes type.
 class Nodes with IterableMixin<Node> {
@@ -14,7 +12,7 @@ class Nodes with IterableMixin<Node> {
   @override
   Iterator<Node> get iterator => _nodes.iterator;
 
-  Value get asValue => length == 1 ? Value(single.value) : Nothing();
+  Maybe get asValue => length == 1 ? Just(single.value) : Nothing();
 
-  Logical get asLogical => Logical(isNotEmpty);
+  bool get asBool => isNotEmpty;
 }

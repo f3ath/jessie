@@ -5,19 +5,18 @@ import 'package:rfc_6901/rfc_6901.dart';
 class ChildNode implements Node {
   ChildNode(this.value, this.path, this.pointer, this.parent);
 
-  /// The node value
   @override
   final dynamic value;
 
-  /// JSONPath to this node
   @override
   final String path;
 
-  /// JSON Pointer (RFC 6901) to this node
   @override
   final JsonPointer pointer;
 
-  /// The parent node
   @override
-  final Node? parent;
+  final Node parent;
+
+  @override
+  Node get root => parent.root;
 }

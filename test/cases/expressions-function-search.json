@@ -1,0 +1,13 @@
+{
+  "tests": [
+    {
+      "selector": "$[?search(@, 'a')]",
+      "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
+      "values": ["abc", "bab", "bba", "a"]
+    }, {
+      "selector": "$.foo[?search(@, 'a')]",
+      "document": {"foo": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "values": ["abc", "bab", "bba", "a"]
+    }
+  ]
+}

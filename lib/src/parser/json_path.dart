@@ -1,9 +1,8 @@
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_repository.dart';
-import 'package:json_path/src/fun/types/logical_expression.dart';
+import 'package:json_path/src/fun/types/bool_expression.dart';
 import 'package:json_path/src/fun/types/nodes.dart';
 import 'package:json_path/src/fun/types/nodes_expression.dart';
-import 'package:json_path/src/fun/types/value.dart';
 import 'package:json_path/src/fun/types/value_expression.dart';
 import 'package:json_path/src/node_mapper.dart';
 import 'package:json_path/src/parser/array_index.dart';
@@ -18,6 +17,7 @@ import 'package:json_path/src/parser/strings.dart';
 import 'package:json_path/src/parser/types.dart';
 import 'package:json_path/src/parser/wildcard.dart';
 import 'package:json_path/src/selectors.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
@@ -57,15 +57,14 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
           .skip(before: string('..'))
           .map((value) => sequenceSelector([selectAllRecursively, value]));
 
-  Parser<LogicalExpression> _parenExpr() => ref1(
+  Parser<BoolExpression> _parenExpr() => ref1(
         _negatable,
         ref0(_logicalExpr)
             .skip(before: char('(').trim(), after: char(')').trim()),
       );
 
-  Parser<LogicalExpression> _negation(Parser<LogicalExpression> p) => p
-      .skip(before: char('!').trim())
-      .map((mapper) => mapper.map((v) => v.not()));
+  Parser<BoolExpression> _negation(Parser<BoolExpression> p) =>
+      p.skip(before: char('!').trim()).map((mapper) => mapper.map((v) => !v));
 
   Parser<NodeMapper> _funArgument() => [
         literal,
@@ -88,42 +87,42 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
   Parser<ValueExpression> _comparableFunExpr() =>
       ref1(_funCall, _fun.makeComparableFun);
 
-  Parser<LogicalExpression> _logicalFunExpr() =>
+  Parser<BoolExpression> _logicalFunExpr() =>
       ref1(_funCall, _fun.makeLogicalFun);
 
   Parser<ValueExpression> _comparable() => [
         literal,
-        ref0(_relPath).map((it) => it.asValueExpression),
+        ref0(_filterPath).map((it) => it.asValueExpression),
         ref0(_comparableFunExpr),
       ].toChoiceParser();
 
-  Parser<LogicalExpression> _cmpExpr() =>
+  Parser<BoolExpression> _cmpExpr() =>
       (ref0(_comparable) & cmpOperator & ref0(_comparable)).map((v) {
-        final NodeMapper<Value> left = v[0];
+        final NodeMapper<Maybe> left = v[0];
         final String op = v[1];
-        final NodeMapper<Value> right = v[2];
+        final NodeMapper<Maybe> right = v[2];
 
         return left.flatMap(right, (l, r) => compare(op, l, r));
       });
 
-  Parser<LogicalExpression> _logicalExpr() => ref0(_logicalOrExpr);
+  Parser<BoolExpression> _logicalExpr() => ref0(_logicalOrExpr);
 
-  Parser<LogicalExpression> _logicalOrExpr() => [
+  Parser<BoolExpression> _logicalOrExpr() => [
         ref0(_logicalAndExpr).map((v) => [v]),
         ref0(_logicalAndExpr).skip(before: string('||').trim()).star(),
       ].toSequenceParser().map((v) => v.expand((e) => e)).map(
-          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a.or(b))));
+          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a || b)));
 
-  Parser<LogicalExpression> _logicalAndExpr() => [
+  Parser<BoolExpression> _logicalAndExpr() => [
         ref0(_basicExpr).map((v) => [v]),
         ref0(_basicExpr).skip(before: string('&&').trim()).star(),
       ].toSequenceParser().map((v) => v.expand((e) => e)).map(
-          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a.and(b))));
+          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a && b)));
 
-  Parser<LogicalExpression> _negatable(Parser<LogicalExpression> p) =>
+  Parser<BoolExpression> _negatable(Parser<BoolExpression> p) =>
       [ref1(_negation, p), p].toChoiceParser();
 
-  Parser<LogicalExpression> _basicExpr() => [
+  Parser<BoolExpression> _basicExpr() => [
         ref0(_parenExpr),
         ref0(_cmpExpr),
         ref0(_testExpr),
@@ -134,10 +133,10 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
         ref0(_absPath),
       ].toChoiceParser();
 
-  Parser<LogicalExpression> _existenceTest() =>
+  Parser<BoolExpression> _existenceTest() =>
       ref0(_filterPath).map((value) => value.asLogicalExpression);
 
-  Parser<LogicalExpression> _testExpr() => ref1(
+  Parser<BoolExpression> _testExpr() => ref1(
       _negatable,
       [
         ref0(_existenceTest),
@@ -158,8 +157,9 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
       .map(sequenceSelector)
       .map((selector) => NodeMapper((node) => Nodes(selector(node))));
 
-  Parser<NodesExpression> _absPath() =>
-      ref0(_segmentSequence).skip(before: char(r'$'));
+  Parser<NodesExpression> _absPath() => ref0(_segmentSequence)
+      .skip(before: char(r'$'))
+      .map((value) => NodeMapper((node) => value.applyTo(node.root)));
 
   Parser<NodesExpression> _relPath() =>
       ref0(_segmentSequence).skip(before: char('@'));

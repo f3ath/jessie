@@ -1,4 +1,4 @@
-import 'package:json_path/src/fun/types/value.dart';
 import 'package:json_path/src/node_mapper.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
-typedef ValueExpression = NodeMapper<Value>;
+typedef ValueExpression = NodeMapper<Maybe>;
