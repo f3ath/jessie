@@ -1,9 +1,9 @@
-import 'package:json_path/src/parser/json_path.dart';
+import 'package:json_path/json_path.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final jsonPath = JsonPathGrammarDefinition().build();
+  final jsonPath = jsonPathParser();
 
   group('Parser', () {
     test('Linter is happy', () {

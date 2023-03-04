@@ -1,19 +1,19 @@
-import 'package:json_path/src/fun/fun_factory.dart';
+import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/types/nodes_expression.dart';
 import 'package:json_path/src/node_mapper.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
-class CountFunFactory extends FunFactory<Maybe<int>, NodesExpression> {
-  CountFunFactory() : super('count', 1);
+class CountFun implements Fun<Maybe<int>> {
+  const CountFun();
 
   @override
-  NodesExpression convertArgs(List<NodeMapper> args) {
-    final arg = args.single;
-    if (arg is NodesExpression) return arg;
+  final name = 'count';
+
+  @override
+  NodeMapper<Maybe<int>> withArgs(List<NodeMapper> args) {
+    if (args.length != 1) throw Exception('Invalid args');
+    final arg = args[0];
+    if (arg is NodesExpression) return arg.map((v) => Just(v.length));
     throw FormatException('Invalid arg type');
   }
-
-  @override
-  NodeMapper<Maybe<int>> apply(NodesExpression arg) =>
-      arg.map((v) => Just(v.length));
 }

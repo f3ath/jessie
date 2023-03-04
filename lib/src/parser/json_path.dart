@@ -1,5 +1,7 @@
+import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_repository.dart';
+import 'package:json_path/src/fun/standard_functions.dart';
 import 'package:json_path/src/fun/types/bool_expression.dart';
 import 'package:json_path/src/fun/types/nodes.dart';
 import 'package:json_path/src/fun/types/nodes_expression.dart';
@@ -21,9 +23,10 @@ import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
-  JsonPathGrammarDefinition();
+  JsonPathGrammarDefinition(Iterable<Fun> functions)
+      : _fun = FunRepository(functions);
 
-  final _fun = FunRepository();
+  final FunRepository _fun;
 
   @override
   Parser<NodesExpression> start() => ref0(_absPath).end();
@@ -79,16 +82,17 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
         _funNextArgument().star()
       ].toSequenceParser().map((v) => v.expand((e) => e).toList());
 
-  Parser<T> _funCall<T>(T Function(FunCall) funMaker) =>
+  Parser<T> _funCall<T>(T? Function(FunCall) funMaker) =>
       (funName & _functionArguments().skip(before: char('('), after: char(')')))
           .map((v) => FunCall(v[0], v[1]))
-          .tryMap(funMaker);
+          .tryMap((call) =>
+              funMaker(call) ??
+              (throw Exception('No implementation for $call found')));
 
   Parser<ValueExpression> _comparableFunExpr() =>
-      ref1(_funCall, _fun.makeComparableFun);
+      ref1(_funCall, _fun.comparable);
 
-  Parser<BoolExpression> _logicalFunExpr() =>
-      ref1(_funCall, _fun.makeLogicalFun);
+  Parser<BoolExpression> _logicalFunExpr() => ref1(_funCall, _fun.logical);
 
   Parser<ValueExpression> _comparable() => [
         literal,
@@ -164,6 +168,3 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
   Parser<NodesExpression> _relPath() =>
       ref0(_segmentSequence).skip(before: char('@'));
 }
-
-Parser<NodesExpression> jsonPathParser() =>
-    JsonPathGrammarDefinition().build<NodesExpression>();
