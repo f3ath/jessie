@@ -1,10 +1,10 @@
-import 'package:json_path/src/node_mapper.dart';
+import 'package:json_path/src/expression/expression.dart';
 
 class FunCall {
   FunCall(this.name, this.args);
 
   final String name;
-  final List<NodeMapper> args;
+  final List<Expression> args;
 
   @override
   String toString() => name;

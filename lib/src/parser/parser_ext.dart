@@ -1,11 +1,11 @@
-import 'package:json_path/src/static_node_mapper.dart';
+import 'package:json_path/src/expression/static_expression.dart';
 import 'package:petitparser/petitparser.dart';
 
 extension ParserExt<R> on Parser<R> {
   /// Returns a predefined value parser.
   Parser<V> value<V>(V v) => map((_) => v);
 
-  Parser<StaticNodeMapper<R>> toNodeMapper() => map(StaticNodeMapper.new);
+  Parser<StaticExpression<R>> toNodeMapper() => map(StaticExpression.new);
 
   Parser<T> tryMap<T>(T Function(R r) mapper) => TryMapParser(this, mapper);
 }

@@ -1,10 +1,10 @@
-import 'package:json_path/src/node_mapper.dart';
+import 'package:json_path/src/expression/expression.dart';
 
 /// A function which can be used in a JSONPath expression.
 abstract class Fun<R> {
   /// Function name.
   String get name;
 
-  /// Attaches the given arguments and creates a node mapper.
-  NodeMapper<R> withArgs(List<NodeMapper> args);
+  /// Attaches the given arguments and creates a function expresion.
+  Expression<R> withArgs(List<Expression> args);
 }

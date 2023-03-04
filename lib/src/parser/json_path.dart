@@ -1,12 +1,10 @@
+import 'package:json_path/src/expression/bool_expression.dart';
+import 'package:json_path/src/expression/expression.dart';
+import 'package:json_path/src/expression/nodes_expression.dart';
+import 'package:json_path/src/expression/value_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
-import 'package:json_path/src/fun/fun_repository.dart';
-import 'package:json_path/src/fun/standard_functions.dart';
-import 'package:json_path/src/fun/types/bool_expression.dart';
-import 'package:json_path/src/fun/types/nodes.dart';
-import 'package:json_path/src/fun/types/nodes_expression.dart';
-import 'package:json_path/src/fun/types/value_expression.dart';
-import 'package:json_path/src/node_mapper.dart';
+import 'package:json_path/src/fun/fun_factory.dart';
 import 'package:json_path/src/parser/array_index.dart';
 import 'package:json_path/src/parser/array_slice.dart';
 import 'package:json_path/src/parser/cmp_operator.dart';
@@ -24,9 +22,9 @@ import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
   JsonPathGrammarDefinition(Iterable<Fun> functions)
-      : _fun = FunRepository(functions);
+      : _fun = FunFactory(functions);
 
-  final FunRepository _fun;
+  final FunFactory _fun;
 
   @override
   Parser<NodesExpression> start() => ref0(_absPath).end();
@@ -69,15 +67,15 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
   Parser<BoolExpression> _negation(Parser<BoolExpression> p) =>
       p.skip(before: char('!').trim()).map((mapper) => mapper.map((v) => !v));
 
-  Parser<NodeMapper> _funArgument() => [
+  Parser<Expression> _funArgument() => [
         literal,
         ref0(_filterPath),
       ].toChoiceParser().trim();
 
-  Parser<NodeMapper> _funNextArgument() =>
+  Parser<Expression> _funNextArgument() =>
       _funArgument().skip(before: char(',').trim()).trim();
 
-  Parser<List<NodeMapper>> _functionArguments() => [
+  Parser<List<Expression>> _functionArguments() => [
         _funArgument().map((v) => [v]),
         _funNextArgument().star()
       ].toSequenceParser().map((v) => v.expand((e) => e).toList());
@@ -102,9 +100,9 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
 
   Parser<BoolExpression> _cmpExpr() =>
       (ref0(_comparable) & cmpOperator & ref0(_comparable)).map((v) {
-        final NodeMapper<Maybe> left = v[0];
+        final Expression<Maybe> left = v[0];
         final String op = v[1];
-        final NodeMapper<Maybe> right = v[2];
+        final Expression<Maybe> right = v[2];
 
         return left.flatMap(right, (l, r) => compare(op, l, r));
       });
@@ -159,11 +157,11 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
   Parser<NodesExpression> _segmentSequence() => ref0(_segment)
       .star()
       .map(sequenceSelector)
-      .map((selector) => NodeMapper((node) => Nodes(selector(node))));
+      .map((selector) => Expression((node) => selector(node)));
 
   Parser<NodesExpression> _absPath() => ref0(_segmentSequence)
       .skip(before: char(r'$'))
-      .map((value) => NodeMapper((node) => value.applyTo(node.root)));
+      .map((value) => Expression((node) => value.applyTo(node.root)));
 
   Parser<NodesExpression> _relPath() =>
       ref0(_segmentSequence).skip(before: char('@'));

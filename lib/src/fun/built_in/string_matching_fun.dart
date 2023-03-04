@@ -1,9 +1,10 @@
+import 'package:json_path/src/expression/expression.dart';
+import 'package:json_path/src/expression/nodes.dart';
+import 'package:json_path/src/expression/nodes_expression.dart';
+import 'package:json_path/src/expression/static_expression.dart';
+import 'package:json_path/src/expression/value_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
-import 'package:json_path/src/fun/types/nodes_expression.dart';
-import 'package:json_path/src/fun/types/value_expression.dart';
-import 'package:json_path/src/node.dart';
-import 'package:json_path/src/node_mapper.dart';
-import 'package:json_path/src/static_node_mapper.dart';
+import 'package:json_path/src/node/node.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 abstract class StringMatchingFun implements Fun<bool> {
@@ -15,7 +16,7 @@ abstract class StringMatchingFun implements Fun<bool> {
   final bool substring;
 
   @override
-  NodeMapper<bool> withArgs(List<NodeMapper> args) {
+  Expression<bool> withArgs(List<Expression> args) {
     if (args.length != 2) throw Exception('Invalid args');
     final value = args[0];
     final regex = args[1];
@@ -27,10 +28,10 @@ abstract class StringMatchingFun implements Fun<bool> {
     // If all args are available statically,
     // we can return the result right away.
     if (staticValue != null && staticRegex != null) {
-      return StaticNodeMapper(_match(staticRegex, staticValue, substring));
+      return StaticExpression(_match(staticRegex, staticValue, substring));
     }
 
-    return NodeMapper((node) {
+    return Expression((node) {
       final v = _resolve(value, node);
       final r = _resolve(regex, node);
       final hasMatch = v
@@ -44,7 +45,7 @@ abstract class StringMatchingFun implements Fun<bool> {
 
   /// Returns the value if it is available at parse time.
   String? _getStaticValue(value) {
-    if (value is StaticNodeMapper<Maybe>) {
+    if (value is StaticExpression<Maybe>) {
       return value.value
           .type<String>()
           .orThrow(() => FormatException('Invalid type'));
@@ -52,7 +53,7 @@ abstract class StringMatchingFun implements Fun<bool> {
     return null;
   }
 
-  Maybe _resolve(NodeMapper v, Node node) {
+  Maybe _resolve(Expression v, Node node) {
     if (v is ValueExpression) return v.applyTo(node);
     if (v is NodesExpression) return v.applyTo(node).asValue;
     return Nothing();

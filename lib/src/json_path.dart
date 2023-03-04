@@ -1,7 +1,7 @@
-import 'package:json_path/src/fun/types/nodes_expression.dart';
+import 'package:json_path/src/expression/nodes_expression.dart';
 import 'package:json_path/src/json_path_parser.dart';
-import 'package:json_path/src/node.dart';
-import 'package:json_path/src/root_node.dart';
+import 'package:json_path/src/node/node.dart';
+import 'package:json_path/src/node/root_node.dart';
 
 /// A JSONPath expression
 class JsonPath {

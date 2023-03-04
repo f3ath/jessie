@@ -1,4 +1,4 @@
-import 'package:json_path/src/node.dart';
+import 'package:json_path/src/node/node.dart';
 import 'package:rfc_6901/rfc_6901.dart';
 
 /// A JSON document node.

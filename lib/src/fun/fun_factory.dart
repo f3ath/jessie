@@ -1,14 +1,14 @@
+import 'package:json_path/src/expression/bool_expression.dart';
+import 'package:json_path/src/expression/expression.dart';
+import 'package:json_path/src/expression/nodes.dart';
+import 'package:json_path/src/expression/nodes_expression.dart';
+import 'package:json_path/src/expression/value_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
-import 'package:json_path/src/fun/types/bool_expression.dart';
-import 'package:json_path/src/fun/types/nodes.dart';
-import 'package:json_path/src/fun/types/nodes_expression.dart';
-import 'package:json_path/src/fun/types/value_expression.dart';
-import 'package:json_path/src/node_mapper.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
-class FunRepository {
-  FunRepository(Iterable<Fun> functions) {
+class FunFactory {
+  FunFactory(Iterable<Fun> functions) {
     for (final f in functions) {
       if (f is Fun<Maybe>) {
         (_valueFun[f.name] ??= []).add(f);
@@ -38,7 +38,7 @@ class FunRepository {
   NodesExpression? nodes(FunCall call) =>
       _mapper(call.args, _nodesFun[call.name]);
 
-  NodeMapper<R>? _mapper<R>(List<NodeMapper> args, List<Fun<R>>? list) {
+  Expression<R>? _mapper<R>(List<Expression> args, List<Fun<R>>? list) {
     for (final f in list ?? []) {
       try {
         return f.withArgs(args);
