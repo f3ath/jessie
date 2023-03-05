@@ -5,6 +5,4 @@ typedef Nodes = Iterable<Node>;
 
 extension NodesExt on Nodes {
   Maybe get asValue => length == 1 ? Just(single.value) : Nothing();
-
-  bool get asBool => isNotEmpty;
 }

@@ -1,4 +1,5 @@
-import 'package:json_path/src/expression/nodes_expression.dart';
+import 'package:json_path/src/expression/expression.dart';
+import 'package:json_path/src/expression/nodes.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/grammar/json_path.dart';
 import 'package:json_path/src/node/node.dart';
@@ -16,7 +17,7 @@ class JsonPath {
 
   JsonPath._(this.expression, this._nodes);
 
-  final NodesExpression _nodes;
+  final Expression<Nodes> _nodes;
 
   /// JSONPath expression.
   final String expression;
@@ -28,7 +29,7 @@ class JsonPath {
   Iterable<dynamic> readValues(json) => read(json).map((node) => node.value);
 
   @override
-  String toString() => expression;
+  String toString() => '$runtimeType($expression)';
 }
 
 /// Parses the JSONPath expression from string. This class can be customized
@@ -41,13 +42,13 @@ class JsonPathParser {
 
   JsonPathParser._(Iterable<Fun> userFunctions)
       : _parser =
-            JsonPathGrammarDefinition(userFunctions).build<NodesExpression>();
+            JsonPathGrammarDefinition(userFunctions).build<Expression<Nodes>>();
 
   /// The default instance is pre-cached to speed up parsing when only
   /// the standard built-in functions are used.
   static final _defaultInstance = JsonPathParser._(const []);
 
-  final Parser<NodesExpression> _parser;
+  final Parser<Expression<Nodes>> _parser;
 
   /// Parses the JSONPath from s string [expression].
   /// Returns an instance of [JsonPath] or throws a [FormatException].

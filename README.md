@@ -69,10 +69,16 @@ void main() {
 }
 ```
 
-## Limitations
+## Features and Limitations
 This library follows the [JsonPath] internet draft specification. Since the spec itself is 
 an evolving document, this implementation may lag behind, and some features may not be implemented in-full.
 Please refer to the tests (there are hundreds of them, including the [CTS]) to see what is supported.
+
+Currently supported built-in functions:
+- `length()`
+- `count()`
+- `match()`
+- `search()`
 
 
 ## Data manipulation
@@ -80,7 +86,8 @@ Each `Node` produced by the `.read()` method contains the `.pointer` property wh
 and can be used to alter the referenced value. If you only need to manipulate JSON data, 
 check out my [JSON Pointer implementation].
 
-## User-defined functions
+## User-defined functions (_beta_)
+
 The JSONPath parser may be extended by user-defined functions. The user-defined functions
 take precedence over the built-in ones which are defined by the standard. The functions
 are polymorphic: you may define functions with the same name, and the parser will pick the first

@@ -5,6 +5,8 @@ abstract class Fun<R> {
   /// Function name.
   String get name;
 
-  /// Attaches the given arguments and creates a function expresion.
-  Expression<R> withArgs(List<Expression> args);
+  /// Attaches the given arguments and creates a function expression.
+  /// This method MUST throw an [Exception] if the provided [args]
+  /// have the incorrect length or types.
+  Expression<R> toExpression(List<Expression> args);
 }
