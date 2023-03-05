@@ -70,8 +70,8 @@ void main() {
 ```
 
 ## Limitations
-This library follows the in-development IETF [JsonPath] specification. Since the spec itself is
-an evolving document, the implementation may lag behind and some features may not be implemented in-full.
+This library follows the [JsonPath] internet draft specification. Since the spec itself is 
+an evolving document, this implementation may lag behind, and some features may not be implemented in-full.
 Please refer to the tests (there are hundreds of them, including the [CTS]) to see what is supported.
 
 
@@ -79,6 +79,12 @@ Please refer to the tests (there are hundreds of them, including the [CTS]) to s
 Each `Node` produced by the `.read()` method contains the `.pointer` property which is a valid [JSON Pointer]
 and can be used to alter the referenced value. If you only need to manipulate JSON data, 
 check out my [JSON Pointer implementation].
+
+## User-defined functions
+The JSONPath parser may be extended by user-defined functions. The user-defined functions
+take precedence over the built-in ones which are defined by the standard. The functions
+are polymorphic: you may define functions with the same name, and the parser will pick the first
+of them which fits the use case (the return type, the number and the type or arguments).
 
 ## References
 - [Standard development](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base)

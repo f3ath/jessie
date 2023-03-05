@@ -2,27 +2,42 @@ import 'package:json_path/src/expression/bool_expression.dart';
 import 'package:json_path/src/expression/expression.dart';
 import 'package:json_path/src/expression/nodes_expression.dart';
 import 'package:json_path/src/expression/value_expression.dart';
+import 'package:json_path/src/fun/built_in/count_fun.dart';
+import 'package:json_path/src/fun/built_in/length_fun.dart';
+import 'package:json_path/src/fun/built_in/match_fun.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
-import 'package:json_path/src/parser/array_index.dart';
-import 'package:json_path/src/parser/array_slice.dart';
-import 'package:json_path/src/parser/cmp_operator.dart';
-import 'package:json_path/src/parser/compare.dart';
-import 'package:json_path/src/parser/dot_name.dart';
-import 'package:json_path/src/parser/fun_name.dart';
-import 'package:json_path/src/parser/literal.dart';
-import 'package:json_path/src/parser/parser_ext.dart';
-import 'package:json_path/src/parser/strings.dart';
-import 'package:json_path/src/parser/types.dart';
-import 'package:json_path/src/parser/wildcard.dart';
-import 'package:json_path/src/selectors.dart';
+import 'package:json_path/src/fun/search_fun.dart';
+import 'package:json_path/src/grammar/array_index.dart';
+import 'package:json_path/src/grammar/array_slice.dart';
+import 'package:json_path/src/grammar/cmp_operator.dart';
+import 'package:json_path/src/grammar/compare.dart';
+import 'package:json_path/src/grammar/dot_name.dart';
+import 'package:json_path/src/grammar/field_selector.dart';
+import 'package:json_path/src/grammar/filter_selector.dart';
+import 'package:json_path/src/grammar/fun_name.dart';
+import 'package:json_path/src/grammar/literal.dart';
+import 'package:json_path/src/grammar/node_selector.dart';
+import 'package:json_path/src/grammar/parser_ext.dart';
+import 'package:json_path/src/grammar/select_all_recuresively.dart';
+import 'package:json_path/src/grammar/sequence_selector.dart';
+import 'package:json_path/src/grammar/strings.dart';
+import 'package:json_path/src/grammar/union_selector.dart';
+import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
-  JsonPathGrammarDefinition(Iterable<Fun> functions)
-      : _fun = FunFactory(functions);
+  JsonPathGrammarDefinition(Iterable<Fun> userFunctions)
+      : _fun = FunFactory(userFunctions.followedBy(_builtInFunctions));
+
+  static const _builtInFunctions = <Fun>[
+    LengthFun(),
+    CountFun(),
+    MatchFun(),
+    SearchFun(),
+  ];
 
   final FunFactory _fun;
 
@@ -65,7 +80,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
       );
 
   Parser<BoolExpression> _negation(Parser<BoolExpression> p) =>
-      p.skip(before: char('!').trim()).map((mapper) => mapper.map((v) => !v));
+      p.skip(before: char('!').trim()).map((expr) => expr.map((v) => !v));
 
   Parser<Expression> _funArgument() => [
         literal,
@@ -104,7 +119,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
         final String op = v[1];
         final Expression<Maybe> right = v[2];
 
-        return left.flatMap(right, (l, r) => compare(op, l, r));
+        return left.merge(right, (l, r) => compare(op, l, r));
       });
 
   Parser<BoolExpression> _logicalExpr() => ref0(_logicalOrExpr);
@@ -112,14 +127,18 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
   Parser<BoolExpression> _logicalOrExpr() => [
         ref0(_logicalAndExpr).map((v) => [v]),
         ref0(_logicalAndExpr).skip(before: string('||').trim()).star(),
-      ].toSequenceParser().map((v) => v.expand((e) => e)).map(
-          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a || b)));
+      ]
+          .toSequenceParser()
+          .map((v) => v.expand((e) => e))
+          .map((tests) => tests.reduce((a, b) => a.merge(b, (a, b) => a || b)));
 
   Parser<BoolExpression> _logicalAndExpr() => [
         ref0(_basicExpr).map((v) => [v]),
         ref0(_basicExpr).skip(before: string('&&').trim()).star(),
-      ].toSequenceParser().map((v) => v.expand((e) => e)).map(
-          (tests) => tests.reduce((a, b) => a.flatMap(b, (a, b) => a && b)));
+      ]
+          .toSequenceParser()
+          .map((v) => v.expand((e) => e))
+          .map((tests) => tests.reduce((a, b) => a.merge(b, (a, b) => a && b)));
 
   Parser<BoolExpression> _negatable(Parser<BoolExpression> p) =>
       [ref1(_negation, p), p].toChoiceParser();
@@ -154,14 +173,12 @@ class JsonPathGrammarDefinition extends GrammarDefinition<NodesExpression> {
         ref0(_recursion),
       ].toChoiceParser();
 
-  Parser<NodesExpression> _segmentSequence() => ref0(_segment)
-      .star()
-      .map(sequenceSelector)
-      .map((selector) => Expression((node) => selector(node)));
+  Parser<NodesExpression> _segmentSequence() =>
+      ref0(_segment).star().map(sequenceSelector).map(Expression.new);
 
   Parser<NodesExpression> _absPath() => ref0(_segmentSequence)
       .skip(before: char(r'$'))
-      .map((value) => Expression((node) => value.applyTo(node.root)));
+      .map((expr) => Expression((node) => expr.call(node.root)));
 
   Parser<NodesExpression> _relPath() =>
       ref0(_segmentSequence).skip(before: char('@'));

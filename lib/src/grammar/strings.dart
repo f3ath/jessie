@@ -1,5 +1,5 @@
-import 'package:json_path/src/parser/parser_ext.dart';
-import 'package:json_path/src/selectors.dart';
+import 'package:json_path/src/grammar/field_selector.dart';
+import 'package:json_path/src/grammar/parser_ext.dart';
 import 'package:petitparser/petitparser.dart';
 
 final _escape = char(r'\');

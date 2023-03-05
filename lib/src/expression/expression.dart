@@ -4,22 +4,22 @@ import 'package:json_path/src/node/node.dart';
 /// `length(@.foo) > 3 && @.bar`. The `@` denotes the current node
 /// being processed by JSONPath.
 class Expression<T> {
-  Expression(this._map);
+  Expression(this._call);
 
-  final T Function(Node) _map;
+  final T Function(Node) _call;
 
   /// Returns the result of applying the expression to the node.
-  T applyTo(Node node) => _map(node);
+  T call(Node node) => _call(node);
 
   /// Creates a new [Expression] by applying the [mapper] function
-  /// to the value produced by this mapper.
+  /// to the result of this expression.
   Expression<R> map<R>(R Function(T v) mapper) =>
-      Expression((node) => mapper(applyTo(node)));
+      Expression((node) => mapper(call(node)));
 
   /// Creates a new [Expression] from the [other] [Expression] and the
   /// [mapper] function. The [mapper] function is applied to the values
   /// produced by this an the [other] [Expression].
-  Expression<R> flatMap<R, M>(
+  Expression<R> merge<R, M>(
           Expression<M> other, R Function(T self, M other) mapper) =>
-      Expression((node) => mapper(applyTo(node), other.applyTo(node)));
+      Expression((node) => mapper(call(node), other.call(node)));
 }

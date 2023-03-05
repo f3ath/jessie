@@ -1,5 +1,5 @@
-import 'package:json_path/src/parser/strings.dart';
-import 'package:json_path/src/parser/wildcard.dart';
+import 'package:json_path/src/grammar/strings.dart';
+import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:petitparser/petitparser.dart';
 
 final dotName =

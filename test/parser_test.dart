@@ -1,13 +1,13 @@
-import 'package:json_path/json_path.dart';
+import 'package:json_path/src/grammar/json_path.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final jsonPath = jsonPathParser();
+  final parser = JsonPathGrammarDefinition([]).build();
 
   group('Parser', () {
     test('Linter is happy', () {
-      expect(linter(jsonPath), isEmpty);
+      expect(linter(parser), isEmpty);
     });
     group('Valid expressions', () {
       for (final expr in [
@@ -43,10 +43,10 @@ void main() {
         r'$[?@.foo > $.bar]',
       ]) {
         test(expr, () {
-          final parser = jsonPath.parse(expr);
-          if (parser.isFailure) {
+          final result = parser.parse(expr);
+          if (result.isFailure) {
             fail(
-                '${parser.message}, buffer: "${parser.buffer}", pos: ${parser.position}');
+                '${result.message}, buffer: "${result.buffer}", pos: ${result.position}');
           }
         });
       }
@@ -77,7 +77,7 @@ void main() {
       ]) {
         test(expr, () {
           try {
-            expect(jsonPath.parse(expr).isFailure, isTrue);
+            expect(parser.parse(expr).isFailure, isTrue);
           } on FormatException catch (_) {}
         });
       }

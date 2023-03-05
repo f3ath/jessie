@@ -5,11 +5,14 @@ import 'package:json_path/src/expression/nodes_expression.dart';
 import 'package:json_path/src/expression/value_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
+import 'package:json_path/src/grammar/fun_name.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
+import 'package:petitparser/petitparser.dart';
 
 class FunFactory {
   FunFactory(Iterable<Fun> functions) {
     for (final f in functions) {
+      _validateName(f.name);
       if (f is Fun<Maybe>) {
         (_valueFun[f.name] ??= []).add(f);
       } else if (f is Fun<bool>) {
@@ -19,6 +22,12 @@ class FunFactory {
       } else {
         throw ArgumentError('Invalid function type for $f : ${f.runtimeType}');
       }
+    }
+  }
+
+  static void _validateName(String name) {
+    if (!funName.allMatches(name).contains(name)) {
+      throw ArgumentError('Invalid function name $name');
     }
   }
 
@@ -39,9 +48,9 @@ class FunFactory {
       _mapper(call.args, _nodesFun[call.name]);
 
   Expression<R>? _mapper<R>(List<Expression> args, List<Fun<R>>? list) {
-    for (final f in list ?? []) {
+    for (final fun in list ?? []) {
       try {
-        return f.withArgs(args);
+        return fun.withArgs(args);
       } on Exception {
         continue;
       }

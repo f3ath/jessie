@@ -53,9 +53,9 @@ abstract class StringMatchingFun implements Fun<bool> {
     return null;
   }
 
-  Maybe _resolve(Expression v, Node node) {
-    if (v is ValueExpression) return v.applyTo(node);
-    if (v is NodesExpression) return v.applyTo(node).asValue;
+  Maybe _resolve(Expression expr, Node node) {
+    if (expr is ValueExpression) return expr.call(node);
+    if (expr is NodesExpression) return expr.call(node).asValue;
     return Nothing();
   }
 
