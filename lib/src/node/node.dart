@@ -1,9 +1,9 @@
 import 'package:rfc_6901/rfc_6901.dart';
 
 /// A JSON document node.
-abstract class Node {
+abstract class Node<T> {
   /// The node value.
-  dynamic get value;
+  T get value;
 
   /// JSONPath to this node.
   String get path;

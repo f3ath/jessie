@@ -7,5 +7,5 @@ class FunCall {
   final List<Expression> args;
 
   @override
-  String toString() => name;
+  String toString() => '$name($args)';
 }

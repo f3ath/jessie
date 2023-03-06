@@ -2,11 +2,11 @@ import 'package:json_path/src/node/node.dart';
 import 'package:rfc_6901/rfc_6901.dart';
 
 /// A JSON document node.
-class ChildNode implements Node {
+class ChildNode<T> implements Node<T> {
   ChildNode(this.value, this.path, this.pointer, this.parent);
 
   @override
-  final dynamic value;
+  final T value;
 
   @override
   final String path;

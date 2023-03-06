@@ -10,6 +10,8 @@ class FunFactory {
   FunFactory(Iterable<Fun> functions) {
     for (final f in functions) {
       _validateName(f.name);
+      (_anyFun[f.name] ??= []).add(f);
+
       if (f is Fun<Maybe>) {
         (_valueFun[f.name] ??= []).add(f);
       } else if (f is Fun<bool>) {
@@ -31,6 +33,7 @@ class FunFactory {
   final _valueFun = <String, List<Fun<Maybe>>>{};
   final _boolFun = <String, List<Fun<bool>>>{};
   final _nodesFun = <String, List<Fun<Nodes>>>{};
+  final _anyFun = <String, List<Fun>>{};
 
   /// Returns a function to use in comparable context.
   Expression<Maybe>? comparable(FunCall call) =>
@@ -44,8 +47,17 @@ class FunFactory {
   Expression<Nodes>? nodes(FunCall call) =>
       _mapper(call.args, _nodesFun[call.name]);
 
+  /// Returns a function to us in any context.
+  Expression? any(FunCall call) {
+    print('any $call');
+    // print(StackTrace.current);
+    return _mapper(call.args, _anyFun[call.name]);
+  }
+
   Expression<R>? _mapper<R>(List<Expression> args, List<Fun<R>>? list) {
     for (final fun in list ?? []) {
+      print(fun);
+      // print(StackTrace.current);
       try {
         return fun.toExpression(args);
       } on Exception {
