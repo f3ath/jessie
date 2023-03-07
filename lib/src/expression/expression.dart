@@ -1,4 +1,5 @@
 import 'package:json_path/src/node/node.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 /// An expression applied to a JSON node. For example:
 /// `length(@.foo) > 3 && @.bar`. The `@` denotes the current node

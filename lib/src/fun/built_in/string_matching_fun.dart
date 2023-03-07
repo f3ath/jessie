@@ -1,8 +1,7 @@
 import 'package:json_path/src/expression/expression.dart';
-import 'package:json_path/src/expression/nodes.dart';
+import 'package:json_path/src/expression/expression_ext.dart';
 import 'package:json_path/src/expression/static_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
-import 'package:json_path/src/node/node.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 abstract class StringMatchingFun implements Fun<bool> {
@@ -30,8 +29,8 @@ abstract class StringMatchingFun implements Fun<bool> {
     }
 
     return Expression((node) {
-      final v = _resolve(value, node);
-      final r = _resolve(regex, node);
+      final v = value.resolveToValue(node);
+      final r = regex.resolveToValue(node);
       final hasMatch = v
           .map((v) => r
               .map((r) => _typeSafeMatch(v, r, substring))
@@ -49,12 +48,6 @@ abstract class StringMatchingFun implements Fun<bool> {
           .orThrow(() => FormatException('Invalid type'));
     }
     return null;
-  }
-
-  Maybe _resolve(Expression expr, Node node) {
-    if (expr is Expression<Maybe>) return expr.call(node);
-    if (expr is Expression<Nodes>) return expr.call(node).asValue;
-    return Nothing();
   }
 
   bool _typeSafeMatch(value, regex, bool substring) {

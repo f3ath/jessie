@@ -43,21 +43,11 @@ class FunFactory {
   Expression<bool>? logical(FunCall call) =>
       _mapper(call.args, _boolFun[call.name]);
 
-  /// Returns a function to use in node list context.
-  Expression<Nodes>? nodes(FunCall call) =>
-      _mapper(call.args, _nodesFun[call.name]);
-
   /// Returns a function to us in any context.
-  Expression? any(FunCall call) {
-    print('any $call');
-    // print(StackTrace.current);
-    return _mapper(call.args, _anyFun[call.name]);
-  }
+  Expression? any(FunCall call) => _mapper(call.args, _anyFun[call.name]);
 
   Expression<R>? _mapper<R>(List<Expression> args, List<Fun<R>>? list) {
     for (final fun in list ?? []) {
-      print(fun);
-      // print(StackTrace.current);
       try {
         return fun.toExpression(args);
       } on Exception {

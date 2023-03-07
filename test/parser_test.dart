@@ -41,6 +41,7 @@ void main() {
         r'$[?@ > count($)]',
         r'$[?@ > count($.bar)]',
         r'$[?@.foo > $.bar]',
+        r'$[?(@.a == @.b)]',
       ]) {
         test(expr, () {
           final result = parser.parse(expr);

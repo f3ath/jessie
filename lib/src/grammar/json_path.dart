@@ -26,9 +26,9 @@ import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
   JsonPathGrammarDefinition(Iterable<Fun> userFunctions)
-      : _fun = FunFactory(userFunctions.followedBy(_builtInFunctions));
+      : _fun = FunFactory(userFunctions.followedBy(_builtInFun));
 
-  static const _builtInFunctions = <Fun>[
+  static const _builtInFun = <Fun>[
     LengthFun(),
     CountFun(),
     MatchFun(),

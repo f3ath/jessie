@@ -11,11 +11,33 @@ void main() {
   final store = jsonDecode(File('test/store.json').readAsStringSync());
   final parser = JsonPathParser(userFunctions: [Siblings()]);
   group('User-defined functions', () {
-    test('Nodes', () {
-      parser.parse(r'$[?count(siblings(@)) > 1]').readValues(store);
-
+    test('Fun<Nodes>', () {
+      expect(
+          parser
+              .parse(r'$..[?count(siblings(@)) > 4]')
+              .readValues(store)
+              .toList(),
+          equals([
+            'fiction',
+            'Herman Melville',
+            'Moby Dick',
+            '0-553-21311-3',
+            8.99,
+            'fiction',
+            'J. R. R. Tolkien',
+            'The Lord of the Rings',
+            '0-395-19395-8',
+            22.99,
+          ]));
     });
-
+    test('Fun<Nodes> in Nodes context', () {
+      expect(
+          parser
+              .parse(r'$..[?count(siblings(siblings(@))) > 4]')
+              .readValues(store)
+              .length,
+          equals(22));
+    });
   });
 }
 
@@ -28,7 +50,7 @@ class Siblings implements Fun<Nodes> {
   Expression<Nodes> toExpression(List<Expression> args) {
     final arg = args.single;
     if (arg is Expression<Nodes>) {
-      arg.map((nodes) => nodes.expand((node) {
+      return arg.map((nodes) => nodes.expand((node) {
             final parent = node.parent;
             if (parent == null) return <Node>[];
             return selectAll(parent).where((it) => it != node);

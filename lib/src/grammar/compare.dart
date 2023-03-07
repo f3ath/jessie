@@ -6,11 +6,11 @@ bool _eq(Maybe a, Maybe b) =>
 
 /// Deep equality of primitives, lists, maps.
 bool _eqRaw(a, b) =>
-    ((a == null || a is num || a is bool || a is String) && a == b) ||
+    (/*(a == null || a is num || a is bool || a is String) && */a == b) ||
     (a is List &&
         b is List &&
         a.length == b.length &&
-        List.generate(a.length, (i) => i).every((i) => _eq(a[i], b[i]))) ||
+        List.generate(a.length, (i) => i).every((i) => _eqRaw(a[i], b[i]))) ||
     (a is Map &&
         b is Map &&
         a.keys.length == b.keys.length &&

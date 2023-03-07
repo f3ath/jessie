@@ -21,29 +21,17 @@ extension ParserExt<R> on Parser<R> {
   Parser<T> tryMap<T>(T Function(R r) mapper) => TryMapParser(this, mapper);
 }
 
-class TryMapParser<T, R> extends DelegateParser<T, R> {
-  TryMapParser(super.delegate, this.callback);
-
-  /// The production action to be called.
-  final R Function(T t) callback;
+class TryMapParser<T, R> extends MapParser<T, R> {
+  TryMapParser(super.delegate, super.callback);
 
   @override
   Result<R> parseOn(Context context) {
     try {
-      final result = delegate.parseOn(context);
-      if (result.isSuccess) {
-        return result.success(callback(result.value));
-      } else {
-        return result.failure(result.message);
-      }
+      return super.parseOn(context);
     } on Exception catch (e) {
       return context.failure(e.toString());
     }
   }
-
-  @override
-  bool hasEqualProperties(TryMapParser<T, R> other) =>
-      super.hasEqualProperties(other) && callback == other.callback;
 
   @override
   TryMapParser<T, R> copy() => TryMapParser<T, R>(delegate, callback);

@@ -39,18 +39,15 @@ void main() {
         group(name ?? selector, () {
           if (values is List) {
             test('values', () {
-              expect(
-                JsonPath(selector).readValues(document),
-                equals(values),
-              );
+              final actual = JsonPath(selector).readValues(document);
+              expect(actual, equals(values));
             });
           }
           if (paths is List) {
             test('paths', () {
-              expect(
-                JsonPath(selector).read(document).map((e) => e.path).toList(),
-                equals(paths),
-              );
+              final actual =
+                  JsonPath(selector).read(document).map((e) => e.path).toList();
+              expect(actual, equals(paths));
             });
           }
           if (pointers is List) {
