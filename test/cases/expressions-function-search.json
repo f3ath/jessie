@@ -12,6 +12,14 @@
       "selector": "$[?search('bab', 'a')]",
       "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
       "values": ["abc", "bcd", "bab", "bba", "a", true, [], {}]
+    }, {
+      "selector": "$.values[?search(@, $.regex)]",
+      "document": {"regex": "b.?b", "values": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "values": ["bab", "bba"]
+    }, {
+      "selector": "$.values[?search(@, $.regex)]",
+      "document": {"regex": "invalid][$^", "values": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "values": []
     }
   ]
 }

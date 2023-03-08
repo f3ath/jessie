@@ -1,4 +1,6 @@
 import 'package:json_path/src/grammar/json_path.dart';
+import 'package:json_path/src/grammar/parser_ext.dart';
+import 'package:petitparser/parser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
@@ -8,6 +10,9 @@ void main() {
   group('Parser', () {
     test('Linter is happy', () {
       expect(linter(parser), isEmpty);
+    });
+    test('Can use copy() after tryMap()', () {
+      expect(char('x').tryMap((x) => x + x).copy(), isA<Parser<String>>());
     });
     group('Valid expressions', () {
       for (final expr in [

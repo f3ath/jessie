@@ -5,11 +5,12 @@ import 'package:json_path/functions.dart';
 import 'package:json_path/json_path.dart';
 import 'package:json_path/src/grammar/select_all.dart';
 import 'package:json_path/src/node/node.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:test/test.dart';
 
 void main() {
   final store = jsonDecode(File('test/store.json').readAsStringSync());
-  final parser = JsonPathParser(userFunctions: [Siblings()]);
+  final parser = JsonPathParser(userFunctions: [Siblings(), Reverse()]);
   group('User-defined functions', () {
     test('Fun<Nodes>', () {
       expect(
@@ -39,6 +40,16 @@ void main() {
           equals(22));
     });
   });
+
+  group('length()', () {
+    test('argument from another function', () {
+      final json = ['', 'a', 'ab', 'abc', 'aaa'];
+      expect(
+        parser.parse(r'$[?length(reverse(@)) == 3]').readValues(json).toList(),
+        equals(['abc', 'aaa']),
+      );
+    });
+  });
 }
 
 /// Returns all siblings of the given nodes.
@@ -58,4 +69,16 @@ class Siblings implements Fun<Nodes> {
     }
     throw Exception('Invalid arg type');
   }
+}
+
+/// Reverses the string..
+class Reverse implements Fun<Maybe<String>> {
+  @override
+  final name = 'reverse';
+
+  @override
+  Expression<Maybe<String>> toExpression(List<Expression> args) => args.single
+      .map((v) => (v is Nodes ? v.asValue : (v is Maybe ? v : Nothing()))
+          .type<String>()
+          .map((s) => s.split('').reversed.join()));
 }
