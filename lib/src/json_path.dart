@@ -12,8 +12,7 @@ class JsonPath {
   /// the instance may be used many times after that.
   ///
   /// Throws [FormatException] if the [expression] can not be parsed.
-  factory JsonPath(String expression) =>
-      JsonPathParser._defaultInstance.parse(expression);
+  factory JsonPath(String expression) => JsonPathParser().parse(expression);
 
   JsonPath._(this.expression, this._nodes);
 
