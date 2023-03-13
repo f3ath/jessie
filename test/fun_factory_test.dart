@@ -1,6 +1,7 @@
 import 'package:json_path/src/expression/expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -14,19 +15,16 @@ void main() {
   });
 }
 
-class ForbiddenFun extends Fun<int> {
+class ForbiddenFun extends Fun {
   @override
   final name = 'oops';
-
-  @override
-  Expression<int> toExpression(List<Expression> args) => Expression((_) => 42);
 }
 
-class BadNameFun extends Fun<bool> {
+class BadNameFun extends Fun1<bool, Maybe> {
   @override
   final name = 'Foo';
 
   @override
-  Expression<bool> toExpression(List<Expression> args) =>
+  Expression<bool> toExpression(Expression<Maybe> a) =>
       Expression((_) => true);
 }

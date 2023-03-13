@@ -1,5 +1,5 @@
 name: json_path
-version: 0.5.0-dev.2
+version: 0.5.0-dev.3
 description: Implementation of JSONPath expressions like "$.store.book[2].price". Reads and writes values in parsed JSON objects.
 homepage: "https://github.com/f3ath/jessie"
 

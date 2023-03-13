@@ -9,17 +9,17 @@ class Expression<T> {
   final T Function(Node) _call;
 
   /// Returns the result of applying the expression to the node.
-  T call(Node node) => _call(node);
+  T of(Node node) => _call(node);
 
   /// Creates a new [Expression] by applying the [mapper] function
   /// to the result of this expression.
   Expression<R> map<R>(R Function(T v) mapper) =>
-      Expression((node) => mapper(call(node)));
+      Expression((node) => mapper(of(node)));
 
   /// Creates a new [Expression] from the [other] [Expression] and the
-  /// [mapper] function. The [mapper] function is applied to the values
+  /// [merger] function. The [merger] function is applied to the values
   /// produced by this an the [other] [Expression].
   Expression<R> merge<R, M>(
-          Expression<M> other, R Function(T self, M other) mapper) =>
-      Expression((node) => mapper(call(node), other.call(node)));
+          Expression<M> other, R Function(T self, M other) merger) =>
+      Expression((node) => merger(of(node), other.of(node)));
 }

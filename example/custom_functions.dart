@@ -13,22 +13,13 @@ void main() {
 }
 
 /// Custom function implementation
-class IsObject implements Fun<bool> {
+class IsObject implements Fun1<bool, Maybe> {
   @override
   final name = 'is_object';
 
   @override
-  Expression<bool> toExpression(List<Expression> args) {
-    // We only expect one argument.
-    if (args.length != 1) throw FormatException('Exactly one arg expected');
-    final arg = args.single;
-    if (arg is Expression<Maybe>) {
+  Expression<bool> toExpression(Expression<Maybe> arg) {
       return arg.map((v) => v.map(_isMap).or(false));
-    }
-    if (arg is Expression<Nodes>) {
-      return arg.map((v) => v.asValue.map(_isMap).or(false));
-    }
-    throw FormatException('Invalid argument type');
   }
 
   bool _isMap(v) => v is Map;

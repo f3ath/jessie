@@ -4,7 +4,7 @@ import 'package:json_path/src/fun/built_in/length_fun.dart';
 import 'package:json_path/src/fun/built_in/match_fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
-import 'package:json_path/src/fun/search_fun.dart';
+import 'package:json_path/src/fun/built_in/search_fun.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/comparison_expression.dart';
@@ -31,6 +31,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
   static const _builtInFun = <Fun>[
     LengthFun(),
     CountFun(),
+    // CountFun1(),
     MatchFun(),
     SearchFun(),
   ];
@@ -136,7 +137,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
 
   Parser<Expression<Nodes>> _absPath() => _segmentSequence()
       .skip(before: char(r'$'))
-      .map((expr) => Expression((node) => expr.call(node.root)));
+      .map((expr) => Expression((node) => expr.of(node.root)));
 
   Parser<Expression<Nodes>> _relPath() =>
       _segmentSequence().skip(before: char('@'));

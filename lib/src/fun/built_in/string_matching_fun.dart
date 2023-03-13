@@ -1,10 +1,9 @@
 import 'package:json_path/src/expression/expression.dart';
-import 'package:json_path/src/expression/expression_ext.dart';
 import 'package:json_path/src/expression/static_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
-abstract class StringMatchingFun implements Fun<bool> {
+abstract class StringMatchingFun implements Fun2<bool, Maybe, Maybe> {
   const StringMatchingFun(this.name, this.substring);
 
   @override
@@ -13,11 +12,8 @@ abstract class StringMatchingFun implements Fun<bool> {
   final bool substring;
 
   @override
-  Expression<bool> toExpression(List<Expression> args) {
-    if (args.length != 2) throw Exception('Invalid args');
-    final value = args[0];
-    final regex = args[1];
-
+  Expression<bool> toExpression(
+      Expression<Maybe> value, Expression<Maybe> regex) {
     // Static type checking and extraction
     final staticValue = _getStaticValue(value);
     final staticRegex = _getStaticValue(regex);
@@ -29,14 +25,12 @@ abstract class StringMatchingFun implements Fun<bool> {
     }
 
     return Expression((node) {
-      final v = value.resolveToValue(node);
-      final r = regex.resolveToValue(node);
-      final hasMatch = v
-          .map((v) => r
+
+      return value.of(node)
+          .map((v) => regex.of(node)
               .map((r) => _typeSafeMatch(v, r, substring))
               .or(false)) // Regex is Nothing
           .or(false); // Value is nothing
-      return hasMatch;
     });
   }
 

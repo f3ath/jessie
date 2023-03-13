@@ -11,10 +11,10 @@ void main() {
       final s = StaticExpression('bar');
       final d = Expression((n) => n.value);
       test('map()', () {
-        expect(s.map((v) => '$v!').call(node), 'bar!');
+        expect(s.map((v) => '$v!').of(node), 'bar!');
       });
       test('merge() with non-static', () {
-        expect(s.merge(d, (v, m) => v + m).call(node), 'barfoo');
+        expect(s.merge(d, (v, m) => v + m).of(node), 'barfoo');
       });
     });
   });

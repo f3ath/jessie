@@ -50,35 +50,33 @@ void main() {
       );
     });
   });
+
+  test('function not found', () {
+    expect(() => parser.parse(r'$[?foo(@) == 3]'), throwsFormatException);
+  });
 }
 
 /// Returns all siblings of the given nodes.
-class Siblings implements Fun<Nodes> {
+class Siblings implements Fun1<Nodes, Nodes> {
   @override
   final name = 'siblings';
 
   @override
-  Expression<Nodes> toExpression(List<Expression> args) {
-    final arg = args.single;
-    if (arg is Expression<Nodes>) {
-      return arg.map((nodes) => nodes.expand((node) {
-            final parent = node.parent;
-            if (parent == null) return <Node>[];
-            return selectAll(parent).where((it) => it != node);
-          }));
-    }
-    throw Exception('Invalid arg type');
+  Expression<Nodes> toExpression(Expression<Nodes> arg) {
+    return arg.map((nodes) => nodes.expand((node) {
+          final parent = node.parent;
+          if (parent == null) return <Node>[];
+          return selectAll(parent).where((it) => it != node);
+        }));
   }
 }
 
 /// Reverses the string..
-class Reverse implements Fun<Maybe<String>> {
+class Reverse implements Fun1<Maybe, Maybe> {
   @override
   final name = 'reverse';
 
   @override
-  Expression<Maybe<String>> toExpression(List<Expression> args) => args.single
-      .map((v) => (v is Nodes ? v.asValue : (v is Maybe ? v : Nothing()))
-          .type<String>()
-          .map((s) => s.split('').reversed.join()));
+  Expression<Maybe> toExpression(Expression<Maybe> arg) =>
+      arg.map((v) => v.type<String>().map((s) => s.split('').reversed.join()));
 }
