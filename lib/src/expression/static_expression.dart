@@ -8,7 +8,7 @@ class StaticExpression<T> implements Expression<T> {
   final T value;
 
   @override
-  T of(Node node) => value;
+  T Function(Node p1) get apply => (node) => value;
 
   @override
   Expression<R> map<R>(R Function(T v) mapper) =>
@@ -19,6 +19,6 @@ class StaticExpression<T> implements Expression<T> {
     if (other is StaticExpression<M>) {
       return StaticExpression(merger(value, other.value));
     }
-    return Expression((node) => merger(of(node), other.of(node)));
+    return Expression((node) => merger(apply(node), other.apply(node)));
   }
 }

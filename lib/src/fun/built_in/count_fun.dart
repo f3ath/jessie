@@ -10,6 +10,6 @@ class CountFun implements Fun1<Maybe, Nodes> {
   final name = 'count';
 
   @override
-  Expression<Maybe> toExpression(Expression<Nodes> a0) =>
+  Expression<Maybe> apply(Expression<Nodes> a0) =>
       a0.map((v) => Just(v.length));
 }

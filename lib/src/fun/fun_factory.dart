@@ -9,34 +9,29 @@ import 'package:petitparser/petitparser.dart';
 typedef F1<R, T1> = Expression<R> Function(
   Expression<T1> a,
 );
-typedef F2<R, T1, T2> = Expression<R> Function(
-  Expression<T1> a,
-  Expression<T2> b,
-);
 
 class FunFactory {
   FunFactory(Iterable<Fun> functions) {
     for (final f in functions) {
-      if (!funName.allMatches(f.name).contains(f.name)) {
-        throw ArgumentError('Invalid function name ${f.name}');
-      }
+      _validateName(f.name);
       if (f is Fun1) {
         _fun1[f.name] = f;
-        _f1[f.name] = f.toExpression;
       } else if (f is Fun2) {
         _fun2[f.name] = f;
-        _f2[f.name] = f.toExpression;
       } else {
         throw ArgumentError('Type mismatch');
       }
     }
   }
 
+  void _validateName(String name) {
+    if (!funName.allMatches(name).contains(name)) {
+      throw ArgumentError('Invalid function name $name');
+    }
+  }
+
   final _fun1 = <String, Fun1>{};
   final _fun2 = <String, Fun2>{};
-
-  final _f1 = <String, F1>{};
-  final _f2 = <String, F2>{};
 
   /// Returns a function to use in comparable context.
   Expression<Maybe> comparable(FunCall call) => any<Maybe>(call);
@@ -56,27 +51,33 @@ class FunFactory {
     throw Exception('Type mismatch');
   }
 
-  Expression<T> any1<T>(String name, Expression a0) {
+  Expression<T> any1<T>(String name, Expression arg0) {
     final f = _fun1[name] ?? (throw Exception('No fun'));
-    final ff = _f1[name] ?? (throw Exception('No fun'));
-    print(ff);
-    if (f is! Fun1<T, dynamic>) throw Exception('Type mismatch');
-    return f.toExpression(
-      _cast(a0, value: f is Fun1<T, Maybe>, nodes: f is Fun1<T, Nodes>),
-    );
+    if (f is Fun1<T, dynamic>) {
+      return f.apply(
+        _cast(
+          arg0,
+          value: f is Fun1<T, Maybe>,
+          nodes: f is Fun1<T, Nodes>,
+        ),
+      );
+    }
+    throw Exception('Type mismatch');
   }
 
   Expression<T> any2<T>(String name, Expression arg0, Expression arg1) {
     final f = _fun2[name] ?? (throw Exception('No fun'));
-    if (f is! Fun2<T, dynamic, dynamic>) throw Exception('Type mismatch');
-    return f.toExpression(
-      _cast(arg0,
-          value: f is Fun2<dynamic, Maybe, dynamic>,
-          nodes: f is Fun2<dynamic, Nodes, dynamic>),
-      _cast(arg1,
-          value: f is Fun2<dynamic, dynamic, Maybe>,
-          nodes: f is Fun2<dynamic, dynamic, Nodes>),
-    );
+    if (f is Fun2<T, dynamic, dynamic>) {
+      return f.apply(
+        _cast(arg0,
+            value: f is Fun2<dynamic, Maybe, dynamic>,
+            nodes: f is Fun2<dynamic, Nodes, dynamic>),
+        _cast(arg1,
+            value: f is Fun2<dynamic, dynamic, Maybe>,
+            nodes: f is Fun2<dynamic, dynamic, Nodes>),
+      );
+    }
+    throw Exception('Type mismatch');
   }
 
   Expression _cast(

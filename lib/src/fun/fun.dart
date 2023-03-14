@@ -16,9 +16,9 @@ abstract class Fun<R> {
 /// - [Maybe]
 /// - [Nodes]
 abstract class Fun1<R, T> extends Fun<R> {
-  /// Attaches the given arguments and creates a function expression.
+  /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
-  Expression<R> toExpression(Expression<T> arg);
+  Expression<R> apply(Expression<T> arg);
 }
 
 /// A named function with two arguments.
@@ -31,7 +31,7 @@ abstract class Fun1<R, T> extends Fun<R> {
 /// - [Maybe]
 /// - [Nodes]
 abstract class Fun2<R, T1, T2> extends Fun<R> {
-  /// Attaches the given arguments and creates a function expression.
+  /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
-  Expression<R> toExpression(Expression<T1> first, Expression<T2> second);
+  Expression<R> apply(Expression<T1> first, Expression<T2> second);
 }

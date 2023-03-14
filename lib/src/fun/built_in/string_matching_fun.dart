@@ -12,7 +12,7 @@ abstract class StringMatchingFun implements Fun2<bool, Maybe, Maybe> {
   final bool substring;
 
   @override
-  Expression<bool> toExpression(
+  Expression<bool> apply(
       Expression<Maybe> value, Expression<Maybe> regex) {
     // Static type checking and extraction
     final staticValue = _getStaticValue(value);
@@ -26,8 +26,8 @@ abstract class StringMatchingFun implements Fun2<bool, Maybe, Maybe> {
 
     return Expression((node) {
 
-      return value.of(node)
-          .map((v) => regex.of(node)
+      return value.apply(node)
+          .map((v) => regex.apply(node)
               .map((r) => _typeSafeMatch(v, r, substring))
               .or(false)) // Regex is Nothing
           .or(false); // Value is nothing

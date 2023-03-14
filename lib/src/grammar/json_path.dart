@@ -137,7 +137,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
 
   Parser<Expression<Nodes>> _absPath() => _segmentSequence()
       .skip(before: char(r'$'))
-      .map((expr) => Expression((node) => expr.of(node.root)));
+      .map((expr) => Expression((node) => expr.apply(node.root)));
 
   Parser<Expression<Nodes>> _relPath() =>
       _segmentSequence().skip(before: char('@'));

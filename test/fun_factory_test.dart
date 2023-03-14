@@ -25,6 +25,6 @@ class BadNameFun extends Fun1<bool, Maybe> {
   final name = 'Foo';
 
   @override
-  Expression<bool> toExpression(Expression<Maybe> a) =>
+  Expression<bool> apply(Expression<Maybe> a) =>
       Expression((_) => true);
 }

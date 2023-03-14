@@ -9,7 +9,7 @@ class LengthFun implements Fun1<Maybe, Maybe> {
   final name = 'length';
 
   @override
-  Expression<Maybe> toExpression(Expression<Maybe> arg) {
+  Expression<Maybe> apply(Expression<Maybe> arg) {
     if (arg is StaticExpression<Maybe>) {
       return StaticExpression(arg.value.map(_length));
     }
