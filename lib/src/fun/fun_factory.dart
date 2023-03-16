@@ -1,5 +1,7 @@
 import 'package:json_path/src/expression/expression.dart';
 import 'package:json_path/src/expression/nodes.dart';
+import 'package:json_path/src/expression/static_expression.dart';
+import 'package:json_path/src/fun/built_in/string_matching_fun.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/grammar/fun_name.dart';
@@ -43,61 +45,84 @@ class FunFactory {
   Expression<T> any<T>(FunCall call) {
     final name = call.name;
     final args = call.args;
-    if (args.length == 1) {
-      return any1<T>(name, args[0]);
-    } else if (args.length == 2) {
-      return any2<T>(name, args[0], args[1]);
+    try {
+      if (args.length == 1) {
+        return any1<T>(name, args[0]);
+      }
+      if (args.length == 2) {
+        return any2<T>(name, args[0], args[1]);
+      }
+    } on ArgumentError catch (e) {
+      throw FormatException('Invalid argument: ${e.message}');
+    } on StateError catch (e) {
+      throw FormatException(e.message);
     }
     throw Exception('Type mismatch');
   }
 
-  Expression<T> any1<T>(String name, Expression arg0) {
-    final f = _fun1[name] ?? (throw Exception('No fun'));
-    if (f is Fun1<T, dynamic>) {
-      return f.apply(
-        _cast(
-          arg0,
-          value: f is Fun1<T, Maybe>,
-          nodes: f is Fun1<T, Nodes>,
-        ),
-      );
+  Expression<T> any1<T>(String name, Expression a0) {
+    final f = _get1<T>(name);
+    final cast0 = f is Fun1<T, Nodes> ? _nodes : _value;
+    if (a0 is StaticExpression) {
+      return StaticExpression(f.apply(cast0(a0.value)));
     }
-    throw Exception('Type mismatch');
+    return Expression((node) => f.apply(cast0(a0.apply(node))));
   }
 
-  Expression<T> any2<T>(String name, Expression arg0, Expression arg1) {
-    final f = _fun2[name] ?? (throw Exception('No fun'));
-    if (f is Fun2<T, dynamic, dynamic>) {
-      return f.apply(
-        _cast(arg0,
-            value: f is Fun2<dynamic, Maybe, dynamic>,
-            nodes: f is Fun2<dynamic, Nodes, dynamic>),
-        _cast(arg1,
-            value: f is Fun2<dynamic, dynamic, Maybe>,
-            nodes: f is Fun2<dynamic, dynamic, Nodes>),
-      );
+  Expression<T> any2<T>(String name, Expression a0, Expression a1) {
+    final f = _get2<T>(name);
+    final cast0 = f is Fun2<T, Nodes, dynamic> ? _nodes : _value;
+    final cast1 = f is Fun2<T, dynamic, Nodes> ? _nodes : _value;
+
+    _checkKnownTypeExpectations(f, a0, cast0, a1, cast1);
+
+    if (a0 is StaticExpression && a1 is StaticExpression) {
+      return StaticExpression(f.apply(
+        cast0(a0.value),
+        cast1(a1.value),
+      ));
     }
-    throw Exception('Type mismatch');
+    return Expression((node) => f.apply(
+          cast0(a0.apply(node)),
+          cast1(a1.apply(node)),
+        ));
   }
 
-  Expression _cast(
-    Expression e, {
-    required bool value,
-    required bool nodes,
-  }) {
-    if (value) return _value(e);
-    if (nodes) return _nodes(e);
-    throw Exception('Type mismatch');
+  /// Checks some known type expectations for the built-in functions to detect
+  /// incorrect type usage at parse time.
+  void _checkKnownTypeExpectations(
+    Fun2 f,
+    Expression a0,
+    Object Function(dynamic) cast0,
+    Expression a1,
+    Object Function(dynamic) cast1,
+  ) {
+    if (f is StringMatchingFun) {
+      if (a0 is StaticExpression) {
+        f.validateArg0(cast0(a0.value) as Maybe);
+      }
+      if (a1 is StaticExpression) {
+        f.validateArg1(cast1(a1.value) as Maybe);
+      }
+    }
   }
 
-  Expression<Maybe> _value(Expression e) {
-    if (e is Expression<Maybe>) return e;
-    if (e is Expression<Nodes>) return e.map((v) => v.asValue);
-    throw Exception('Type mismatch');
+  Fun1<T, dynamic> _get1<T>(String name) {
+    final f = _fun1[name];
+    if (f is Fun1<T, dynamic>) return f;
+    throw StateError('Function "$name" of 1 argument is not found');
   }
 
-  Expression<Nodes> _nodes(Expression e) {
-    if (e is Expression<Nodes>) return e;
-    throw Exception('Type mismatch');
+  Fun2<T, dynamic, dynamic> _get2<T>(String name) {
+    final f = _fun2[name];
+    if (f is Fun2<T, dynamic, dynamic>) return f;
+    throw StateError('Function "$name" of 2 arguments is not found');
+  }
+
+  static Maybe _value(v) => (v is Maybe) ? v : _nodes(v).asValue;
+
+  static Nodes _nodes(v) {
+    if (v is Nodes) return v;
+    throw ArgumentError('Nodes type expected');
   }
 }

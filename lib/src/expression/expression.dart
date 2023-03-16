@@ -17,7 +17,6 @@ class Expression<T> {
   /// Creates a new [Expression] from the [other] [Expression] and the
   /// [merger] function. The [merger] function is applied to the values
   /// produced by this an the [other] [Expression].
-  Expression<R> merge<R, M>(
-          Expression<M> other, R Function(T a, M b) merger) =>
+  Expression<R> merge<R, M>(Expression<M> other, R Function(T a, M b) merger) =>
       Expression((node) => merger(apply(node), other.apply(node)));
 }

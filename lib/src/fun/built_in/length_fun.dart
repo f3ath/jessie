@@ -1,5 +1,4 @@
 import 'package:json_path/functions.dart';
-import 'package:json_path/src/expression/static_expression.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 class LengthFun implements Fun1<Maybe, Maybe> {
@@ -9,12 +8,7 @@ class LengthFun implements Fun1<Maybe, Maybe> {
   final name = 'length';
 
   @override
-  Expression<Maybe> apply(Expression<Maybe> arg) {
-    if (arg is StaticExpression<Maybe>) {
-      return StaticExpression(arg.value.map(_length));
-    }
-    return arg.map((v) => v.tryMap(_length));
-  }
+  Maybe apply(Maybe v) => v.map(_length);
 
   int _length(v) {
     if (v is String) return v.length;

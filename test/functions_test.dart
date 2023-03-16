@@ -62,12 +62,12 @@ class Siblings implements Fun1<Nodes, Nodes> {
   final name = 'siblings';
 
   @override
-  Expression<Nodes> apply(Expression<Nodes> arg) {
-    return arg.map((nodes) => nodes.expand((node) {
+  Nodes apply(Nodes nodes) {
+    return nodes.expand((node) {
           final parent = node.parent;
           if (parent == null) return <Node>[];
           return selectAll(parent).where((it) => it != node);
-        }));
+        });
   }
 }
 
@@ -77,6 +77,6 @@ class Reverse implements Fun1<Maybe, Maybe> {
   final name = 'reverse';
 
   @override
-  Expression<Maybe> apply(Expression<Maybe> arg) =>
-      arg.map((v) => v.type<String>().map((s) => s.split('').reversed.join()));
+  Maybe apply(Maybe v) =>
+      v.type<String>().map((s) => s.split('').reversed.join());
 }

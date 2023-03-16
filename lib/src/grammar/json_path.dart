@@ -2,9 +2,9 @@ import 'package:json_path/functions.dart';
 import 'package:json_path/src/fun/built_in/count_fun.dart';
 import 'package:json_path/src/fun/built_in/length_fun.dart';
 import 'package:json_path/src/fun/built_in/match_fun.dart';
+import 'package:json_path/src/fun/built_in/search_fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
-import 'package:json_path/src/fun/built_in/search_fun.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/comparison_expression.dart';
@@ -71,12 +71,10 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         ref0(_funExpr),
       ].toChoiceParser().trim();
 
-  Parser<T> _funCall<T>(T? Function(FunCall) funMaker) =>
+  Parser<T> _funCall<T>(T Function(FunCall) funMaker) =>
       (funName & _funArgument().toList().inParens())
           .map((v) => FunCall(v[0], v[1]))
-          .tryMap((call) =>
-              funMaker(call) ??
-              (throw Exception('No implementation for $call found')));
+          .tryMap(funMaker);
 
   Parser<Expression> _funExpr() => _funCall(_fun.any);
 

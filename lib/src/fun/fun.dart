@@ -1,5 +1,3 @@
-import 'package:json_path/src/expression/expression.dart';
-
 /// A named function which can be used in a JSONPath expression.
 abstract class Fun<R> {
   /// Function name.
@@ -18,7 +16,7 @@ abstract class Fun<R> {
 abstract class Fun1<R, T> extends Fun<R> {
   /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
-  Expression<R> apply(Expression<T> arg);
+  R apply(T arg);
 }
 
 /// A named function with two arguments.
@@ -33,5 +31,5 @@ abstract class Fun1<R, T> extends Fun<R> {
 abstract class Fun2<R, T1, T2> extends Fun<R> {
   /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
-  Expression<R> apply(Expression<T1> first, Expression<T2> second);
+  R apply(T1 first, T2 second);
 }

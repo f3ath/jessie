@@ -1,58 +1,40 @@
-import 'package:json_path/src/expression/expression.dart';
-import 'package:json_path/src/expression/static_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 abstract class StringMatchingFun implements Fun2<bool, Maybe, Maybe> {
-  const StringMatchingFun(this.name, this.substring);
+  const StringMatchingFun(this.name, this.allowSubstring);
 
   @override
   final String name;
 
-  final bool substring;
+  final bool allowSubstring;
 
   @override
-  Expression<bool> apply(
-      Expression<Maybe> value, Expression<Maybe> regex) {
-    // Static type checking and extraction
-    final staticValue = _getStaticValue(value);
-    final staticRegex = _getStaticValue(regex);
+  bool apply(Maybe value, Maybe regex) =>
+      value.merge(regex, _typeSafeMatch).or(false);
 
-    // If all args are available statically,
-    // we can return the result right away.
-    if (staticValue != null && staticRegex != null) {
-      return StaticExpression(_match(staticRegex, staticValue, substring));
-    }
+  void validateArg0(Maybe value) => value.ifPresent((it) {
+        if (it is! String) {
+          throw ArgumentError('String value expected');
+        }
+      });
 
-    return Expression((node) {
+  void validateArg1(Maybe regex) => regex.ifPresent((it) {
+        if (it is! String) {
+          throw ArgumentError('String regex expected');
+        }
+        _makeRegex(it); // Validate regex.
+      });
 
-      return value.apply(node)
-          .map((v) => regex.apply(node)
-              .map((r) => _typeSafeMatch(v, r, substring))
-              .or(false)) // Regex is Nothing
-          .or(false); // Value is nothing
-    });
-  }
-
-  /// Returns the value if it is available at parse time.
-  String? _getStaticValue(value) {
-    if (value is StaticExpression<Maybe>) {
-      return value.value
-          .type<String>()
-          .orThrow(() => FormatException('Invalid type'));
-    }
-    return null;
-  }
-
-  bool _typeSafeMatch(value, regex, bool substring) {
+  bool _typeSafeMatch(value, regex) {
     if (value is! String || regex is! String) return false;
     try {
-      return _match(regex, value, substring);
+      return _makeRegex(regex).hasMatch(value);
     } on FormatException {
-      return false; // Invalid regex
+      return false; // Invalid regex means no match
     }
   }
 
-  bool _match(String regExp, String string, bool substring) =>
-      RegExp(substring ? regExp : '^$regExp\$').hasMatch(string);
+  RegExp _makeRegex(String regex) =>
+      RegExp(allowSubstring ? regex : '^$regex\$');
 }
