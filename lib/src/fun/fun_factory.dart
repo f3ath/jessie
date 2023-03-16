@@ -1,6 +1,5 @@
 import 'package:json_path/src/expression/expression.dart';
 import 'package:json_path/src/expression/nodes.dart';
-import 'package:json_path/src/expression/static_expression.dart';
 import 'package:json_path/src/fun/built_in/string_matching_fun.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
@@ -63,47 +62,35 @@ class FunFactory {
   Expression<T> any1<T>(String name, Expression a0) {
     final f = _get1<T>(name);
     final cast0 = f is Fun1<T, Nodes> ? _nodes : _value;
-    if (a0 is StaticExpression) {
-      return StaticExpression(f.apply(cast0(a0.value)));
-    }
-    return Expression((node) => f.apply(cast0(a0.apply(node))));
+    return a0.value
+        .map(cast0)
+        .map(f.apply)
+        .map(Expression.fromValue)
+        .orGet(() => Expression((node) => f.apply(cast0(a0.apply(node)))));
   }
 
   Expression<T> any2<T>(String name, Expression a0, Expression a1) {
     final f = _get2<T>(name);
     final cast0 = f is Fun2<T, Nodes, dynamic> ? _nodes : _value;
     final cast1 = f is Fun2<T, dynamic, Nodes> ? _nodes : _value;
-
-    _checkKnownTypeExpectations(f, a0, cast0, a1, cast1);
-
-    if (a0 is StaticExpression && a1 is StaticExpression) {
-      return StaticExpression(f.apply(
-        cast0(a0.value),
-        cast1(a1.value),
-      ));
-    }
-    return Expression((node) => f.apply(
-          cast0(a0.apply(node)),
-          cast1(a1.apply(node)),
-        ));
+    final val0 = a0.value.map(cast0);
+    final val1 = a1.value.map(cast1);
+    _checkKnownTypeExpectations(f, val0, val1);
+    return val0
+        .merge(val1, f.apply)
+        .map(Expression.fromValue)
+        .orGet(() => Expression((node) => f.apply(
+              cast0(a0.apply(node)),
+              cast1(a1.apply(node)),
+            )));
   }
 
   /// Checks some known type expectations for the built-in functions to detect
   /// incorrect type usage at parse time.
-  void _checkKnownTypeExpectations(
-    Fun2 f,
-    Expression a0,
-    Object Function(dynamic) cast0,
-    Expression a1,
-    Object Function(dynamic) cast1,
-  ) {
+  void _checkKnownTypeExpectations(Fun2 f, Maybe a0, Maybe a1) {
     if (f is StringMatchingFun) {
-      if (a0 is StaticExpression) {
-        f.validateArg0(cast0(a0.value) as Maybe);
-      }
-      if (a1 is StaticExpression) {
-        f.validateArg1(cast1(a1.value) as Maybe);
-      }
+      a0.type<Maybe>().ifPresent(f.validateArg0);
+      a1.type<Maybe>().ifPresent(f.validateArg1);
     }
   }
 
@@ -121,8 +108,6 @@ class FunFactory {
 
   static Maybe _value(v) => (v is Maybe) ? v : _nodes(v).asValue;
 
-  static Nodes _nodes(v) {
-    if (v is Nodes) return v;
-    throw ArgumentError('Nodes type expected');
-  }
+  static Nodes _nodes(v) =>
+      (v is Nodes) ? v : (throw ArgumentError('Nodes type expected'));
 }

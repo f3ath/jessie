@@ -14,6 +14,6 @@ class LengthFun implements Fun1<Maybe, Maybe> {
     if (v is String) return v.length;
     if (v is List) return v.length;
     if (v is Map) return v.length;
-    throw FormatException('Invalid arg type: ${v.runtimeType}');
+    throw ArgumentError('Invalid arg type: ${v.runtimeType}');
   }
 }
