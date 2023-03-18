@@ -1,7 +1,7 @@
 import 'package:json_path/src/node/node.dart';
 import 'package:json_path/src/node/node_ext.dart';
 
-Iterable<Node> selectAll(Node node) sync* {
+Iterable<Node> allChildren(Node node) sync* {
   final value = node.value;
   if (value is Map) {
     yield* value.entries.map((e) => node.child(e.key));

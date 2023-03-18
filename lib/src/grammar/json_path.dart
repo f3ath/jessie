@@ -14,7 +14,7 @@ import 'package:json_path/src/grammar/filter_selector.dart';
 import 'package:json_path/src/grammar/fun_name.dart';
 import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/negatable.dart';
-import 'package:json_path/src/grammar/node_selector.dart';
+import 'package:json_path/src/grammar/selector.dart';
 import 'package:json_path/src/grammar/parser_ext.dart';
 import 'package:json_path/src/grammar/select_all_recursively.dart';
 import 'package:json_path/src/grammar/sequence_selector.dart';
@@ -41,7 +41,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
   @override
   Parser<Expression<Nodes>> start() => ref0(_absPath).end();
 
-  Parser<NodeSelector> _unionElement() => [
+  Parser<Selector> _unionElement() => [
         arraySlice,
         arrayIndex,
         wildcard,
@@ -49,10 +49,10 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         ref0(_expressionFilter)
       ].toChoiceParser().trim();
 
-  Parser<NodeSelector> _union() =>
+  Parser<Selector> _union() =>
       _unionElement().toList().inBrackets().map(unionSelector);
 
-  Parser<NodeSelector> _recursion() => [
+  Parser<Selector> _recursion() => [
         wildcard,
         _union(),
         memberNameShorthand,
@@ -121,10 +121,10 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         _logicalFunExpr(),
       ].toChoiceParser());
 
-  Parser<NodeSelector> _expressionFilter() =>
+  Parser<Selector> _expressionFilter() =>
       _logicalExpr().skip(before: string('?')).map(filterSelector);
 
-  Parser<NodeSelector> _segment() => [
+  Parser<Selector> _segment() => [
         dotName,
         ref0(_union),
         ref0(_recursion),

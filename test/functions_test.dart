@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:json_path/functions.dart';
 import 'package:json_path/json_path.dart';
-import 'package:json_path/src/grammar/select_all.dart';
+import 'package:json_path/src/grammar/all_children.dart';
 import 'package:json_path/src/node/node.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:test/test.dart';
@@ -66,7 +66,7 @@ class Siblings implements Fun1<Nodes, Nodes> {
     return nodes.expand((node) {
           final parent = node.parent;
           if (parent == null) return <Node>[];
-          return selectAll(parent).where((it) => it != node);
+          return allChildren(parent).where((it) => it != node);
         });
   }
 }

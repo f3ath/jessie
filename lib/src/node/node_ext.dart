@@ -8,20 +8,21 @@ extension NodeExt on Node {
       JsonPointerSegment(index.toString(), pointer), this);
 
   /// A JSON object child.
-  Node child(String key) => ChildNode(value[key], '$path[${_quoted(key)}]',
+  Node child(String key) => ChildNode(value[key], '$path[${key.quoted}]',
       JsonPointerSegment(key, pointer), this);
+}
 
-  /// Quotes a [string] using [quote]
-  String _quoted(String s) {
-    final escaped = s
-        .replaceAll(r'/', r'\/')
-        .replaceAll(r'\', r'\\')
-        .replaceAll('\b', r'\b')
-        .replaceAll('\f', r'\f')
-        .replaceAll('\n', r'\n')
-        .replaceAll('\r', r'\r')
-        .replaceAll('\t', r'\t')
-        .replaceAll("'", r"\'");
-    return "'$escaped'";
-  }
+extension StringExt on String {
+  String get quoted => "'$escaped'";
+
+  String get escaped => {
+        r'/': r'\/',
+        r'\': r'\\',
+        '\b': r'\b',
+        '\f': r'\f',
+        '\n': r'\n',
+        '\r': r'\r',
+        '\t': r'\t',
+        "'": r"\'",
+      }.entries.fold(this, (s, e) => s.replaceAll(e.key, e.value));
 }

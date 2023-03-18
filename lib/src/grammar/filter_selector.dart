@@ -1,6 +1,6 @@
 import 'package:json_path/src/expression/expression.dart';
-import 'package:json_path/src/grammar/node_selector.dart';
-import 'package:json_path/src/grammar/select_all.dart';
+import 'package:json_path/src/grammar/selector.dart';
+import 'package:json_path/src/grammar/all_children.dart';
 
-NodeSelector filterSelector(Expression<bool> filter) =>
-    (node) => selectAll(node).where(filter.apply);
+Selector filterSelector(Expression<bool> filter) =>
+    (node) => allChildren(node).where(filter.apply);

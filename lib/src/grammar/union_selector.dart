@@ -1,4 +1,4 @@
-import 'package:json_path/src/grammar/node_selector.dart';
+import 'package:json_path/src/grammar/selector.dart';
 
-NodeSelector unionSelector(Iterable<NodeSelector> selectors) =>
+Selector unionSelector(Iterable<Selector> selectors) =>
     (node) => selectors.expand((s) => s(node));

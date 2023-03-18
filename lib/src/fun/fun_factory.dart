@@ -7,10 +7,6 @@ import 'package:json_path/src/grammar/fun_name.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:petitparser/petitparser.dart';
 
-typedef F1<R, T1> = Expression<R> Function(
-  Expression<T1> a,
-);
-
 class FunFactory {
   FunFactory(Iterable<Fun> functions) {
     for (final f in functions) {

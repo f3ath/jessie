@@ -1,7 +1,7 @@
-import 'package:json_path/src/grammar/node_selector.dart';
+import 'package:json_path/src/grammar/selector.dart';
 import 'package:json_path/src/node/node.dart';
 
-NodeSelector sequenceSelector(Iterable<NodeSelector> selectors) {
+Selector sequenceSelector(Iterable<Selector> selectors) {
   final filter = selectors.fold<_Filter>((v) => v,
       (filter, selector) => (nodes) => filter(nodes).expand(selector));
   return (node) => filter([node]);
