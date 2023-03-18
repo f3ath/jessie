@@ -13,7 +13,8 @@ void main() {
     'pointers',
     'selector',
     'skip',
-    'values',
+    'result',
+    'invalid_selector',
   };
   Directory('test/cases')
       .listSync()
@@ -35,7 +36,8 @@ void main() {
         final pointers = t['pointers'];
         final selector = t['selector'];
         final skip = t['skip'];
-        final values = t['values'];
+        final values = t['result'];
+        final invalid = t['invalid_selector'];
         group(name ?? selector, () {
           if (values is List) {
             test('values', () {
@@ -61,7 +63,15 @@ void main() {
               );
             });
           }
-          if ([values, paths, pointers].every((_) => _ == null)) {
+          if (invalid == true) {
+            test('invalid', () {
+              expect(
+                () => JsonPath(selector).read(document),
+                throwsFormatException,
+              );
+            });
+          }
+          if ([values, paths, pointers, invalid].every((_) => _ == null)) {
             throw 'No expectations found';
           }
         }, skip: skip);

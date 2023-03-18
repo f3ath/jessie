@@ -3,6 +3,7 @@ import 'package:json_path/src/fun/built_in/count_fun.dart';
 import 'package:json_path/src/fun/built_in/length_fun.dart';
 import 'package:json_path/src/fun/built_in/match_fun.dart';
 import 'package:json_path/src/fun/built_in/search_fun.dart';
+import 'package:json_path/src/fun/built_in/value_fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
 import 'package:json_path/src/grammar/array_index.dart';
@@ -14,9 +15,9 @@ import 'package:json_path/src/grammar/filter_selector.dart';
 import 'package:json_path/src/grammar/fun_name.dart';
 import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/negatable.dart';
-import 'package:json_path/src/grammar/selector.dart';
 import 'package:json_path/src/grammar/parser_ext.dart';
 import 'package:json_path/src/grammar/select_all_recursively.dart';
+import 'package:json_path/src/grammar/selector.dart';
 import 'package:json_path/src/grammar/sequence_selector.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/union_selector.dart';
@@ -31,9 +32,9 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
   static const _builtInFun = <Fun>[
     LengthFun(),
     CountFun(),
-    // CountFun1(),
     MatchFun(),
     SearchFun(),
+    ValueFun(),
   ];
 
   final FunFactory _fun;
@@ -114,7 +115,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
       ].toChoiceParser();
 
   Parser<Expression<bool>> _existenceTest() =>
-      ref0(_filterPath).map((value) => value.map((v) => v.isNotEmpty));
+      ref0(_filterPath).map((value) => value.map((v) => v.asLogical));
 
   Parser<Expression<bool>> _testExpr() => negatable([
         _existenceTest(),

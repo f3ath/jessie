@@ -3,33 +3,33 @@
     {
       "selector": "$[?@ > count($)]",
       "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", true, [], {}],
-      "values": [2, 3, 3.14, 4]
+      "result": [2, 3, 3.14, 4]
     }, {
       "selector": "$[?((@ > 2) || (@ < -.14))]",
       "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", true, [], {}],
-      "values": [-100, 3, 3.14, 4]
+      "result": [-100, 3, 3.14, 4]
     }, {
       "selector": "$[?((@ < 2) && @)]",
       "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", true, [], {}],
-      "values": [-100, 0, 1]
+      "result": [-100, 0, 1]
     }, {
       "selector": "$[?@ > 2.5 || @ >= '1']",
       "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", "foo", true, [], {}, false],
-      "values": [3, 3.14, 4, "4", "1", "foo"]
+      "result": [3, 3.14, 4, "4", "1", "foo"]
     }, {
       "selector": "$[?1 < 2]",
       "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", "foo", true, [], {}, false],
-      "values": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", "foo", true, [], {}, false]
+      "result": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", "foo", true, [], {}, false]
     }, {
       "name": "all that exists",
       "selector": "$[?@]",
       "document": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false],
-      "values": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false]
+      "result": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false]
     }, {
       "name": "none that exists",
       "selector": "$[?!@]",
       "document": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false],
-      "values": []
+      "result": []
     }
   ]
 }

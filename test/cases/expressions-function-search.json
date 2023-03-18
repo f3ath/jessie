@@ -3,23 +3,23 @@
     {
       "selector": "$[?search(@, 'a')]",
       "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
-      "values": ["abc", "bab", "bba", "a"]
+      "result": ["abc", "bab", "bba", "a"]
     }, {
       "selector": "$.foo[?search(@, 'a')]",
       "document": {"foo": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
-      "values": ["abc", "bab", "bba", "a"]
+      "result": ["abc", "bab", "bba", "a"]
     }, {
       "selector": "$[?search('bab', 'a')]",
       "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
-      "values": ["abc", "bcd", "bab", "bba", "a", true, [], {}]
+      "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]
     }, {
-      "selector": "$.values[?search(@, $.regex)]",
-      "document": {"regex": "b.?b", "values": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
-      "values": ["bab", "bba"]
+      "selector": "$.result[?search(@, $.regex)]",
+      "document": {"regex": "b.?b", "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "result": ["bab", "bba"]
     }, {
-      "selector": "$.values[?search(@, $.regex)]",
-      "document": {"regex": "invalid][$^", "values": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
-      "values": []
+      "selector": "$.result[?search(@, $.regex)]",
+      "document": {"regex": "invalid][$^", "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "result": []
     }
   ]
 }

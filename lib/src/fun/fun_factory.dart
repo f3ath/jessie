@@ -36,7 +36,7 @@ class FunFactory {
   /// Returns a function to use in logical context.
   Expression<bool> logical(FunCall call) => any<bool>(call);
 
-  /// Returns a function to use in any context.
+  /// Returns a function to use as an argument for another function.
   Expression<T> any<T>(FunCall call) {
     final name = call.name;
     final args = call.args;
@@ -57,7 +57,8 @@ class FunFactory {
 
   Expression<T> any1<T>(String name, Expression a0) {
     final f = _get1<T>(name);
-    final cast0 = f is Fun1<T, Nodes> ? _nodes : _value;
+    final cast0 = cast(value: f is Fun1<T, Maybe>, logical: f is Fun1<T, bool>);
+
     return a0.value
         .map(cast0)
         .map(f.apply)
@@ -67,8 +68,12 @@ class FunFactory {
 
   Expression<T> any2<T>(String name, Expression a0, Expression a1) {
     final f = _get2<T>(name);
-    final cast0 = f is Fun2<T, Nodes, dynamic> ? _nodes : _value;
-    final cast1 = f is Fun2<T, dynamic, Nodes> ? _nodes : _value;
+    final cast0 = cast(
+        value: f is Fun2<T, Maybe, dynamic>,
+        logical: f is Fun2<T, bool, dynamic>);
+    final cast1 = cast(
+        value: f is Fun2<T, dynamic, Maybe>,
+        logical: f is Fun2<T, dynamic, bool>);
     final val0 = a0.value.map(cast0);
     final val1 = a1.value.map(cast1);
     _checkKnownTypeExpectations(f, val0, val1);
@@ -102,7 +107,16 @@ class FunFactory {
     throw StateError('Function "$name" of 2 arguments is not found');
   }
 
+  static dynamic Function(dynamic) cast(
+      {required bool value, required bool logical}) {
+    if (value) return _value;
+    if (logical) return _logical;
+    return _nodes;
+  }
+
   static Maybe _value(v) => (v is Maybe) ? v : _nodes(v).asValue;
+
+  static bool _logical(v) => (v is bool) ? v : _nodes(v).asLogical;
 
   static Nodes _nodes(v) =>
       (v is Nodes) ? v : (throw ArgumentError('Nodes type expected'));
