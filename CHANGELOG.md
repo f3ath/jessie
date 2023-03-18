@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.4] - 2023-03-18
+### Fixed
+- Reverted changes from 0.4.3 as they caused dependency issues
+
 ## [0.4.3] - 2023-03-18
 ### Fixed
 - Deprecation warnings from petitparser
@@ -117,6 +121,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.4.4]: https://github.com/f3ath/jessie/compare/0.4.3...0.4.4
 [0.4.3]: https://github.com/f3ath/jessie/compare/0.4.2...0.4.3
 [0.4.2]: https://github.com/f3ath/jessie/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/f3ath/jessie/compare/0.4.0...0.4.1
