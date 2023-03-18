@@ -64,10 +64,10 @@ class Siblings implements Fun1<Nodes, Nodes> {
   @override
   Nodes apply(Nodes nodes) {
     return nodes.expand((node) {
-          final parent = node.parent;
-          if (parent == null) return <Node>[];
-          return allChildren(parent).where((it) => it != node);
-        });
+      final parent = node.parent;
+      if (parent == null) return <Node>[];
+      return allChildren(parent).where((it) => it != node);
+    });
   }
 }
 
