@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Update submodules
-        run: git submodule update --init --recursive
+        run: git config --add safe.directory '*' && git submodule update --init --recursive
       - name: Print Dart version
         run: dart --version
       - name: Install dependencies
