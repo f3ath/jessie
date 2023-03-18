@@ -36,14 +36,14 @@ Parser<MatchMapper<bool>> _build() {
       .map<MatchMapper>((v) => v.lastWhere((e) => e != null));
 
   final builder = ExpressionBuilder<MatchMapper>();
-  builder.group()
+  builder
     ..primitive(string('null').value(null).toMatchMapper())
     ..primitive(string('false').value(false).toMatchMapper())
     ..primitive(string('true').value(true).toMatchMapper())
     ..primitive(number.toMatchMapper())
     ..primitive(quotedString.toMatchMapper())
     ..primitive(node)
-    ..wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
+    ..group().wrapper(char('(').trim(), char(')').trim(), (l, a, r) => a);
 
   builder.group().prefix(char('!').trim(),
       (_, mapper) => (match) => !match.context.algebra.isTruthy(mapper(match)));
