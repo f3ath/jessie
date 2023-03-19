@@ -1,0 +1,63 @@
+{
+  "tests": [
+    {
+      "selector": "$[?(@ > 2)]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "1", "2", "3", true, false, [], {}],
+      "result": [3, 3.14, 4]
+    }, {
+      "selector": "$[?(@ > '2')]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "1", "2", "3", true, false, [], {}],
+      "result": ["3"]
+    }, {
+      "selector": "$[?(@ >= 2)]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "1", "2", "3", true, false, [], {}],
+      "result": [2, 3, 3.14, 4]
+    }, {
+      "selector": "$[?(@ >= '2')]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "1", "2", "3", true, false, [], {}],
+      "result": ["2", "3"]
+    }, {
+      "selector": "$[?(@ < 2)]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", true, [], {}],
+      "result": [-100, 0, 1]
+    }, {
+      "selector": "$[?(@ < '2')]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "4", "1", true, [], {}],
+      "result": ["1"]
+    }, {
+      "selector": "$[?(@ <= 2)]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "1", "2", "3", true, false, [], {}],
+      "result": [-100, 0, 1, 2]
+    }, {
+      "selector": "$[?(@ <= '2')]",
+      "document": [-100, 0, 1, 2, 3, 3.14, 4, "1", "2", "3", true, false, [], {}],
+      "result": ["1", "2"]
+    }, {
+      "selector": "$[?(@ <= 'bar')]",
+      "document": ["", "foo", "bar", "baz"],
+      "result": ["", "bar"]
+    }, {
+      "selector": "$[?(@ >= 'bar')]",
+      "document": ["", "foo", "bar", "baz"],
+      "result": ["foo", "bar", "baz"]
+    },
+    {
+      "name": "props comparison",
+      "selector": "$[?(@.foo < @.bar)]",
+      "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
+      "result": [{"foo": 1, "bar": 2}]
+    },
+    {
+      "name": "props comparison, boolean OR",
+      "selector": "$[?((@.foo < 2) || (@.foo > 2))]",
+      "document": [{"foo": 1}, {"foo": 2}, {"foo": 3}, {}],
+      "result": [{"foo": 1}, {"foo": 3}]
+    },
+    {
+      "name": "props comparison, boolean AND",
+      "selector": "$[?(@.key > 42 && @.key < 44)]",
+      "document": [{"key": 42}, {"key": 43}, {"key": 44}],
+      "result": [{"key": 43}]
+    }
+  ]
+}

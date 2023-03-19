@@ -1,0 +1,119 @@
+{
+  "tests": [
+    {
+      "name": "tautology means true",
+      "selector": "$[?(1==1)]",
+      "document": [42],
+      "result": [42],
+      "paths": ["$[0]"],
+      "pointers": ["/0"]
+    }, {
+      "name": "object itself",
+      "selector": "$[?(@ == 1)]",
+      "document": [0, 1, 2, "1", "a", "0", ""],
+      "result": [1]
+    }, {
+      "name": "array index",
+      "selector": "$[?(@[1] == 'b')]",
+      "document": [["a", "b"], ["x", "y"]],
+      "result": [["a", "b"]],
+      "paths": ["$[0]"],
+      "pointers": ["/0"]
+    }, {
+      "name": "object child, single quote",
+      "selector": "$[?(@['key'] == 'b')]",
+      "document": [{"key": "a"}, {"key": "b"}, {}],
+      "result": [{"key": "b"}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, double quote",
+      "selector": "$[?(@[\"key\"] == 'b')]",
+      "document": [{"key": "a"}, {"key": "b"}, {}],
+      "result": [{"key": "b"}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, dot-notation",
+      "selector": "$[?(@.key=='b')]",
+      "document": [{"key": "a"}, {"key": "b"}, {}],
+      "result": [{"key": "b"}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, dot-notation, depth 2",
+      "selector": "$[?(@.foo.bar=='b')]",
+      "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": "b"} ,{}],
+      "result": [{"foo": {"bar": "b"}}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, dot-notation, int value",
+      "selector": "$[?(@.id==42)].name",
+      "document": [{"id": 42, "name": "forty-two"}, {"id": 1, "name": "one"}],
+      "result": ["forty-two"],
+      "paths": ["$[0]['name']"],
+      "pointers": ["/0/name"]
+    }, {
+      "name": "object child, combined",
+      "selector": "$[?(@.foo['bar'] == 'b')]",
+      "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": {"moo": 42}}, {}],
+      "result": [{"foo": {"bar": "b"}}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "equal props",
+      "selector": "$[?(@.foo == @.bar)]",
+      "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
+      "result": [{"foo": 42, "bar": 42}, {}],
+      "paths": ["$[1]", "$[3]"],
+      "pointers": ["/1", "/3"]
+    }, {
+      "selector": "$[?(1!=1)]",
+      "document": [42],
+      "result": []
+    }, {
+      "selector": "$[?(@ != 1)]",
+      "document": [0, 1, 2, "1", "a", "0", ""],
+      "result": [0, 2, "1", "a", "0", ""]
+    }, {
+      "selector": "$[?(@ == -1)]",
+      "document": [0, -1, 2, "1", "a", "0", ""],
+      "result": [-1]
+    }, {
+      "selector": "$[?(@ == 0)]",
+      "document": [0, -1, 2, "1", "a", "0", ""],
+      "result": [0]
+    }, {
+      "selector": "$[?@.a == @.b]",
+      "document": [
+        {"a": [], "b": []},
+        {"a": []},
+        {"a": [1], "b": []},
+        {"a": [null], "b": []},
+        {"a": [null]},
+        {"a": [null], "b": [null]}
+      ],
+      "result": [{"a": [], "b": []}, {"a": [null], "b": [null]}]
+    }, {
+      "selector": "$[?@.a == @.b]",
+      "document": [
+        {"a": {}, "b": {}},
+        {"a": {}},
+        {"a": {"x":  1}, "b": {}},
+        {"a": {"": null}, "b": {}},
+        {"a": {"": null}},
+        {"a": {"": null}, "b": {"": null}}
+      ],
+      "result": [{"a": {}, "b": {}}, {"a": {"": null}, "b": {"": null}}]
+    }, {
+      "selector": "$[?(@ != '1')]",
+      "document": [0, 1, 2, "1", "a", "0", ""],
+      "result": [0, 1, 2, "a", "0", ""]
+    }, {
+      "selector": "$[?(@.foo != @.bar)]",
+      "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
+      "result": [{"foo": 1, "bar": 2},  {"foo": 1, "bro": 1}]
+    }
+  ]
+}

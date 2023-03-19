@@ -1,3 +1,5 @@
+import 'package:json_path/src/grammar/child_selector.dart';
+import 'package:json_path/src/grammar/parser_ext.dart';
 import 'package:petitparser/petitparser.dart';
 
 final _escape = char(r'\');
@@ -5,15 +7,15 @@ final _doubleQuote = char('"');
 
 final _singleQuote = char("'");
 
-final _escapedSlash = string(r'\/').map((_) => r'/');
-final _escapedBackSlash = string(r'\\').map((_) => r'\');
+final _escapedSlash = string(r'\/').value(r'/');
+final _escapedBackSlash = string(r'\\').value(r'\');
 
-final _escapedBackspace = string(r'\b').map((_) => '\b');
-final _escapedFormFeed = string(r'\f').map((_) => '\f');
+final _escapedBackspace = string(r'\b').value('\b');
+final _escapedFormFeed = string(r'\f').value('\f');
 
-final _escapedNewLine = string(r'\n').map((_) => '\n');
-final _escapedReturn = string(r'\r').map((_) => '\r');
-final _escapedTab = string(r'\t').map((_) => '\t');
+final _escapedNewLine = string(r'\n').value('\n');
+final _escapedReturn = string(r'\r').value('\r');
+final _escapedTab = string(r'\t').value('\t');
 final _escapedControl = _escapedSlash |
     _escapedBackSlash |
     _escapedBackspace |
@@ -53,19 +55,20 @@ final _singleInner =
         .star()
         .map((value) => value.join(''));
 
-// ***************************************************************************
-
-final doubleQuotedString =
+final _doubleQuotedString =
     _doubleInner.skip(before: _doubleQuote, after: _doubleQuote);
 
-final singleQuotedString =
+final _singleQuotedString =
     _singleInner.skip(before: _singleQuote, after: _singleQuote);
 
-final quotedString = singleQuotedString | doubleQuotedString;
+final _nameFirst =
+    (char('_') | letter() | range(String.fromCharCode(0x80), _unicodeBoundary))
+        .plus()
+        .flatten();
 
-final unquotedString = (anyOf('-_') |
-        letter() |
-        digit() |
-        range(String.fromCharCode(0x80), _unicodeBoundary))
-    .plus()
-    .flatten();
+final _nameChar = digit() | _nameFirst;
+
+final quotedString = (_singleQuotedString | _doubleQuotedString).cast<String>();
+
+final memberNameShorthand =
+    (_nameFirst & _nameChar.star()).flatten().map(childSelector);

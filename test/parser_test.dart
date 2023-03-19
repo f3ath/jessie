@@ -1,11 +1,18 @@
 import 'package:json_path/src/grammar/json_path.dart';
+import 'package:json_path/src/grammar/parser_ext.dart';
+import 'package:petitparser/parser.dart';
 import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 void main() {
+  final parser = JsonPathGrammarDefinition([]).build();
+
   group('Parser', () {
     test('Linter is happy', () {
-      expect(linter(jsonPath), isEmpty);
+      expect(linter(parser), isEmpty);
+    });
+    test('Can use copy() after tryMap()', () {
+      expect(char('x').tryMap((x) => x + x).copy(), isA<Parser<String>>());
     });
     group('Valid expressions', () {
       for (final expr in [
@@ -36,11 +43,16 @@ void main() {
         r'$..book[0,1]',
         r'$..book[:2]',
         r'$.☺',
+        r'$[?@ > count($)]',
+        r'$[?@ > count($.bar)]',
+        r'$[?@.foo > $.bar]',
+        r'$[?(@.a == @.b)]',
       ]) {
         test(expr, () {
-          final parser = jsonPath.parse(expr);
-          if (parser.isFailure) {
-            fail(parser.message);
+          final result = parser.parse(expr);
+          if (result.isFailure) {
+            fail(
+                '${result.message}, buffer: "${result.buffer}", pos: ${result.position}');
           }
         });
       }
@@ -71,7 +83,7 @@ void main() {
       ]) {
         test(expr, () {
           try {
-            expect(jsonPath.parse(expr).isFailure, isTrue);
+            expect(parser.parse(expr).isFailure, isTrue);
           } on FormatException catch (_) {}
         });
       }

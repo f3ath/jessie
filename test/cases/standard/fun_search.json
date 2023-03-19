@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "selector": "$[?search(@, 'a')]",
+      "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
+      "result": ["abc", "bab", "bba", "a"]
+    }, {
+      "selector": "$.foo[?search(@, 'a')]",
+      "document": {"foo": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "result": ["abc", "bab", "bba", "a"]
+    }, {
+      "selector": "$[?search('bab', 'a')]",
+      "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
+      "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]
+    }, {
+      "selector": "$.result[?search(@, $.regex)]",
+      "document": {"regex": "b.?b", "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "result": ["bab", "bba"]
+    }, {
+      "selector": "$.result[?search(@, $.regex)]",
+      "document": {"regex": "invalid][$^", "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
+      "result": []
+    }
+  ]
+}
