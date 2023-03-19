@@ -76,4 +76,3 @@ class BadSecondArg2Fun extends Fun2<bool, bool, int> {
   @override
   bool apply(bool a, int b) => true;
 }
-
