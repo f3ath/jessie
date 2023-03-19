@@ -1,6 +1,6 @@
-import 'package:json_path/functions.dart';
-import 'package:maybe_just_nothing/maybe_just_nothing.dart';
+import 'package:json_path/fun_sdk.dart';
 
+/// The standard `length()` function.
 class LengthFun implements Fun1<Maybe, Maybe> {
   const LengthFun();
 

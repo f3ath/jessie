@@ -1,5 +1,5 @@
-import 'package:json_path/src/grammar/all_children.dart';
 import 'package:json_path/src/grammar/parser_ext.dart';
+import 'package:json_path/src/node/node.dart';
 import 'package:petitparser/petitparser.dart';
 
-final wildcard = char('*').value(allChildren);
+final wildcard = char('*').value((Node node) => node.children);

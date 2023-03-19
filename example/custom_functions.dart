@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-import 'package:json_path/functions.dart';
+import 'package:json_path/fun_sdk.dart';
 import 'package:json_path/json_path.dart';
-import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 void main() {
   final parser = JsonPathParser(userFunctions: [IsObject()]);

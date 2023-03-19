@@ -5,12 +5,8 @@ abstract class Fun<R> {
 }
 
 /// A named function with one argument.
-/// The return type [R] must be one of the following:
+/// The return type [R] and the argument type [T] must be one of the following:
 /// - [boolean]
-/// - [Maybe]
-/// - [Nodes]
-///
-/// The argument type [T] must be on of:
 /// - [Maybe]
 /// - [Nodes]
 abstract class Fun1<R, T> extends Fun<R> {
@@ -20,12 +16,8 @@ abstract class Fun1<R, T> extends Fun<R> {
 }
 
 /// A named function with two arguments.
-/// The return type [R] must be one of the following:
+/// The return type [R] and the argument types [T1], [T2] must be one of the following:
 /// - [boolean]
-/// - [Maybe]
-/// - [Nodes]
-///
-/// The argument types [T1] and [T2] must be on of:
 /// - [Maybe]
 /// - [Nodes]
 abstract class Fun2<R, T1, T2> extends Fun<R> {

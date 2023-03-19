@@ -1,31 +1,28 @@
 import 'package:json_path/src/expression/expression.dart';
 import 'package:json_path/src/expression/nodes.dart';
-import 'package:json_path/src/fun/built_in/string_matching_fun.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
-import 'package:json_path/src/grammar/fun_name.dart';
+import 'package:json_path/src/fun/fun_validator.dart';
+import 'package:json_path/src/fun/standard/string_matching_fun.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
-import 'package:petitparser/petitparser.dart';
 
 class FunFactory {
   FunFactory(Iterable<Fun> functions) {
+    final errors = functions.expand(_validator.errors);
+    if (errors.isNotEmpty) {
+      throw ArgumentError('Function validation errors: ${errors.join(', ')}');
+    }
     for (final f in functions) {
-      _validateName(f.name);
       if (f is Fun1) {
         _fun1[f.name] = f;
-      } else if (f is Fun2) {
+      }
+      if (f is Fun2) {
         _fun2[f.name] = f;
-      } else {
-        throw ArgumentError('Type mismatch');
       }
     }
   }
 
-  void _validateName(String name) {
-    if (!funName.allMatches(name).contains(name)) {
-      throw ArgumentError('Invalid function name $name');
-    }
-  }
+  static final _validator = FunValidator();
 
   final _fun1 = <String, Fun1>{};
   final _fun2 = <String, Fun2>{};

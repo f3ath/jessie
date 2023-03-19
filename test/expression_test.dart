@@ -1,12 +1,11 @@
-import 'package:json_path/functions.dart';
-import 'package:json_path/src/node/root_node.dart';
+import 'package:json_path/fun_sdk.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
   group('Expression', () {
     group('Static', () {
-      final node = RootNode('foo');
+      final node = Node('foo');
       final s = Expression.fromValue('bar');
       final d = Expression((n) => n.value);
       test('map()', () {

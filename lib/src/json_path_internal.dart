@@ -1,7 +1,6 @@
 import 'package:json_path/src/grammar/selector.dart';
 import 'package:json_path/src/json_path.dart';
 import 'package:json_path/src/node/node.dart';
-import 'package:json_path/src/node/root_node.dart';
 
 /// Internal implementation of [JsonPath].
 class JsonPathInternal implements JsonPath {
@@ -15,7 +14,7 @@ class JsonPathInternal implements JsonPath {
 
   /// Reads the given [json] object returning an Iterable of all matches found.
   @override
-  Iterable<Node> read(json) => selector(RootNode(json));
+  Iterable<Node> read(json) => selector(Node(json));
 
   /// Reads the given [json] object returning an Iterable of all values found.
   @override
