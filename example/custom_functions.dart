@@ -17,5 +17,5 @@ class IsObject implements Fun1<bool, Maybe> {
   final name = 'is_object';
 
   @override
-  bool apply(v) => v.map((v) => v is Map).or(false);
+  bool call(v) => v.map((v) => v is Map).or(false);
 }

@@ -7,5 +7,5 @@ class ValueFun implements Fun1<Maybe, Nodes> {
   final name = 'value';
 
   @override
-  Maybe apply(Nodes arg) => arg.asValue;
+  Maybe call(Nodes arg) => arg.asValue;
 }

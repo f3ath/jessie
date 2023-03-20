@@ -4,12 +4,13 @@ import 'package:rfc_6901/rfc_6901.dart';
 /// A JSON document node.
 class Node<T> {
   /// Creates an instance of the root node of the JSON document [value].
-  Node(this.value)
-      : path = r'$',
-        pointer = JsonPointer(),
-        parent = null,
-        key = null,
-        index = null;
+  Node(this.value,
+      {this.path = r'$',
+      JsonPointer? pointer,
+      this.parent,
+      this.key,
+      this.index})
+      : pointer = pointer ?? JsonPointer();
 
   /// Creates an instance of a child node.
   Node._(this.value, this.path, this.pointer, this.parent,
@@ -18,7 +19,7 @@ class Node<T> {
   /// The node value.
   final T value;
 
-  /// JSONPath to this node.
+  /// The Normalized JSONPath to this node.
   final String path;
 
   /// JSON Pointer (RFC 6901) to this node.

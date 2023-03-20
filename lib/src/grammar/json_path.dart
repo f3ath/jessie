@@ -46,11 +46,19 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         arrayIndex,
         wildcard,
         quotedString.map(childSelector),
-        ref0(_expressionFilter)
+        _expressionFilter()
+      ].toChoiceParser().trim();
+
+  Parser<Selector> _singularUnionElement() => [
+        arrayIndex,
+        quotedString.map(childSelector),
       ].toChoiceParser().trim();
 
   Parser<Selector> _union() =>
       _unionElement().toList().inBrackets().map(unionSelector);
+
+  Parser<Selector> _singularUnion() =>
+      _singularUnionElement().toList().inBrackets().map(unionSelector);
 
   Parser<Selector> _recursion() => [
         wildcard,
@@ -84,7 +92,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
 
   Parser<Expression<Maybe>> _comparable() => [
         literal,
-        ref0(_filterPath).map((expr) => expr.map((v) => v.asValue)),
+        _singularFilterPath().map((expr) => expr.map((v) => v.asValue)),
         _comparableFunExpr(),
       ].toChoiceParser();
 
@@ -113,6 +121,11 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         ref0(_absPath),
       ].toChoiceParser();
 
+  Parser<Expression<Nodes>> _singularFilterPath() => [
+        ref0(_singularRelPath),
+        ref0(_singularAbsPath),
+      ].toChoiceParser();
+
   Parser<Expression<bool>> _existenceTest() =>
       ref0(_filterPath).map((value) => value.map((v) => v.asLogical));
 
@@ -130,13 +143,28 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         ref0(_recursion),
       ].toChoiceParser();
 
+  Parser<Selector> _singularSegment() => [
+        dotName,
+        ref0(_singularUnion),
+      ].toChoiceParser();
+
   Parser<Expression<Nodes>> _segmentSequence() =>
       _segment().star().map(sequenceSelector).map(Expression.new);
 
+  Parser<Expression<Nodes>> _singularSegmentSequence() =>
+      _singularSegment().star().map(sequenceSelector).map(Expression.new);
+
   Parser<Expression<Nodes>> _absPath() => _segmentSequence()
       .skip(before: char(r'$'))
-      .map((expr) => Expression((node) => expr.apply(node.root)));
+      .map((expr) => Expression((node) => expr.call(node.root)));
+
+  Parser<Expression<Nodes>> _singularAbsPath() => _singularSegmentSequence()
+      .skip(before: char(r'$'))
+      .map((expr) => Expression((node) => expr.call(node.root)));
 
   Parser<Expression<Nodes>> _relPath() =>
       _segmentSequence().skip(before: char('@'));
+
+  Parser<Expression<Nodes>> _singularRelPath() =>
+      _singularSegmentSequence().skip(before: char('@'));
 }

@@ -5,5 +5,5 @@ class XorFun implements Fun2<bool, bool, bool> {
   final name = 'xor';
 
   @override
-  bool apply(bool first, bool second) => first ^ second;
+  bool call(bool first, bool second) => first ^ second;
 }

@@ -6,6 +6,6 @@ class ReverseFun implements Fun1<Maybe, Maybe> {
   final name = 'reverse';
 
   @override
-  Maybe apply(Maybe v) =>
+  Maybe call(Maybe v) =>
       v.type<String>().map((s) => s.split('').reversed.join());
 }

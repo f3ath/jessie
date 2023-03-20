@@ -1,5 +1,6 @@
 import 'package:json_path/src/expression/expression.dart';
 import 'package:json_path/src/expression/nodes.dart';
+import 'package:json_path/src/expression/static_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_validator.dart';
@@ -55,12 +56,7 @@ class FunFactory {
   Expression<T> any1<T>(String name, Expression a0) {
     final f = _get1<T>(name);
     final cast0 = cast(value: f is Fun1<T, Maybe>, logical: f is Fun1<T, bool>);
-
-    return a0.value
-        .map(cast0)
-        .map(f.apply)
-        .map(Expression.fromValue)
-        .orGet(() => Expression((node) => f.apply(cast0(a0.apply(node)))));
+    return a0.map(cast0).map(f.call);
   }
 
   Expression<T> any2<T>(String name, Expression a0, Expression a1) {
@@ -71,25 +67,18 @@ class FunFactory {
     final cast1 = cast(
         value: f is Fun2<T, dynamic, Maybe>,
         logical: f is Fun2<T, dynamic, bool>);
-    final val0 = a0.value.map(cast0);
-    final val1 = a1.value.map(cast1);
-    _checkKnownTypeExpectations(f, val0, val1);
-    return val0
-        .merge(val1, f.apply)
-        .map(Expression.fromValue)
-        .orGet(() => Expression((node) => f.apply(
-              cast0(a0.apply(node)),
-              cast1(a1.apply(node)),
-            )));
-  }
-
-  /// Checks some known type expectations for the built-in functions to detect
-  /// incorrect type usage at parse time.
-  void _checkKnownTypeExpectations(Fun2 f, Maybe a0, Maybe a1) {
+    final converted0 = a0.map(cast0);
+    final converted1 = a1.map(cast1);
     if (f is StringMatchingFun) {
-      a0.type<Maybe>().ifPresent(f.validateArg0);
-      a1.type<Maybe>().ifPresent(f.validateArg1);
+      // TODO: make parse-time detection cleaner
+      if (converted0 is StaticExpression) {
+        (f as StringMatchingFun).validateArg0(converted0.value);
+      }
+      if (converted1 is StaticExpression) {
+        (f as StringMatchingFun).validateArg1(converted1.value);
+      }
     }
+    return converted0.merge(converted1, f.call);
   }
 
   Fun1<T, dynamic> _get1<T>(String name) {

@@ -10,7 +10,7 @@ abstract class StringMatchingFun implements Fun2<bool, Maybe, Maybe> {
   final bool allowSubstring;
 
   @override
-  bool apply(Maybe value, Maybe regex) =>
+  bool call(Maybe value, Maybe regex) =>
       value.merge(regex, _typeSafeMatch).or(false);
 
   void validateArg0(Maybe value) => value.ifPresent((it) {

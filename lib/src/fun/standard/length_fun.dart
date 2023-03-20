@@ -8,7 +8,7 @@ class LengthFun implements Fun1<Maybe, Maybe> {
   final name = 'length';
 
   @override
-  Maybe apply(Maybe v) => v.map(_length);
+  Maybe call(Maybe v) => v.map(_length);
 
   int _length(v) {
     if (v is String) return v.length;

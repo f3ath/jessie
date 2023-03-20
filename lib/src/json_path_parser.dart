@@ -27,5 +27,5 @@ class JsonPathParser {
   /// Parses the JSONPath from s string [expression].
   /// Returns an instance of [JsonPath] or throws a [FormatException].
   JsonPath parse(String expression) =>
-      JsonPathInternal(expression, _parser.parse(expression).value.apply);
+      JsonPathInternal(expression, _parser.parse(expression).value.call);
 }

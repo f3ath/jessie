@@ -10,5 +10,5 @@ class CountFun implements Fun1<Maybe, Nodes> {
   final name = 'count';
 
   @override
-  Maybe apply(Nodes nodes) => Just(nodes.length);
+  Maybe call(Nodes nodes) => Just(nodes.length);
 }

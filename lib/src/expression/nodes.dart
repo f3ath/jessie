@@ -1,4 +1,4 @@
-import 'package:json_path/src/node/node.dart';
+import 'package:json_path/src/node.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 typedef Nodes = Iterable<Node>;

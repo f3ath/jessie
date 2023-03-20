@@ -1,5 +1,5 @@
 import 'package:json_path/src/json_path_parser.dart';
-import 'package:json_path/src/node/node.dart';
+import 'package:json_path/src/node.dart';
 
 /// A parsed JSONPath expression which can be applied to a JSON document.
 abstract class JsonPath {
