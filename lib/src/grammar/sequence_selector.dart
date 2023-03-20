@@ -1,5 +1,5 @@
 import 'package:json_path/src/grammar/selector.dart';
-import 'package:json_path/src/node/node.dart';
+import 'package:json_path/src/node.dart';
 
 Selector sequenceSelector(Iterable<Selector> selectors) {
   final filter = selectors.fold<_Filter>((v) => v,

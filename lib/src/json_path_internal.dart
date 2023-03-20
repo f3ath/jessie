@@ -1,6 +1,6 @@
 import 'package:json_path/src/grammar/selector.dart';
 import 'package:json_path/src/json_path.dart';
-import 'package:json_path/src/node/node.dart';
+import 'package:json_path/src/node.dart';
 
 /// Internal implementation of [JsonPath].
 class JsonPathInternal implements JsonPath {

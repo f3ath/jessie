@@ -6,5 +6,5 @@ class SiblingsFun implements Fun1<Nodes, Nodes> {
   final name = 'siblings';
 
   @override
-  Nodes apply(Nodes nodes) => nodes.expand((it) => it.siblings);
+  Nodes call(Nodes nodes) => nodes.expand((it) => it.siblings);
 }

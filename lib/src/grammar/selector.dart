@@ -1,3 +1,3 @@
-import 'package:json_path/src/node/node.dart';
+import 'package:json_path/fun_sdk.dart';
 
-typedef Selector = Iterable<Node> Function(Node node);
+typedef Selector = Nodes Function(Node node);

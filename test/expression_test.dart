@@ -6,13 +6,13 @@ void main() {
   group('Expression', () {
     group('Static', () {
       final node = Node('foo');
-      final s = Expression.fromValue('bar');
+      final s = StaticExpression('bar');
       final d = Expression((n) => n.value);
       test('map()', () {
-        expect(s.map((v) => '$v!').apply(node), 'bar!');
+        expect(s.map((v) => '$v!').call(node), 'bar!');
       });
       test('merge() with non-static', () {
-        expect(s.merge(d, (v, m) => v + m).apply(node), 'barfoo');
+        expect(s.merge(d, (v, m) => v + m).call(node), 'barfoo');
       });
     });
   });
