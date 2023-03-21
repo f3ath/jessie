@@ -12,7 +12,7 @@ void main() {
         expect(s.map((v) => '$v!').call(node), 'bar!');
       });
       test('merge() with non-static', () {
-        expect(s.merge(d, (v, m) => v + m).call(node), 'barfoo');
+        expect(s.merge(d, (v, m) => '$v$m').call(node), 'barfoo');
       });
     });
   });
