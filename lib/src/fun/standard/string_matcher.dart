@@ -1,8 +1,8 @@
 import 'package:json_path/src/fun/fun.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
-abstract class StringMatchingFun implements Fun2<bool, Maybe, Maybe> {
-  const StringMatchingFun(this.name, this.allowSubstring);
+abstract class StringMatcher implements Fun2<bool, Maybe, Maybe> {
+  const StringMatcher(this.name, this.allowSubstring);
 
   @override
   final String name;

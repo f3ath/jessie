@@ -1,7 +1,7 @@
 import 'package:json_path/fun_sdk.dart';
 
 /// Reverses the string.
-class ReverseFun implements Fun1<Maybe, Maybe> {
+class Reverse implements Fun1<Maybe, Maybe> {
   @override
   final name = 'reverse';
 
