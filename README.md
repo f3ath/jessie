@@ -82,18 +82,17 @@ Currently supported built-in functions:
 - `value()`
 
 ## Data manipulation
-Each `Node` produced by the `.read()` method contains the `.pointer` property which is a valid [JSON Pointer]
-and can be used to alter the referenced value. If you only need to manipulate JSON data, 
-check out my [JSON Pointer implementation].
+Each `JsonPathMatch` produced by the `.read()` method contains the `.pointer` property which is a valid [JSON Pointer]
+and can be used to alter the referenced value. If you only need to manipulate JSON data, check out my [JSON Pointer implementation].
 
 ## User-defined functions
 The JSONPath parser may be extended by user-defined functions. The user-defined functions
-take precedence over the built-in ones which are specified by the standard. Currently, only
+take precedence over the built-in ones specified by the standard. Currently, only
 functions of 1 and 2 arguments are supported. 
 
 To create your own function:
 1. Import `package:json_path/fun_sdk.dart`.
-2. Create a class implementing either `Fun1` (1 argument) or `Fun2` (2 argument).
+2. Create a class implementing either `Fun1` (1 argument) or `Fun2` (2 arguments).
 
 To use it:
 1. Create a new JsonPathParser with your function: `final parser = JsonPathParser(functions: [MyFunction()]);`
