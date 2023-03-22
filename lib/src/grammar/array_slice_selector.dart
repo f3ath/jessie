@@ -1,6 +1,6 @@
-import 'package:json_path/src/grammar/selector.dart';
+import 'package:json_path/src/selector/selector.dart';
 
-Selector arraySliceSelector({int? start, int? stop, int? step}) =>
+SelectorFun arraySliceSelector({int? start, int? stop, int? step}) =>
     (node) sync* {
       final slice = node.slice(start: start, stop: stop, step: step);
       if (slice != null) yield* slice;

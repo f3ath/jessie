@@ -1,6 +1,6 @@
-import 'package:json_path/src/grammar/selector.dart';
+import 'package:json_path/src/selector/selector.dart';
 
-Selector arrayIndexSelector(int offset) => (node) sync* {
+SelectorFun arrayIndexSelector(int offset) => (node) sync* {
       final element = node.element(offset);
       if (element != null) yield element;
     };

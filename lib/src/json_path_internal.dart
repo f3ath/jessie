@@ -1,4 +1,4 @@
-import 'package:json_path/src/grammar/selector.dart';
+import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/json_path.dart';
 import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/node.dart';
@@ -9,7 +9,7 @@ class JsonPathInternal implements JsonPath {
   JsonPathInternal(this.expression, this.selector);
 
   /// Selector
-  final Selector selector;
+  final SelectorFun selector;
 
   /// JSONPath expression.
   final String expression;

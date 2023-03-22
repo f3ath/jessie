@@ -17,7 +17,7 @@ import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/negatable.dart';
 import 'package:json_path/src/grammar/parser_ext.dart';
 import 'package:json_path/src/grammar/select_all_recursively.dart';
-import 'package:json_path/src/grammar/selector.dart';
+import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/grammar/sequence_selector.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/union_selector.dart';
@@ -41,7 +41,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
   @override
   Parser<Expression<Nodes>> start() => ref0(_absPath).end();
 
-  Parser<Selector> _unionElement() => [
+  Parser<SelectorFun> _unionElement() => [
         arraySlice,
         arrayIndex,
         wildcard,
@@ -49,18 +49,18 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         _expressionFilter()
       ].toChoiceParser().trim();
 
-  Parser<Selector> _singularUnionElement() => [
+  Parser<SelectorFun> _singularUnionElement() => [
         arrayIndex,
         quotedString.map(childSelector),
       ].toChoiceParser().trim();
 
-  Parser<Selector> _union() =>
+  Parser<SelectorFun> _union() =>
       _unionElement().toList().inBrackets().map(unionSelector);
 
-  Parser<Selector> _singularUnion() =>
+  Parser<SelectorFun> _singularUnion() =>
       _singularUnionElement().toList().inBrackets().map(unionSelector);
 
-  Parser<Selector> _recursion() => [
+  Parser<SelectorFun> _recursion() => [
         wildcard,
         _union(),
         memberNameShorthand,
@@ -134,16 +134,16 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         _logicalFunExpr(),
       ].toChoiceParser());
 
-  Parser<Selector> _expressionFilter() =>
+  Parser<SelectorFun> _expressionFilter() =>
       _logicalExpr().skip(before: string('?')).map(filterSelector);
 
-  Parser<Selector> _segment() => [
+  Parser<SelectorFun> _segment() => [
         dotName,
         ref0(_union),
         ref0(_recursion),
       ].toChoiceParser();
 
-  Parser<Selector> _singularSegment() => [
+  Parser<SelectorFun> _singularSegment() => [
         dotName,
         ref0(_singularUnion),
       ].toChoiceParser();
