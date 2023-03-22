@@ -7,10 +7,10 @@ import 'package:test/test.dart';
 
 void main() {
   final store = jsonDecode(File('test/store.json').readAsStringSync());
-  final parser = JsonPathParser(userFunctions: [
-    ReverseFun(),
-    SiblingsFun(),
-    XorFun(),
+  final parser = JsonPathParser(functions: [
+    Reverse(),
+    Siblings(),
+    Xor(),
   ]);
   group('User-defined functions', () {
     test('Fun<Nodes> in Nodes context', () {

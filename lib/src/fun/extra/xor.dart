@@ -1,6 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 
-class XorFun implements Fun2<bool, bool, bool> {
+class Xor implements Fun2<bool, bool, bool> {
   @override
   final name = 'xor';
 

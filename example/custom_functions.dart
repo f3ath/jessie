@@ -3,19 +3,23 @@ import 'dart:convert';
 import 'package:json_path/fun_sdk.dart';
 import 'package:json_path/json_path.dart';
 
+/// This example shows how to create and use a custom function.
 void main() {
-  final parser = JsonPathParser(userFunctions: [IsObject()]);
-  final jsonPath = parser.parse(r'$[?is_object(@)]');
-
-  final json = '[1, "foo", [1, 2], {}, {"foo": "bar"}, null]';
-  jsonPath.readValues(jsonDecode(json)).forEach(print);
+  final parser = JsonPathParser(functions: [IsPalindrome()]);
+  final jsonPath = parser.parse(r'$[?is_palindrome(@)]');
+  final json = jsonDecode('["madam", "foo", "nurses run", 42, {"A": "B"}]');
+  jsonPath.readValues(json).forEach(print);
 }
 
-/// Custom function implementation
-class IsObject implements Fun1<bool, Maybe> {
+/// An implementation of the classic FizzBuzz function.
+class IsPalindrome implements Fun1<bool, Maybe> {
   @override
-  final name = 'is_object';
+  final name = 'is_palindrome';
 
   @override
-  bool call(v) => v.map((v) => v is Map).or(false);
+  bool call(Maybe arg) => arg
+      .type<String>() // Make sure it's a string
+      .map((value) => value.replaceAll(' ', '')) // drop spaces
+      .map((value) => value.split('').reversed.join() == value) // palindrome?
+      .or(false); // for non-string values return false
 }

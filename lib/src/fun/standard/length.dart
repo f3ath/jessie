@@ -1,8 +1,8 @@
 import 'package:json_path/fun_sdk.dart';
 
 /// The standard `length()` function.
-class LengthFun implements Fun1<Maybe, Maybe> {
-  const LengthFun();
+class Length implements Fun1<Maybe, Maybe> {
+  const Length();
 
   @override
   final name = 'length';

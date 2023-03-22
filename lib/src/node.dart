@@ -1,29 +1,18 @@
 import 'package:json_path/src/grammar/slice_indices.dart';
-import 'package:rfc_6901/rfc_6901.dart';
 
 /// A JSON document node.
-class Node<T> {
+class Node<T extends Object?> {
   /// Creates an instance of the root node of the JSON document [value].
-  Node(this.value,
-      {this.path = r'$',
-      JsonPointer? pointer,
-      this.parent,
-      this.key,
-      this.index})
-      : pointer = pointer ?? JsonPointer();
+  Node(this.value)
+      : parent = null,
+        key = null,
+        index = null;
 
   /// Creates an instance of a child node.
-  Node._(this.value, this.path, this.pointer, this.parent,
-      {this.key, this.index});
+  Node._(this.value, this.parent, {this.key, this.index});
 
   /// The node value.
   final T value;
-
-  /// The Normalized JSONPath to this node.
-  final String path;
-
-  /// JSON Pointer (RFC 6901) to this node.
-  final JsonPointer pointer;
 
   /// The parent node.
   final Node? parent;
@@ -50,6 +39,17 @@ class Node<T> {
     return null;
   }
 
+  /// All direct children of the node.
+  Iterable<Node> get children sync* {
+    final v = value;
+    if (v is Map) {
+      yield* v.keys.map((key) => _child(v, key));
+    }
+    if (v is List) {
+      yield* v.asMap().keys.map((index) => _element(v, index));
+    }
+  }
+
   /// Returns the JSON array element at the [offset] if it exists,
   /// otherwise returns null. Negative offsets are supported.
   Node? element(int offset) {
@@ -63,10 +63,6 @@ class Node<T> {
     return null;
   }
 
-  Node _element(List list, int index) => Node._(list[index], '$path[$index]',
-      JsonPointerSegment(index.toString(), pointer), this,
-      index: index);
-
   /// Returns the JSON object child at the [key] if it exists,
   /// otherwise returns null.
   Node? child(String key) {
@@ -77,33 +73,10 @@ class Node<T> {
     return null;
   }
 
-  Node<dynamic> _child(Map map, String key) => Node._(
-      map[key], '$path[${key.quoted}]', JsonPointerSegment(key, pointer), this,
-      key: key);
+  Node _element(List list, int index) =>
+      Node._(list[index], this, index: index);
 
-  /// All direct children of the node.
-  Iterable<Node> get children sync* {
-    final v = value;
-    if (v is Map) {
-      yield* v.keys.map((key) => _child(v, key));
-    }
-    if (v is List) {
-      yield* v.asMap().keys.map((index) => _element(v, index));
-    }
-  }
-
-  /// All siblings of the node.
-  Iterable<Node> get siblings =>
-      parent?.children.where((it) => it != this) ?? [];
-
-  /// All descendants of the node. That is its children,
-  /// the children of the children, and so forth.
-  Iterable<Node> get descendants sync* {
-    for (final child in children) {
-      yield child;
-      yield* child.descendants;
-    }
-  }
+  Node _child(Map map, String key) => Node._(map[key], this, key: key);
 
   @override
   bool operator ==(Object other) =>
@@ -118,19 +91,4 @@ class Node<T> {
 
   @override
   String toString() => 'Node($value)';
-}
-
-extension _StringExt on String {
-  String get quoted => "'$escaped'";
-
-  String get escaped => {
-        r'/': r'\/',
-        r'\': r'\\',
-        '\b': r'\b',
-        '\f': r'\f',
-        '\n': r'\n',
-        '\r': r'\r',
-        '\t': r'\t',
-        "'": r"\'",
-      }.entries.fold(this, (s, e) => s.replaceAll(e.key, e.value));
 }

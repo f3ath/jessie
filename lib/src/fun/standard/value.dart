@@ -1,7 +1,7 @@
 import 'package:json_path/fun_sdk.dart';
 
-class ValueFun implements Fun1<Maybe, Nodes> {
-  const ValueFun();
+class Value implements Fun1<Maybe, Nodes> {
+  const Value();
 
   @override
   final name = 'value';

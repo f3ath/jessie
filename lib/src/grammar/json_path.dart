@@ -1,11 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
-import 'package:json_path/src/fun/standard/count_fun.dart';
-import 'package:json_path/src/fun/standard/length_fun.dart';
-import 'package:json_path/src/fun/standard/match_fun.dart';
-import 'package:json_path/src/fun/standard/search_fun.dart';
-import 'package:json_path/src/fun/standard/value_fun.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/child_selector.dart';
@@ -17,24 +12,15 @@ import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/negatable.dart';
 import 'package:json_path/src/grammar/parser_ext.dart';
 import 'package:json_path/src/grammar/select_all_recursively.dart';
-import 'package:json_path/src/grammar/selector.dart';
 import 'package:json_path/src/grammar/sequence_selector.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/union_selector.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
+import 'package:json_path/src/selector/selector.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
-  JsonPathGrammarDefinition(Iterable<Fun> userFunctions)
-      : _fun = FunFactory(_builtInFun.followedBy(userFunctions));
-
-  static const _builtInFun = <Fun>[
-    LengthFun(),
-    CountFun(),
-    MatchFun(),
-    SearchFun(),
-    ValueFun(),
-  ];
+  JsonPathGrammarDefinition(this._fun);
 
   final FunFactory _fun;
 
