@@ -64,13 +64,13 @@ void main() {
   /// $['store']['bicycle']['price']:	19.95
   prices
       .read(json)
-      .map((node) => '${node.path}:\t${node.value}')
+      .map((match) => '${match.path}:\t${match.value}')
       .forEach(print);
 }
 ```
 
 ## Features and Limitations
-This library follows the [JsonPath] internet draft specification. Since the spec itself is 
+This library follows the [JsonPath] internet draft specification v11. Since the spec itself is 
 an evolving document, this implementation may lag behind, and some features may not be implemented in-full.
 Please refer to the tests (there are hundreds of them, including the [CTS]) to see what is supported.
 
@@ -79,19 +79,30 @@ Currently supported built-in functions:
 - `count()`
 - `match()`
 - `search()`
-
+- `value()`
 
 ## Data manipulation
 Each `Node` produced by the `.read()` method contains the `.pointer` property which is a valid [JSON Pointer]
 and can be used to alter the referenced value. If you only need to manipulate JSON data, 
 check out my [JSON Pointer implementation].
 
-## User-defined functions (_beta_)
-
+## User-defined functions
 The JSONPath parser may be extended by user-defined functions. The user-defined functions
-take precedence over the built-in ones which are defined by the standard. The functions
-are polymorphic: you may define functions with the same name, and the parser will pick the first
-of them which fits the use case (the return type, the number and the type or arguments).
+take precedence over the built-in ones which are specified by the standard. Currently, only
+functions of 1 and 2 arguments are supported. 
+
+To create your own function:
+1. Import `package:json_path/fun_sdk.dart`.
+2. Create a class implementing either `Fun1` (1 argument) or `Fun2` (2 argument).
+
+To use it:
+1. Create a new JsonPathParser with your function: `final parser = JsonPathParser(functions: [MyFunction()]);`
+2. Use it to parse you expression: `final jsonPath = parser.parse(r'$[?my_function(@)]');`
+
+For more details see the included example.
+
+This package comes with some non-standard functions which you might find useful.
+To use them, import `package:json_path/fun_extra.dart`.
 
 ## References
 - [Standard development](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base)

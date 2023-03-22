@@ -1,11 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
-import 'package:json_path/src/fun/standard/count_fun.dart';
-import 'package:json_path/src/fun/standard/length_fun.dart';
-import 'package:json_path/src/fun/standard/match_fun.dart';
-import 'package:json_path/src/fun/standard/search_fun.dart';
-import 'package:json_path/src/fun/standard/value_fun.dart';
 import 'package:json_path/src/grammar/array_index.dart';
 import 'package:json_path/src/grammar/array_slice.dart';
 import 'package:json_path/src/grammar/child_selector.dart';
@@ -17,31 +12,22 @@ import 'package:json_path/src/grammar/literal.dart';
 import 'package:json_path/src/grammar/negatable.dart';
 import 'package:json_path/src/grammar/parser_ext.dart';
 import 'package:json_path/src/grammar/select_all_recursively.dart';
-import 'package:json_path/src/selector/selector.dart';
 import 'package:json_path/src/grammar/sequence_selector.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/union_selector.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
+import 'package:json_path/src/selector/selector.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
-  JsonPathGrammarDefinition(Iterable<Fun> userFunctions)
-      : _fun = FunFactory(_builtInFun.followedBy(userFunctions));
-
-  static const _builtInFun = <Fun>[
-    LengthFun(),
-    CountFun(),
-    MatchFun(),
-    SearchFun(),
-    ValueFun(),
-  ];
+  JsonPathGrammarDefinition(this._fun);
 
   final FunFactory _fun;
 
   @override
   Parser<Expression<Nodes>> start() => ref0(_absPath).end();
 
-  Parser<SelectorFun> _unionElement() => [
+  Parser<Selector> _unionElement() => [
         arraySlice,
         arrayIndex,
         wildcard,
@@ -49,18 +35,18 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         _expressionFilter()
       ].toChoiceParser().trim();
 
-  Parser<SelectorFun> _singularUnionElement() => [
+  Parser<Selector> _singularUnionElement() => [
         arrayIndex,
         quotedString.map(childSelector),
       ].toChoiceParser().trim();
 
-  Parser<SelectorFun> _union() =>
+  Parser<Selector> _union() =>
       _unionElement().toList().inBrackets().map(unionSelector);
 
-  Parser<SelectorFun> _singularUnion() =>
+  Parser<Selector> _singularUnion() =>
       _singularUnionElement().toList().inBrackets().map(unionSelector);
 
-  Parser<SelectorFun> _recursion() => [
+  Parser<Selector> _recursion() => [
         wildcard,
         _union(),
         memberNameShorthand,
@@ -134,16 +120,16 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         _logicalFunExpr(),
       ].toChoiceParser());
 
-  Parser<SelectorFun> _expressionFilter() =>
+  Parser<Selector> _expressionFilter() =>
       _logicalExpr().skip(before: string('?')).map(filterSelector);
 
-  Parser<SelectorFun> _segment() => [
+  Parser<Selector> _segment() => [
         dotName,
         ref0(_union),
         ref0(_recursion),
       ].toChoiceParser();
 
-  Parser<SelectorFun> _singularSegment() => [
+  Parser<Selector> _singularSegment() => [
         dotName,
         ref0(_singularUnion),
       ].toChoiceParser();

@@ -3,7 +3,10 @@ import 'package:json_path/src/grammar/slice_indices.dart';
 /// A JSON document node.
 class Node<T extends Object?> {
   /// Creates an instance of the root node of the JSON document [value].
-  Node(this.value, {this.parent, this.key, this.index});
+  Node(this.value)
+      : parent = null,
+        key = null,
+        index = null;
 
   /// Creates an instance of a child node.
   Node._(this.value, this.parent, {this.key, this.index});
@@ -36,6 +39,17 @@ class Node<T extends Object?> {
     return null;
   }
 
+  /// All direct children of the node.
+  Iterable<Node> get children sync* {
+    final v = value;
+    if (v is Map) {
+      yield* v.keys.map((key) => _child(v, key));
+    }
+    if (v is List) {
+      yield* v.asMap().keys.map((index) => _element(v, index));
+    }
+  }
+
   /// Returns the JSON array element at the [offset] if it exists,
   /// otherwise returns null. Negative offsets are supported.
   Node? element(int offset) {
@@ -49,9 +63,6 @@ class Node<T extends Object?> {
     return null;
   }
 
-  Node _element(List list, int index) =>
-      Node._(list[index], this, index: index);
-
   /// Returns the JSON object child at the [key] if it exists,
   /// otherwise returns null.
   Node? child(String key) {
@@ -62,31 +73,10 @@ class Node<T extends Object?> {
     return null;
   }
 
+  Node _element(List list, int index) =>
+      Node._(list[index], this, index: index);
+
   Node _child(Map map, String key) => Node._(map[key], this, key: key);
-
-  /// All direct children of the node.
-  Iterable<Node> get children sync* {
-    final v = value;
-    if (v is Map) {
-      yield* v.keys.map((key) => _child(v, key));
-    }
-    if (v is List) {
-      yield* v.asMap().keys.map((index) => _element(v, index));
-    }
-  }
-
-  /// All siblings of the node.
-  Iterable<Node> get siblings =>
-      parent?.children.where((it) => it != this) ?? [];
-
-  /// All descendants of the node. That is its children,
-  /// the children of the children, and so forth.
-  Iterable<Node> get descendants sync* {
-    for (final child in children) {
-      yield child;
-      yield* child.descendants;
-    }
-  }
 
   @override
   bool operator ==(Object other) =>
@@ -102,4 +92,3 @@ class Node<T extends Object?> {
   @override
   String toString() => 'Node($value)';
 }
-

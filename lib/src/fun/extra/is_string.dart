@@ -1,12 +1,12 @@
 import 'package:json_path/fun_sdk.dart';
 
-/// Checks if the value is a JSON object.
-class IsObject implements Fun1<bool, Maybe> {
-  const IsObject();
+/// Checks if the value is a JSON string.
+class IsString implements Fun1<bool, Maybe> {
+  const IsString();
 
   @override
-  final name = 'is_object';
+  final name = 'is_string';
 
   @override
-  bool call(v) => v.map((v) => v is Map).or(false);
+  bool call(v) => v.map((v) => v is String).or(false);
 }

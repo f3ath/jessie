@@ -1,6 +1,6 @@
 import 'package:json_path/src/selector/selector.dart';
 
-SelectorFun arraySliceSelector({int? start, int? stop, int? step}) =>
+Selector arraySliceSelector({int? start, int? stop, int? step}) =>
     (node) sync* {
       final slice = node.slice(start: start, stop: stop, step: step);
       if (slice != null) yield* slice;

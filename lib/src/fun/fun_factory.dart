@@ -4,7 +4,7 @@ import 'package:json_path/src/expression/static_expression.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_validator.dart';
-import 'package:json_path/src/fun/standard/string_matching_fun.dart';
+import 'package:json_path/src/fun/standard/string_matcher.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
 class FunFactory {
@@ -69,13 +69,13 @@ class FunFactory {
         logical: f is Fun2<T, dynamic, bool>);
     final converted0 = a0.map(cast0);
     final converted1 = a1.map(cast1);
-    if (f is StringMatchingFun) {
+    if (f is StringMatcher) {
       // TODO: make parse-time detection cleaner
       if (converted0 is StaticExpression) {
-        (f as StringMatchingFun).validateArg0(converted0.value);
+        (f as StringMatcher).validateArg0(converted0.value);
       }
       if (converted1 is StaticExpression) {
-        (f as StringMatchingFun).validateArg1(converted1.value);
+        (f as StringMatcher).validateArg1(converted1.value);
       }
     }
     return converted0.merge(converted1, f.call);

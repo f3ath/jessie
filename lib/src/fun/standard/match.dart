@@ -1,5 +1,5 @@
-import 'package:json_path/src/fun/standard/string_matching_fun.dart';
+import 'package:json_path/src/fun/standard/string_matcher.dart';
 
-class Match extends StringMatchingFun {
+class Match extends StringMatcher {
   const Match() : super('match', false);
 }

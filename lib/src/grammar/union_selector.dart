@@ -1,4 +1,4 @@
 import 'package:json_path/src/selector/selector.dart';
 
-SelectorFun unionSelector(Iterable<SelectorFun> selectors) =>
+Selector unionSelector(Iterable<Selector> selectors) =>
     (node) => selectors.expand((s) => s(node));

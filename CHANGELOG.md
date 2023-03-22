@@ -4,17 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.5.0-beta.1] - 2023-03-21
 ### Added
-- Full support of some built-in functions: `length()`, `size()`, `search()`, `match()`.
-- Basic support of custom functions.
+- Full support of some built-in functions: `length()`, `size()`, `search()`, `match()`, `value()`.
+- Basic support of custom user-defined functions.
 
 ### Changed
-- BC-BREAKING. The package is now following the [IETF JSON Path spec](https://www.ietf.org/archive/id/draft-ietf-jsonpath-base-10.html)
+- BC-BREAKING! The package is now following the [IETF JSON Path spec](https://www.ietf.org/archive/id/draft-ietf-jsonpath-base-10.html)
 which means a lot of internal and BC-breaking changes. Please refer to the tests and examples.
 
 ### Removed
-- Support of the callback filters.
+- BC-BREAKING! Support of the callback filters has been dropped. Use custom functions instead.
+
+## [0.4.4] - 2023-03-18
+### Fixed
+- Reverted changes from 0.4.3 as they caused dependency issues.
+
+## [0.4.3] - 2023-03-18
+### Fixed
+- Deprecation warnings from petitparser.
 
 ## [0.4.2] - 2022-08-03
 ### Added
@@ -125,7 +133,9 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
-[Unreleased]: https://github.com/f3ath/jessie/compare/0.4.2...HEAD
+[0.5.0-beta.1]: https://github.com/f3ath/jessie/compare/0.4.4...0.5.0-beta.1
+[0.4.4]: https://github.com/f3ath/jessie/compare/0.4.3...0.4.4
+[0.4.3]: https://github.com/f3ath/jessie/compare/0.4.2...0.4.3
 [0.4.2]: https://github.com/f3ath/jessie/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/f3ath/jessie/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/f3ath/jessie/compare/0.3.1...0.4.0

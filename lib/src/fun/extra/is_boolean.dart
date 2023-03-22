@@ -1,12 +1,12 @@
 import 'package:json_path/fun_sdk.dart';
 
-/// Checks if the value is a JSON array.
-class IsArray implements Fun1<bool, Maybe> {
-  const IsArray();
+/// Checks if the value is a JSON boolean.
+class IsBoolean implements Fun1<bool, Maybe> {
+  const IsBoolean();
 
   @override
-  final name = 'is_array';
+  final name = 'is_boolean';
 
   @override
-  bool call(v) => v.map((v) => v is List).or(false);
+  bool call(v) => v.map((v) => v is bool).or(false);
 }
