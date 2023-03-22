@@ -45,13 +45,13 @@ void main() {
   print('All prices in the store, by JSONPath:');
   JsonPath(r'$..price')
       .read(document)
-      .map((node) => '${node.path}:\t${node.value}')
+      .map((match) => '${match.path}:\t${match.value}')
       .forEach(print);
 
   print('\nSame, by JSON Pointer:');
   JsonPath(r'$..price')
       .read(document)
-      .map((node) => '${node.pointer}:\t${node.value}')
+      .map((match) => '${match.pointer}:\t${match.value}')
       .forEach(print);
 
   print('\nSame, but just the values:');
