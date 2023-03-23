@@ -30,6 +30,11 @@
       "selector": "$[?!@]",
       "document": [-42, -2.718, 0, 3.14, 4, "", "4", "0", "foo", true, [], {}, false],
       "result": []
+    }, {
+      "name": "expression within expression",
+      "selector": "$.a[?@>count($.b[?@>5])]",
+      "document": {"a":[1, 2, 3, 4], "b": [3, 4, 5, 6, 7]},
+      "result": [3, 4]
     }
   ]
 }

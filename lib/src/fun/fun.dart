@@ -9,7 +9,7 @@ abstract class Fun {
 /// - [bool]
 /// - [Maybe]
 /// - [Nodes]
-abstract class Fun1<R, T> extends Fun {
+abstract class Fun1<R extends Object, T extends Object> extends Fun {
   /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
   R call(T arg);
@@ -20,7 +20,8 @@ abstract class Fun1<R, T> extends Fun {
 /// - [bool]
 /// - [Maybe]
 /// - [Nodes]
-abstract class Fun2<R, T1, T2> extends Fun {
+abstract class Fun2<R extends Object, T1 extends Object, T2 extends Object>
+    extends Fun {
   /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
   R call(T1 first, T2 second);

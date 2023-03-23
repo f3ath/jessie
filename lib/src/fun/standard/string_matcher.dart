@@ -13,19 +13,6 @@ abstract class StringMatcher implements Fun2<bool, Maybe, Maybe> {
   bool call(Maybe value, Maybe regex) =>
       value.merge(regex, _typeSafeMatch).or(false);
 
-  void validateArg0(Maybe value) => value.ifPresent((it) {
-        if (it is! String) {
-          throw ArgumentError('String value expected');
-        }
-      });
-
-  void validateArg1(Maybe regex) => regex.ifPresent((it) {
-        if (it is! String) {
-          throw ArgumentError('String regex expected');
-        }
-        _makeRegex(it); // Validate regex.
-      });
-
   bool _typeSafeMatch(value, regex) {
     if (value is! String || regex is! String) return false;
     try {
