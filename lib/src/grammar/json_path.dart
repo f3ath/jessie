@@ -1,4 +1,5 @@
-import 'package:json_path/fun_sdk.dart';
+import 'package:json_path/src/expression/expression.dart';
+import 'package:json_path/src/expression/nodes.dart';
 import 'package:json_path/src/fun/fun_call.dart';
 import 'package:json_path/src/fun/fun_factory.dart';
 import 'package:json_path/src/grammar/array_index.dart';
@@ -17,6 +18,7 @@ import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/union_selector.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
 import 'package:json_path/src/selector/selector.dart';
+import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:petitparser/petitparser.dart';
 
 class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {

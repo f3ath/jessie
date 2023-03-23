@@ -13,5 +13,5 @@ abstract class JsonPath {
   Iterable<JsonPathMatch> read(json);
 
   /// Reads the given [json] object returning an Iterable of all values found.
-  Iterable<dynamic> readValues(json);
+  Iterable<Object?> readValues(json);
 }

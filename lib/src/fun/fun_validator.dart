@@ -12,30 +12,30 @@ class FunValidator {
       yield 'Invalid function name ${f.name}';
     }
     if (f is Fun1) {
-      if (f is! Fun1<bool, dynamic> &&
-          f is! Fun1<Maybe, dynamic> &&
-          f is! Fun1<Nodes, dynamic>) {
+      if (f is! Fun1<bool, Object> &&
+          f is! Fun1<Maybe, Object> &&
+          f is! Fun1<Nodes, Object>) {
         yield 'Invalid return type in function ${f.name}';
       }
-      if (f is! Fun1<dynamic, Maybe> &&
-          f is! Fun1<dynamic, Nodes> &&
-          f is! Fun1<dynamic, bool>) {
+      if (f is! Fun1<Object, Maybe> &&
+          f is! Fun1<Object, Nodes> &&
+          f is! Fun1<Object, bool>) {
         yield 'Invalid type of the first argument in function ${f.name}';
       }
     } else if (f is Fun2) {
-      if (f is! Fun2<bool, dynamic, dynamic> &&
-          f is! Fun2<Maybe, dynamic, dynamic> &&
-          f is! Fun2<Nodes, dynamic, dynamic>) {
+      if (f is! Fun2<bool, Object, Object> &&
+          f is! Fun2<Maybe, Object, Object> &&
+          f is! Fun2<Nodes, Object, Object>) {
         yield 'Invalid return type in function ${f.name}';
       }
-      if (f is! Fun2<dynamic, bool, dynamic> &&
-          f is! Fun2<dynamic, Maybe, dynamic> &&
-          f is! Fun2<dynamic, Nodes, dynamic>) {
+      if (f is! Fun2<Object, bool, Object> &&
+          f is! Fun2<Object, Maybe, Object> &&
+          f is! Fun2<Object, Nodes, Object>) {
         yield 'Invalid type of the first argument in function ${f.name}';
       }
-      if (f is! Fun2<dynamic, dynamic, bool> &&
-          f is! Fun2<dynamic, dynamic, Maybe> &&
-          f is! Fun2<dynamic, dynamic, Nodes>) {
+      if (f is! Fun2<Object, Object, bool> &&
+          f is! Fun2<Object, Object, Maybe> &&
+          f is! Fun2<Object, Object, Nodes>) {
         yield 'Invalid type of the second argument in function ${f.name}';
       }
     } else {

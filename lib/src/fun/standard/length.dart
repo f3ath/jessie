@@ -8,12 +8,9 @@ class Length implements Fun1<Maybe, Maybe> {
   final name = 'length';
 
   @override
-  Maybe call(Maybe v) => v.map(_length);
-
-  int _length(v) {
-    if (v is String) return v.length;
-    if (v is List) return v.length;
-    if (v is Map) return v.length;
-    throw ArgumentError('Invalid arg type: ${v.runtimeType}');
-  }
+  Maybe call(Maybe value) => value
+      .type<String>()
+      .map((it) => it.length)
+      .fallback(() => value.type<List>().map((it) => it.length))
+      .fallback(() => value.type<Map>().map((it) => it.length));
 }

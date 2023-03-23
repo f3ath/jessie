@@ -20,7 +20,7 @@ class JsonPathInternal implements JsonPath {
 
   /// Reads the given [json] object returning an Iterable of all values found.
   @override
-  Iterable<dynamic> readValues(json) => read(json).map((node) => node.value);
+  Iterable<Object?> readValues(json) => read(json).map((node) => node.value);
 
   @override
   String toString() => expression;
