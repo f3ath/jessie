@@ -1,0 +1,66 @@
+{
+  "tests": [
+    {
+      "name": "escaped characters",
+      "selector": "$[*]",
+      "document": {
+        "\u0000": "NUL",
+        "\u0001": "SOH",
+        "\u0002": "STX",
+        "\u0003": "ETX",
+        "\u0004": "EOT",
+        "\u0005": "ENQ",
+        "\u0006": "ACK",
+        "\u0007": "nul",
+        "\u0008": "BS, backspace",
+        "\u0009": "HT, tab",
+        "\u000A": "LF, new line",
+        "\u000B": "VT",
+        "\u000C": "FF, form feed",
+        "\u000D": "CR, carriage return",
+        "\u000E": "SO",
+        "\u000F": "SI",
+        "\u001F": "US",
+        "'": "single quote/apostrophe",
+        "\\": "backslash"
+      },
+      "paths": [
+        "$['\\u0000']",
+        "$['\\u0001']",
+        "$['\\u0002']",
+        "$['\\u0003']",
+        "$['\\u0004']",
+        "$['\\u0005']",
+        "$['\\u0006']",
+        "$['\\u0007']",
+        "$['\\b']",
+        "$['\\t']",
+        "$['\\n']",
+        "$['\\u000b']",
+        "$['\\f']",
+        "$['\\r']",
+        "$['\\u000e']",
+        "$['\\u000f']",
+        "$['\\u001f']",
+        "$['\\'']",
+        "$['\\\\']"
+      ]
+    },
+    {
+      "name": "unescaped characters",
+      "selector": "$[*]",
+      "document": {
+        "\"": "double quote",
+        "[]": "[]",
+        "\ud83d\ude00": "smiley face",
+        "\u10FFFF": "0x10FFFF"
+      },
+      "paths": [
+        "$['\"']",
+        "$['[]']",
+        "$['\uD83D\uDE00']",
+        "$['\u10FFFF']"
+      ]
+    }
+  ]
+}
