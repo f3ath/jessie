@@ -10,6 +10,8 @@ on:
 # Publish using the reusable workflow from dart-lang.
 jobs:
   publish:
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-    # with:
-    #   working-directory: path/to/package/within/repository
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update submodules
+        run: git config --global --add safe.directory '*' && git submodule update --init --recursive
+      - uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
