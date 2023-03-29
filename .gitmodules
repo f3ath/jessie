@@ -1,3 +1,4 @@
-[submodule "cts"]
+
+[submodule "test/cases/cts"]
 	path = test/cases/cts
 	url = https://github.com/jsonpath-standard/jsonpath-compliance-test-suite.git

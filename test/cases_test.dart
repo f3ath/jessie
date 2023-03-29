@@ -4,7 +4,7 @@ import 'package:json_path/json_path.dart';
 import 'helper.dart';
 
 void main() {
-  runTestsInDirectory('cts');
+  runTestsInDirectory('test/cases/cts');
   runTestsInDirectory('test/cases/standard');
   runTestsInDirectory('test/cases/extra',
       parser: JsonPathParser(functions: [

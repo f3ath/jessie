@@ -14,7 +14,8 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
   Directory(dirName)
       .listSync()
       .whereType<File>()
-      .where((file) => file.path.endsWith('.json'))
+      .where((file) =>
+          file.path.endsWith('.json') && !file.path.endsWith('.schema.json'))
       .forEach((file) {
     group(path.basename(file.path), () {
       final cases = jsonDecode(file.readAsStringSync());

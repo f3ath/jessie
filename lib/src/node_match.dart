@@ -1,5 +1,7 @@
 import 'package:json_path/json_path.dart';
 import 'package:json_path/src/node.dart';
+import 'package:json_path/src/normalized/index_selector.dart';
+import 'package:json_path/src/normalized/name_selector.dart';
 import 'package:rfc_6901/rfc_6901.dart';
 
 class NodeMatch implements JsonPathMatch {
@@ -35,16 +37,5 @@ extension _NodeExt<T> on Node<T> {
   String path() => r'$' + trace().map(_segment).join();
 }
 
-String _segment(Object? e) =>
-    e is int ? '[$e]' : "['${_escape(e.toString())}']";
-
-String _escape(String string) => {
-      r'/': r'\/',
-      r'\': r'\\',
-      '\b': r'\b',
-      '\f': r'\f',
-      '\n': r'\n',
-      '\r': r'\r',
-      '\t': r'\t',
-      "'": r"\'",
-    }.entries.fold(string, (s, e) => s.replaceAll(e.key, e.value));
+Object _segment(Object? e) =>
+    e is int ? IndexSelector(e) : NameSelector(e.toString());
