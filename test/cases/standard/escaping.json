@@ -1,0 +1,105 @@
+{
+  "tests": [
+    {
+      "name": "escaping, single quotes, forward slash unescaped",
+      "selector": "$['A/B']",
+      "document": {"A/B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, forward slash escaped",
+      "selector": "$['A\\/B']",
+      "document": {"A/B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, \\b",
+      "selector": "$['A\\bB']",
+      "document": {"A\bB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, \\",
+      "selector": "$['A\\\\B']",
+      "document": {"A\\B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, \\t",
+      "selector": "$['A\\tB']",
+      "document": {"A\tB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, \\r",
+      "selector": "$['A\\rB']",
+      "document": {"A\rB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, \\n",
+      "selector": "$['A\\nB']",
+      "document": {"A\nB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, \\f",
+      "selector": "$['A\\fB']",
+      "document": {"A\fB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, \"",
+      "selector": "$['A\"B']",
+      "document": {"A\"B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, single quotes, '",
+      "selector": "$['A\\'B']",
+      "document": {"A'B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, forward slash unescaped",
+      "selector": "$[\"A/B\"]",
+      "document": {"A/B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, forward slash escaped",
+      "selector": "$[\"A\\/B\"]",
+      "document": {"A/B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, \\b",
+      "selector": "$[\"A\\bB\"]",
+      "document": {"A\bB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, \\",
+      "selector": "$[\"A\\\\B\"]",
+      "document": {"A\\B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, \\t",
+      "selector": "$[\"A\\tB\"]",
+      "document": {"A\tB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, \\r",
+      "selector": "$[\"A\\rB\"]",
+      "document": {"A\rB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, \\n",
+      "selector": "$[\"A\\nB\"]",
+      "document": {"A\nB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, \\f",
+      "selector": "$[\"A\\fB\"]",
+      "document": {"A\fB": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, \"",
+      "selector": "$[\"A\\\"B\"]",
+      "document": {"A\"B": 42},
+      "result": [42]
+    }, {
+      "name": "escaping, double quotes, '",
+      "selector": "$[\"A'B\"]",
+      "document": {"A'B": 42},
+      "result": [42]
+    }
+  ]
+}

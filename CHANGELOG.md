@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] - 2023-04-05
+### Added
+- Improved IRegex support
+
 ## [0.5.1] - 2023-03-28
 ### Added
 - Better support for Normalized Paths
@@ -137,6 +141,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.5.2]: https://github.com/f3ath/jessie/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/f3ath/jessie/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/f3ath/jessie/compare/0.4.4...0.5.0
 [0.4.4]: https://github.com/f3ath/jessie/compare/0.4.3...0.4.4

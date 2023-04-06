@@ -1,4 +1,4 @@
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector.dart';
 
 Selector arraySliceSelector({int? start, int? stop, int? step}) =>
     (node) sync* {

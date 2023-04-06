@@ -17,7 +17,7 @@ import 'package:json_path/src/grammar/sequence_selector.dart';
 import 'package:json_path/src/grammar/strings.dart';
 import 'package:json_path/src/grammar/union_selector.dart';
 import 'package:json_path/src/grammar/wildcard.dart';
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:petitparser/petitparser.dart';
 

@@ -4,19 +4,41 @@
       "selector": "$[?search(@, 'a')]",
       "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
       "result": ["abc", "bab", "bba", "a"]
-    }, {
+    },
+    {
+      "name": "filter, search function, unicode char class, uppercase",
+      "selector": "$[?search(@, '\\\\p{Lu}')]",
+      "document": ["ж", "Ж", "1", "жЖ", true, [], {}],
+      "result": ["Ж", "жЖ"]
+    },
+    {
+      "name": "filter, search function, unicode char class negated, uppercase",
+      "selector": "$[?search(@, '\\\\P{Lu}')]",
+      "document": ["ж", "Ж", "1", true, [], {}],
+      "result": ["ж", "1"]
+    },
+    {
+      "name": "filter, search function, unicode, surrogate pair",
+      "selector": "$[?search(@, 'a.b')]",
+      "document": ["a\uD800\uDD01bc", "abc", "1", true, [], {}],
+      "result": ["a\uD800\uDD01bc"]
+    },
+    {
       "selector": "$.foo[?search(@, 'a')]",
       "document": {"foo": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
       "result": ["abc", "bab", "bba", "a"]
-    }, {
+    },
+    {
       "selector": "$[?search('bab', 'a')]",
       "document": ["abc", "bcd", "bab", "bba", "a", true, [], {}],
       "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]
-    }, {
+    },
+    {
       "selector": "$.result[?search(@, $.regex)]",
       "document": {"regex": "b.?b", "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
       "result": ["bab", "bba"]
-    }, {
+    },
+    {
       "selector": "$.result[?search(@, $.regex)]",
       "document": {"regex": "invalid][$^", "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
       "result": []

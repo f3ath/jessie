@@ -1,3 +1,4 @@
+/// Normalized index selector.
 class IndexSelector {
   IndexSelector(this.index);
 
