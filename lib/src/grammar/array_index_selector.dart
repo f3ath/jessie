@@ -1,4 +1,4 @@
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector.dart';
 
 Selector arrayIndexSelector(int offset) => (node) sync* {
       final element = node.element(offset);

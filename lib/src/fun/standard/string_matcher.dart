@@ -23,5 +23,5 @@ abstract class StringMatcher implements Fun2<bool, Maybe, Maybe> {
   }
 
   RegExp _makeRegex(String regex) =>
-      RegExp(allowSubstring ? regex : '^$regex\$');
+      RegExp(allowSubstring ? regex : '^$regex\$', unicode: true);
 }

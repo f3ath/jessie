@@ -1,4 +1,4 @@
-import 'package:json_path/src/selector/selector.dart';
+import 'package:json_path/src/selector.dart';
 
 Selector childSelector(String key) => (node) sync* {
       final child = node.child(key);

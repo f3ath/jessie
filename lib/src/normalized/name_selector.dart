@@ -1,12 +1,19 @@
+/// Normalized name selector.
 class NameSelector {
   NameSelector(this.name);
 
   final String name;
 
   @override
-  String toString() => "['${_escape(name)}']";
+  String toString() => "['${name.escaped}']";
+}
 
-  String _escape(String string) => {
+extension _StringExt on String {
+  /// Returns a string with all characters escaped as unicode entities.
+  String get unicodeEscaped =>
+      codeUnits.map((c) => '\\u${c.toRadixString(16).padLeft(4, '0')}').join();
+
+  String get escaped => const {
         r'/': r'\/',
         r'\': r'\\',
         '\b': r'\b',
@@ -17,9 +24,7 @@ class NameSelector {
         "'": r"\'",
       }
           .entries
-          .fold(string, (s, e) => s.replaceAll(e.key, e.value))
+          .fold(this, (s, e) => s.replaceAll(e.key, e.value))
           .replaceAllMapped(
-              RegExp(r'[\u0000-\u001f]'),
-              (s) =>
-                  '\\u${s[0]!.codeUnitAt(0).toRadixString(16).padLeft(4, '0')}');
+              RegExp(r'[\u0000-\u001f]'), (s) => s[0]!.unicodeEscaped);
 }
