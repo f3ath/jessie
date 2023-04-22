@@ -16,13 +16,15 @@ final _escapedFormFeed = string(r'\f').value('\f');
 final _escapedNewLine = string(r'\n').value('\n');
 final _escapedReturn = string(r'\r').value('\r');
 final _escapedTab = string(r'\t').value('\t');
-final _escapedControl = _escapedSlash |
-    _escapedBackSlash |
-    _escapedBackspace |
-    _escapedFormFeed |
-    _escapedNewLine |
-    _escapedReturn |
-    _escapedTab;
+final _escapedControl = [
+  _escapedSlash,
+  _escapedBackSlash,
+  _escapedBackspace,
+  _escapedFormFeed,
+  _escapedNewLine,
+  _escapedReturn,
+  _escapedTab
+].toChoiceParser();
 
 // The parser does not seem to support Unicode 6.0 boundary (0x10FFFF).
 // We're limiting ourselves to Unicode 1.0 boundary (0xFFFF).
@@ -30,8 +32,11 @@ final _escapedControl = _escapedSlash |
 final _unicodeBoundary = String.fromCharCode(0xFFFF);
 
 // Exclude double quote '"' and back slash '\'
-final _doubleUnescaped =
-    range(' ', '!') | range('#', '[') | range(']', _unicodeBoundary);
+final _doubleUnescaped = [
+  range(' ', '!'),
+  range('#', '['),
+  range(']', _unicodeBoundary)
+].toChoiceParser();
 
 final _hexDigit = anyOf('0123456789ABCDEFabcdef');
 
@@ -40,21 +45,28 @@ final _unicodeSymbol = (string(r'\u') & _hexDigit.repeat(4).flatten())
 
 final _escapedDoubleQuote = (_escape & _doubleQuote).map((_) => '"');
 
-final _doubleInner =
-    (_doubleUnescaped | _escapedDoubleQuote | _escapedControl | _unicodeSymbol)
-        .star()
-        .map((value) => value.join(''));
+final _doubleInner = [
+  _doubleUnescaped,
+  _escapedDoubleQuote,
+  _escapedControl,
+  _unicodeSymbol
+].toChoiceParser().star().join();
 
 // Exclude single quote "'" and back slash "\"
-final _singleUnescaped =
-    range(' ', '&') | range('(', '[') | range(']', _unicodeBoundary);
+final _singleUnescaped = [
+  range(' ', '&'),
+  range('(', '['),
+  range(']', _unicodeBoundary)
+].toChoiceParser();
 
 final _escapedSingleQuote = (_escape & _singleQuote).map((_) => "'");
 
-final _singleInner =
-    (_singleUnescaped | _escapedSingleQuote | _escapedControl | _unicodeSymbol)
-        .star()
-        .map((value) => value.join(''));
+final _singleInner = [
+  _singleUnescaped,
+  _escapedSingleQuote,
+  _escapedControl,
+  _unicodeSymbol
+].toChoiceParser().star().join();
 
 final _doubleQuotedString =
     _doubleInner.skip(before: _doubleQuote, after: _doubleQuote);

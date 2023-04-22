@@ -29,8 +29,8 @@ class JsonPathParser {
 
   /// Standard functions
   static const _stdFun = <Fun>[
-    Length(),
     Count(),
+    Length(),
     Match(),
     Search(),
     Value(),

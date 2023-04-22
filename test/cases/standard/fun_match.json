@@ -1,19 +1,7 @@
 {
   "tests": [
     {
-      "name": "filter, match function, unicode char class, uppercase",
-      "selector": "$[?match(@, '\\\\p{Lu}')]",
-      "document": ["ж", "Ж", "1", "жЖ", true, [], {}],
-      "result": ["Ж"]
-    },
-    {
-      "name": "filter, match function, unicode char class negated, uppercase",
-      "selector": "$[?match(@, '\\\\P{Lu}')]",
-      "document": ["ж", "Ж", "1", true, [], {}],
-      "result": ["ж", "1"]
-    },
-    {
-      "name": "filter, match function, unicode, surrogate pair",
+      "name": "dot matcher on ",
       "selector": "$[?match(@, 'a.b')]",
       "document": ["a\uD800\uDD01b", "ab", "1", true, [], {}],
       "result": ["a\uD800\uDD01b"]

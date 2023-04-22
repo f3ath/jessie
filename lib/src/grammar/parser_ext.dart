@@ -21,6 +21,10 @@ extension ParserExt<R> on Parser<R> {
   Parser<T> tryMap<T>(T Function(R r) mapper) => TryMapParser(this, mapper);
 }
 
+extension ParserListStringExt on Parser<List<String>> {
+  Parser<String> join([String separator = '']) => map((v) => v.join(separator));
+}
+
 class TryMapParser<T, R> extends MapParser<T, R> {
   TryMapParser(super.delegate, super.callback);
 
