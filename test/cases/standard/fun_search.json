@@ -42,6 +42,18 @@
       "selector": "$.result[?search(@, $.regex)]",
       "document": {"regex": "invalid][$^", "result": ["abc", "bcd", "bab", "bba", "a", true, [], {}]},
       "result": []
+    },
+    {
+      "name": "dot matcher on \\u2028",
+      "selector": "$[?search(@, '.')]",
+      "document": ["\u2028", "\r\u2028\n", "\r", "\n", true, [], {}],
+      "result": ["\u2028", "\r\u2028\n"]
+    },
+    {
+      "name": "dot matcher on \\u2029",
+      "selector": "$[?search(@, '.')]",
+      "document": ["\u2029", "\r\u2029\n", "\r", "\n", true, [], {}],
+      "result": ["\u2029", "\r\u2029\n"]
     }
   ]
 }
