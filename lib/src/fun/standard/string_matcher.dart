@@ -1,3 +1,4 @@
+import 'package:iregexp/iregexp.dart';
 import 'package:json_path/src/fun/fun.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 
@@ -16,12 +17,12 @@ abstract class StringMatcher implements Fun2<bool, Maybe, Maybe> {
   bool _typeSafeMatch(value, regex) {
     if (value is! String || regex is! String) return false;
     try {
-      return _makeRegex(regex).hasMatch(value);
+      return _match(value, IRegexp(regex));
     } on FormatException {
       return false; // Invalid regex means no match
     }
   }
 
-  RegExp _makeRegex(String regex) =>
-      RegExp(allowSubstring ? regex : '^$regex\$', unicode: true);
+  bool _match(String value, IRegexp iregexp) =>
+      allowSubstring ? iregexp.matchesSubstring(value) : iregexp.matches(value);
 }

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.3] - 2023-04-29
+### Changed
+- `search()` and `match()` now strictly follow the I-Regexp convention. Expressions not conforming to I-Regexp will yield `false` regardless of the value
+
 ## [0.5.2] - 2023-04-05
 ### Added
 - Improved IRegex support
@@ -82,9 +86,9 @@ which means a lot of internal and BC-breaking changes. Please refer to the tests
 
 ## [0.1.2] - 2020-09-06
 ### Changed
-- When JsonPath.set() is called on a path with non-existing property, the property will be created. 
+- When JsonPath.set() is called on a path with non-existing property, the property will be created.
 Previously, no modification would be made and no errors/exceptions thrown.
-- When JsonPath.set() is called on a path with non-existing index, a `RangeError` will be thrown. 
+- When JsonPath.set() is called on a path with non-existing index, a `RangeError` will be thrown.
 Previously, no modification would be made and no errors/exceptions thrown.
 
 ## [0.1.1] - 2020-09-05
@@ -141,6 +145,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.5.3]: https://github.com/f3ath/jessie/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/f3ath/jessie/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/f3ath/jessie/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/f3ath/jessie/compare/0.4.4...0.5.0

@@ -40,7 +40,7 @@ final _doubleUnescaped = [
 
 final _hexDigit = anyOf('0123456789ABCDEFabcdef');
 
-final _unicodeSymbol = (string(r'\u') & _hexDigit.repeat(4).flatten())
+final _unicodeSymbol = (string(r'\u') & _hexDigit.timesString(4))
     .map((value) => String.fromCharCode(int.parse(value.last, radix: 16)));
 
 final _escapedDoubleQuote = (_escape & _doubleQuote).map((_) => '"');
