@@ -1,6 +1,6 @@
 import 'package:rfc_6901/rfc_6901.dart';
 
-abstract class JsonPathMatch {
+abstract interface class JsonPathMatch {
   /// The matched value.
   Object? get value;
 
