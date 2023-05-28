@@ -2,7 +2,7 @@ import 'package:json_path/src/json_path_match.dart';
 import 'package:json_path/src/json_path_parser.dart';
 
 /// A parsed JSONPath expression which can be applied to a JSON document.
-abstract class JsonPath {
+abstract interface class JsonPath {
   /// Creates an instance from a string. The [expression] is parsed once, and
   /// the instance may be used many times after that.
   ///

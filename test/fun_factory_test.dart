@@ -24,12 +24,12 @@ void main() {
   });
 }
 
-class ForbiddenFun extends Fun {
+class ForbiddenFun implements Fun {
   @override
   final name = 'oops';
 }
 
-class BadNameFun extends Fun1<bool, Maybe> {
+class BadNameFun implements Fun1<bool, Maybe> {
   @override
   final name = 'Foo';
 
@@ -37,7 +37,7 @@ class BadNameFun extends Fun1<bool, Maybe> {
   bool call(Maybe a) => true;
 }
 
-class BadReturnType1Fun extends Fun1<int, bool> {
+class BadReturnType1Fun implements Fun1<int, bool> {
   @override
   final name = 'bad';
 
@@ -45,7 +45,7 @@ class BadReturnType1Fun extends Fun1<int, bool> {
   int call(bool a) => 42;
 }
 
-class BadFirstArg1Fun extends Fun1<bool, int> {
+class BadFirstArg1Fun implements Fun1<bool, int> {
   @override
   final name = 'bad';
 
@@ -53,7 +53,7 @@ class BadFirstArg1Fun extends Fun1<bool, int> {
   bool call(int a) => true;
 }
 
-class BadReturnType2Fun extends Fun2<int, bool, bool> {
+class BadReturnType2Fun implements Fun2<int, bool, bool> {
   @override
   final name = 'bad';
 
@@ -61,7 +61,7 @@ class BadReturnType2Fun extends Fun2<int, bool, bool> {
   int call(bool a, bool b) => 42;
 }
 
-class BadFirstArg2Fun extends Fun2<bool, int, bool> {
+class BadFirstArg2Fun implements Fun2<bool, int, bool> {
   @override
   final name = 'bad';
 
@@ -69,7 +69,7 @@ class BadFirstArg2Fun extends Fun2<bool, int, bool> {
   bool call(int a, bool b) => true;
 }
 
-class BadSecondArg2Fun extends Fun2<bool, bool, int> {
+class BadSecondArg2Fun implements Fun2<bool, bool, int> {
   @override
   final name = 'bad';
 
