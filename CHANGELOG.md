@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2023-05-27
+### Changed
+- Disallow space chars between a function name and the parentheses
+- Disallow space chars between an expression and the brackets
+
 ## [0.5.3] - 2023-04-29
 ### Changed
 - `search()` and `match()` now strictly follow the I-Regexp convention. Expressions not conforming to I-Regexp will yield `false` regardless of the value
@@ -145,6 +150,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.5.4]: https://github.com/f3ath/jessie/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/f3ath/jessie/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/f3ath/jessie/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/f3ath/jessie/compare/0.5.0...0.5.1

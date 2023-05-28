@@ -11,12 +11,10 @@ extension ParserExt<R> on Parser<R> {
       ].toSequenceParser().map<List<R>>((v) => v.expand<R>((e) => e).toList());
 
   /// Same in parenthesis.
-  Parser<R> inParens() =>
-      skip(before: char('(').trim(), after: char(')').trim());
+  Parser<R> inParens() => skip(before: char('('), after: char(')'));
 
   /// Same in brackets.
-  Parser<R> inBrackets() =>
-      skip(before: char('[').trim(), after: char(']').trim());
+  Parser<R> inBrackets() => skip(before: char('['), after: char(']'));
 
   Parser<T> tryMap<T>(T Function(R r) mapper) => TryMapParser(this, mapper);
 }
