@@ -14,7 +14,8 @@ extension ParserExt<R> on Parser<R> {
   Parser<R> inParens() => skip(before: char('('), after: char(')'));
 
   /// Same in brackets.
-  Parser<R> inBrackets() => skip(before: char('['), after: char(']'));
+  Parser<R> inBrackets() =>
+      skip(before: char('[').trim(), after: char(']').trim());
 
   Parser<T> tryMap<T>(T Function(R r) mapper) => TryMapParser(this, mapper);
 }

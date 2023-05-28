@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.4] - 2023-05-27
 ### Changed
-- Disallow space chars between a function name and parentheses
+- Disallow space chars between a function name and the parentheses
+- Disallow space chars between an expression and the brackets
 
 ## [0.5.3] - 2023-04-29
 ### Changed
