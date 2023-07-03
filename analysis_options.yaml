@@ -3,3 +3,6 @@ linter:
   rules:
     - sort_constructors_first
     - sort_unnamed_constructors_first
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - unnecessary_const

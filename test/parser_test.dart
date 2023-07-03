@@ -13,11 +13,11 @@ import 'package:test/test.dart';
 
 void main() {
   final parser = JsonPathGrammarDefinition(FunFactory(<Fun>[
-    Length(),
-    Count(),
-    Match(),
-    Search(),
-    Value(),
+    const Length(),
+    const Count(),
+    const Match(),
+    const Search(),
+    const Value(),
   ])).build();
 
   group('Parser', () {
