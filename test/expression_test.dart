@@ -9,7 +9,7 @@ void main() {
   group('Expression', () {
     group('Static', () {
       final node = Node('foo');
-      final s = StaticExpression(Just('bar'));
+      final s = StaticExpression(const Just('bar'));
       final d = Expression((Node n) => Just(n.value));
       test('map()', () {
         expect(s.map((v) => v.map((v) => '$v!').or('oops')).call(node), 'bar!');
