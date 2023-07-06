@@ -1,6 +1,5 @@
 # [JSONPath] in Dart
 [![Pub Package](https://img.shields.io/pub/v/json_path.svg)](https://pub.dev/packages/json_path)
-[![Build Status](https://github.com/f3ath/jessie/actions/workflows/dart.yml/badge.svg?branch=master)](https://github.com/f3ath/jessie/actions/workflows/dart.yml)
 [![GitHub Issues](https://img.shields.io/github/issues/f3ath/jessie.svg)](https://github.com/f3ath/jessie/issues)
 [![GitHub Forks](https://img.shields.io/github/forks/f3ath/jessie.svg)](https://github.com/f3ath/jessie/network)
 [![GitHub Stars](https://img.shields.io/github/stars/f3ath/jessie.svg)](https://github.com/f3ath/jessie/stargazers)
