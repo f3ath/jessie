@@ -20,8 +20,22 @@
       "paths": ["$[0]"],
       "pointers": ["/0"]
     }, {
+      "name": "array index with odd spacing",
+      "selector": "$[?(@ [1] =='b')]",
+      "document": [["a", "b"], ["x", "y"]],
+      "result": [["a", "b"]],
+      "paths": ["$[0]"],
+      "pointers": ["/0"]
+    }, {
       "name": "object child, single quote",
       "selector": "$[?(@['key'] == 'b')]",
+      "document": [{"key": "a"}, {"key": "b"}, {}],
+      "result": [{"key": "b"}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, single quote, odd spacing",
+      "selector": "$[?(@ ['key']=='b')]",
       "document": [{"key": "a"}, {"key": "b"}, {}],
       "result": [{"key": "b"}],
       "paths": ["$[1]"],
@@ -43,6 +57,13 @@
     }, {
       "name": "object child, dot-notation, depth 2",
       "selector": "$[?(@.foo.bar=='b')]",
+      "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": "b"} ,{}],
+      "result": [{"foo": {"bar": "b"}}],
+      "paths": ["$[1]"],
+      "pointers": ["/1"]
+    }, {
+      "name": "object child, dot-notation, depth 2, odd spacing",
+      "selector": "$[?(@ \t  .foo\n .bar== 'b')]",
       "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": "b"} ,{}],
       "result": [{"foo": {"bar": "b"}}],
       "paths": ["$[1]"],
