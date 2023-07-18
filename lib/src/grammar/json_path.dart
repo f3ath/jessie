@@ -129,12 +129,12 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         dotName,
         ref0(_union),
         ref0(_recursion),
-      ].toChoiceParser();
+      ].toChoiceParser().trim();
 
   Parser<Selector> _singularSegment() => [
         dotName,
         ref0(_singularUnion),
-      ].toChoiceParser();
+      ].toChoiceParser().trim();
 
   Parser<Expression<Nodes>> _segmentSequence() =>
       _segment().star().map(sequenceSelector).map(Expression.new);

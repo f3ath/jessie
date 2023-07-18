@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2023-07-17
+### Fixed
+- Allow namespace in between selector segments
+
 ## [0.6.0] - 2023-05-27
 ### Changed
 - Bump SDK version to 3.0.0
@@ -152,6 +156,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.6.1]: https://github.com/f3ath/jessie/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/f3ath/jessie/compare/0.5.3...0.6.0
 [0.5.3]: https://github.com/f3ath/jessie/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/f3ath/jessie/compare/0.5.1...0.5.2
