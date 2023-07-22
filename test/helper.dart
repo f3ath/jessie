@@ -27,13 +27,13 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
         }
 
         final document = t['document'];
-        final name = t['name'] as String?;
-        final paths = t['paths'] as List?;
-        final pointers = t['pointers'] as List?;
-        final selector = t['selector'] as String;
-        final skip = t['skip'] as String?;
-        final values = t['result'] as List?;
-        final invalid = t['invalid_selector'] as bool?;
+        final String? name = t['name'];
+        final List? paths = t['paths'];
+        final List? pointers = t['pointers'];
+        final String selector = t['selector'];
+        final String? skip = t['skip'];
+        final List? values = t['result'];
+        final bool? invalid = t['invalid_selector'];
         group(name ?? selector, () {
           if (values is List) {
             test('values', () {

@@ -1,0 +1,52 @@
+{
+  "tests": [
+    {
+      "name": "spaces in a relative singular selector",
+      "selector" : "$[?length(@ .a .b) == 3]",
+      "document" : [ {"a":  {"b": "foo"}}, {} ],
+      "result": [ {"a":  {"b": "foo"}} ]
+    },
+    {
+      "name": "newlines in a relative singular selector",
+      "selector" : "$[?length(@\n.a\n.b) == 3]",
+      "document" : [ {"a":  {"b": "foo"}}, {} ],
+      "result": [ {"a":  {"b": "foo"}} ]
+    },
+    {
+      "name": "tabs in a relative singular selector",
+      "selector" : "$[?length(@\t.a\t.b) == 3]",
+      "document" : [ {"a":  {"b": "foo"}}, {} ],
+      "result": [ {"a":  {"b": "foo"}} ]
+    },
+    {
+      "name": "returns in a relative singular selector",
+      "selector" : "$[?length(@\r.a\r.b) == 3]",
+      "document" : [ {"a":  {"b": "foo"}}, {} ],
+      "result": [ {"a":  {"b": "foo"}} ]
+    },
+    {
+      "name": "spaces in an absolute singular selector ",
+      "selector" : "$..[?length(@)==length($ [0] .a)]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ "foo" ]
+    },
+    {
+      "name": "newlines in an absolute singular selector ",
+      "selector" : "$..[?length(@)==length($\n[0]\n.a)]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ "foo" ]
+    },
+    {
+      "name": "tabs in an absolute singular selector ",
+      "selector" : "$..[?length(@)==length($\t[0]\t.a)]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ "foo" ]
+    },
+    {
+      "name": "returns in an absolute singular selector ",
+      "selector" : "$..[?length(@)==length($\r[0]\r.a)]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ "foo" ]
+    }
+  ]
+}
