@@ -84,7 +84,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         _comparableFunExpr(),
       ].toChoiceParser();
 
-  Parser<Expression<bool>> _logicalExpr() => _logicalOrExpr() ;
+  Parser<Expression<bool>> _logicalExpr() => _logicalOrExpr();
 
   Parser<Expression<bool>> _logicalOrExpr() => _logicalOrSequence()
       .map((list) => list.reduce((a, b) => a.merge(b, (a, b) => a || b)));
