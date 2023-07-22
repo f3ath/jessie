@@ -145,7 +145,7 @@
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, index, less-or-equal",
-      "selector": "$[?(@[0, 0]==42)]",
+      "selector": "$[?(@[0, 0]<=42)]",
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, name, equal",
@@ -157,7 +157,7 @@
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, name, less-or-equal",
-      "selector": "$[?(@['a', 'a']==42)]",
+      "selector": "$[?(@['a', 'a']<=42)]",
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, combined, equal",
@@ -169,7 +169,7 @@
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, combined, less-or-equal",
-      "selector": "$[?(@[0, '0']==42)]",
+      "selector": "$[?(@[0, '0']<=42)]",
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, wildcard, equal",
@@ -181,7 +181,7 @@
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, wildcard, less-or-equal",
-      "selector": "$[?(@.*==42)]",
+      "selector": "$[?(@.*<=42)]",
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, slice, equal",
@@ -193,7 +193,7 @@
       "invalid_selector": true
     }, {
       "name": "relative non-singular query, slice, less-or-equal",
-      "selector": "$[?(@[0:0]==42)]",
+      "selector": "$[?(@[0:0]<=42)]",
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, index, equal",
@@ -205,7 +205,7 @@
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, index, less-or-equal",
-      "selector": "$[?($[0, 0]==42)]",
+      "selector": "$[?($[0, 0]<=42)]",
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, name, equal",
@@ -217,7 +217,7 @@
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, name, less-or-equal",
-      "selector": "$[?($['a', 'a']==42)]",
+      "selector": "$[?($['a', 'a']<=42)]",
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, combined, equal",
@@ -229,7 +229,7 @@
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, combined, less-or-equal",
-      "selector": "$[?($[0, '0']==42)]",
+      "selector": "$[?($[0, '0']<=42)]",
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, wildcard, equal",
@@ -241,7 +241,7 @@
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, wildcard, less-or-equal",
-      "selector": "$[?($.*==42)]",
+      "selector": "$[?($.*<=42)]",
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, slice, equal",
@@ -253,7 +253,7 @@
       "invalid_selector": true
     }, {
       "name": "absolute non-singular query, slice, less-or-equal",
-      "selector": "$[?($[0:0]==42)]",
+      "selector": "$[?($[0:0]<=42)]",
       "invalid_selector": true
     }
   ]

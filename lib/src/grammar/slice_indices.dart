@@ -1,12 +1,8 @@
 import 'dart:math';
 
 Iterable<int> sliceIndices(int length, int? start, int? stop, int step) sync* {
-  if (step > 0) {
-    yield* _forward(length, start ?? 0, stop ?? length, step);
-  }
-  if (step < 0) {
-    yield* _backward(length, start, stop, step);
-  }
+  if (step > 0) yield* _forward(length, start ?? 0, stop ?? length, step);
+  if (step < 0) yield* _backward(length, start, stop, step);
 }
 
 Iterable<int> _forward(int length, int start, int stop, int step) sync* {

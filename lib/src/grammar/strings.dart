@@ -77,11 +77,12 @@ final _singleQuotedString =
 final _nameFirst =
     (char('_') | letter() | range(String.fromCharCode(0x80), _unicodeBoundary))
         .plus()
-        .flatten();
+        .flatten('a correct member name expected');
 
 final _nameChar = digit() | _nameFirst;
 
 final quotedString = (_singleQuotedString | _doubleQuotedString).cast<String>();
 
-final memberNameShorthand =
-    (_nameFirst & _nameChar.star()).flatten().map(childSelector);
+final memberNameShorthand = (_nameFirst & _nameChar.star())
+    .flatten('a member name shorthand expected')
+    .map(childSelector);

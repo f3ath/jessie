@@ -12,12 +12,8 @@ class FunFactory {
       throw ArgumentError('Function validation errors: ${errors.join(', ')}');
     }
     for (final f in functions) {
-      if (f is Fun1) {
-        _fun1[f.name] = f;
-      }
-      if (f is Fun2) {
-        _fun2[f.name] = f;
-      }
+      if (f is Fun1) _fun1[f.name] = f;
+      if (f is Fun2) _fun2[f.name] = f;
     }
   }
 
@@ -37,12 +33,8 @@ class FunFactory {
     final name = call.name;
     final args = call.args;
     try {
-      if (args.length == 1) {
-        return any1<T>(name, args[0]);
-      }
-      if (args.length == 2) {
-        return any2<T>(name, args[0], args[1]);
-      }
+      if (args.length == 1) return any1<T>(name, args[0]);
+      if (args.length == 2) return any2<T>(name, args[0], args[1]);
     } on TypeError catch (e) {
       /// Thrown by
       throw FormatException('Invalid argument: $e');
