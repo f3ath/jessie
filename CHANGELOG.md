@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2023-07-21
+### Fixed
+- Disallow comparison of non-singular queries
+
 ## [0.6.1] - 2023-07-17
 ### Fixed
 - Allow namespace in between selector segments
@@ -11,8 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2023-05-27
 ### Changed
 - Bump SDK version to 3.0.0
-- Disallow whitespace between a function name and the parentheses
-- Disallow whitespace between an expression and the brackets
+- Disallow whitespace between the function name and the parentheses
+- Disallow whitespace between the expression and the brackets
 - `search()` and `match()` now strictly follow the I-Regexp convention. Expressions not conforming to I-Regexp will yield `false` regardless of the value
 
 ## [0.5.3] - 2023-04-29 \[YANKED\]
@@ -156,6 +160,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.6.2]: https://github.com/f3ath/jessie/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/f3ath/jessie/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/f3ath/jessie/compare/0.5.3...0.6.0
 [0.5.3]: https://github.com/f3ath/jessie/compare/0.5.2...0.5.3

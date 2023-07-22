@@ -46,7 +46,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
       _unionElement().toList().inBrackets().map(unionSelector);
 
   Parser<Selector> _singularUnion() =>
-      _singularUnionElement().toList().inBrackets().map(unionSelector);
+      _singularUnionElement().toSingularList().inBrackets().map(unionSelector);
 
   Parser<Selector> _recursion() => [
         wildcard,
@@ -127,6 +127,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
 
   Parser<Selector> _segment() => [
         dotName,
+        wildcard.skip(before: char('.')),
         ref0(_union),
         ref0(_recursion),
       ].toChoiceParser().trim();

@@ -135,6 +135,126 @@
       "selector": "$[?(@.foo != @.bar)]",
       "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
       "result": [{"foo": 1, "bar": 2},  {"foo": 1, "bro": 1}]
+    }, {
+      "name": "relative non-singular query, index, equal",
+      "selector": "$[?(@[0, 0]==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, index, not equal",
+      "selector": "$[?(@[0, 0]!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, index, less-or-equal",
+      "selector": "$[?(@[0, 0]==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, name, equal",
+      "selector": "$[?(@['a', 'a']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, name, not equal",
+      "selector": "$[?(@['a', 'a']!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, name, less-or-equal",
+      "selector": "$[?(@['a', 'a']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, combined, equal",
+      "selector": "$[?(@[0, '0']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, combined, not equal",
+      "selector": "$[?(@[0, '0']!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, combined, less-or-equal",
+      "selector": "$[?(@[0, '0']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, wildcard, equal",
+      "selector": "$[?(@.*==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, wildcard, not equal",
+      "selector": "$[?(@.*!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, wildcard, less-or-equal",
+      "selector": "$[?(@.*==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, slice, equal",
+      "selector": "$[?(@[0:0]==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, slice, not equal",
+      "selector": "$[?(@[0:0]!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "relative non-singular query, slice, less-or-equal",
+      "selector": "$[?(@[0:0]==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, index, equal",
+      "selector": "$[?($[0, 0]==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, index, not equal",
+      "selector": "$[?($[0, 0]!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, index, less-or-equal",
+      "selector": "$[?($[0, 0]==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, name, equal",
+      "selector": "$[?($['a', 'a']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, name, not equal",
+      "selector": "$[?($['a', 'a']!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, name, less-or-equal",
+      "selector": "$[?($['a', 'a']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, combined, equal",
+      "selector": "$[?($[0, '0']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, combined, not equal",
+      "selector": "$[?($[0, '0']!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, combined, less-or-equal",
+      "selector": "$[?($[0, '0']==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, wildcard, equal",
+      "selector": "$[?($.*==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, wildcard, not equal",
+      "selector": "$[?($.*!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, wildcard, less-or-equal",
+      "selector": "$[?($.*==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, slice, equal",
+      "selector": "$[?($[0:0]==42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, slice, not equal",
+      "selector": "$[?($[0:0]!=42)]",
+      "invalid_selector": true
+    }, {
+      "name": "absolute non-singular query, slice, less-or-equal",
+      "selector": "$[?($[0:0]==42)]",
+      "invalid_selector": true
     }
   ]
 }
