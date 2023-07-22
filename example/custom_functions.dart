@@ -11,7 +11,7 @@ void main() {
   jsonPath.readValues(json).forEach(print);
 }
 
-/// An implementation of the classic FizzBuzz function.
+/// An implementation of a palindrome test.
 class IsPalindrome implements Fun1<bool, Maybe> {
   @override
   final name = 'is_palindrome';

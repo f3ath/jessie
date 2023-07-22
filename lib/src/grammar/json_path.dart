@@ -102,7 +102,9 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         ref0(_parenExpr),
         comparisonExpression(_comparable()),
         _testExpr(),
-      ].toChoiceParser();
+      ].toChoiceParser(
+          failureJoiner: (a, b) =>
+              Failure(a.buffer, a.position, 'Expression expected'));
 
   Parser<Expression<Nodes>> _filterPath() => [
         ref0(_relPath),

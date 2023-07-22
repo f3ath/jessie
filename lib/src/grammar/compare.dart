@@ -29,9 +29,9 @@ bool _le(Maybe a, Maybe b) => _lt(a, b) || _eq(a, b);
 bool _lt(Maybe a, Maybe b) => a
     .merge(
         b,
-        (a, b) =>
-            (a is num && b is num && a < b) ||
-            (a is String && b is String && a.compareTo(b) < 0))
+        (x, y) =>
+            (x is num && y is num && x < y) ||
+            (x is String && y is String && x.compareTo(y) < 0))
     .or(false);
 
 /// True if [a] is not equal to [b].
@@ -46,5 +46,5 @@ const _operations = <String, bool Function(Maybe, Maybe)>{
   '>': _gt,
 };
 
-bool compare(String operation, Maybe a, Maybe b) => (_operations[operation] ??
-    (throw StateError('Invalid operation "$operation"')))(a, b);
+bool compare(String op, Maybe a, Maybe b) =>
+    (_operations[op] ?? (throw StateError('Invalid operation "$op"')))(a, b);

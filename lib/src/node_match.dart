@@ -37,5 +37,5 @@ extension _NodeExt<T> on Node<T> {
   String path() => r'$' + trace().map(_segment).join();
 }
 
-Object _segment(Object? e) =>
-    e is int ? IndexSelector(e) : NameSelector(e.toString());
+Object _segment(Object? v) =>
+    v is int ? IndexSelector(v) : NameSelector(v.toString());

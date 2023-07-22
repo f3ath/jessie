@@ -42,12 +42,8 @@ class Node<T extends Object?> {
   /// All direct children of the node.
   Iterable<Node> get children sync* {
     final v = value;
-    if (v is Map) {
-      yield* v.keys.map((key) => _child(v, key));
-    }
-    if (v is List) {
-      yield* v.asMap().keys.map((index) => _element(v, index));
-    }
+    if (v is Map) yield* v.keys.map((key) => _child(v, key));
+    if (v is List) yield* v.asMap().keys.map((index) => _element(v, index));
   }
 
   /// Returns the JSON array element at the [offset] if it exists,
@@ -56,9 +52,7 @@ class Node<T extends Object?> {
     final v = value;
     if (v is List) {
       final index = offset < 0 ? v.length + offset : offset;
-      if (index >= 0 && index < v.length) {
-        return _element(v, index);
-      }
+      if (index >= 0 && index < v.length) return _element(v, index);
     }
     return null;
   }
@@ -67,9 +61,7 @@ class Node<T extends Object?> {
   /// otherwise returns null.
   Node? child(String key) {
     final v = value;
-    if (v is Map && v.containsKey(key)) {
-      return _child(v, key);
-    }
+    if (v is Map && v.containsKey(key)) return _child(v, key);
     return null;
   }
 
