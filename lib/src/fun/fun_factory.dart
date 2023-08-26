@@ -36,7 +36,6 @@ class FunFactory {
       if (args.length == 1) return any1<T>(name, args[0]);
       if (args.length == 2) return any2<T>(name, args[0], args[1]);
     } on TypeError catch (e) {
-      /// Thrown by
       throw FormatException('Invalid argument: $e');
     } on StateError catch (e) {
       throw FormatException(e.message);

@@ -43,10 +43,34 @@
       "result": [ "foo" ]
     },
     {
-      "name": "returns in an absolute singular selector ",
+      "name": "returns in an absolute singular selector",
       "selector" : "$..[?length(@)==length($\r[0]\r.a)]",
       "document" : [ {"a": "foo"}, {} ],
       "result": [ "foo" ]
+    },
+    {
+      "name": "space between ? and function",
+      "selector" : "$..[? length(@)==1]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ {"a": "foo"} ]
+    },
+    {
+      "name": "tab between ? and function",
+      "selector" : "$..[?\tlength(@)==1]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ {"a": "foo"} ]
+    },
+    {
+      "name": "\\n between ? and function",
+      "selector" : "$..[ ?\nlength(@) == 1 ]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ {"a": "foo"} ]
+    },
+    {
+      "name": "\\r between ? and function",
+      "selector" : "$..[ ?\rlength(@) == 1 ]",
+      "document" : [ {"a": "foo"}, {} ],
+      "result": [ {"a": "foo"} ]
     }
   ]
 }

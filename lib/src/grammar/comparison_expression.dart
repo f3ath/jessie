@@ -1,5 +1,4 @@
 import 'package:json_path/src/expression/expression.dart';
-import 'package:json_path/src/grammar/cmp_operator.dart';
 import 'package:json_path/src/grammar/compare.dart';
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
 import 'package:petitparser/parser.dart';

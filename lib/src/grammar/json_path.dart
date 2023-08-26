@@ -57,9 +57,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
           .skip(before: string('..'))
           .map((value) => sequenceSelector([selectAllRecursively, value]));
 
-  Parser<Expression<bool>> _parenExpr() => negatable(
-        _logicalExpr().inParens(),
-      );
+  Parser<Expression<bool>> _parenExpr() => negatable(_logicalExpr().inParens());
 
   Parser<Expression> _funArgument() => [
         literal,
@@ -67,10 +65,10 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         ref0(_funExpr),
       ].toChoiceParser().trim();
 
-  Parser<T> _funCall<T>(T Function(FunCall) funMaker) =>
+  Parser<T> _funCall<T>(T Function(FunCall) toFun) =>
       (funName & _funArgument().toList().inParens())
           .map((v) => FunCall(v[0], v[1]))
-          .tryMap(funMaker);
+          .tryMap(toFun);
 
   Parser<Expression> _funExpr() => _funCall(_fun.any);
 
@@ -125,7 +123,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
       ].toChoiceParser());
 
   Parser<Selector> _expressionFilter() =>
-      _logicalExpr().skip(before: string('?')).map(filterSelector);
+      _logicalExpr().skip(before: string('?').trim()).map(filterSelector);
 
   Parser<Selector> _segment() => [
         dotName,
