@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
   JsonPath jsonPath(String expression) =>
-      parser != null ? parser.parse(expression) : JsonPath(expression);
+      parser?.parse(expression) ?? JsonPath(expression);
 
   Directory(dirName)
       .listSync()
