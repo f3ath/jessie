@@ -1,4 +1,5 @@
 import 'package:maybe_just_nothing/maybe_just_nothing.dart';
+import 'package:petitparser/petitparser.dart';
 
 /// True if [a] equals [b].
 bool _eq(Maybe a, Maybe b) =>
@@ -48,3 +49,5 @@ const _operations = <String, bool Function(Maybe, Maybe)>{
 
 bool compare(String op, Maybe a, Maybe b) =>
     (_operations[op] ?? (throw StateError('Invalid operation "$op"')))(a, b);
+
+final cmpOperator = _operations.keys.map(string).toChoiceParser().trim();

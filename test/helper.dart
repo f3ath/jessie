@@ -6,10 +6,8 @@ import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
 void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
-  JsonPath jsonPath(String expression) {
-    if (parser != null) return parser.parse(expression);
-    return JsonPath(expression);
-  }
+  JsonPath jsonPath(String expression) =>
+      parser?.parse(expression) ?? JsonPath(expression);
 
   Directory(dirName)
       .listSync()
@@ -26,11 +24,12 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
           }
         }
 
+        final String selector = t['selector'];
+
         final document = t['document'];
         final String? name = t['name'];
         final List? paths = t['paths'];
         final List? pointers = t['pointers'];
-        final String selector = t['selector'];
         final String? skip = t['skip'];
         final List? values = t['result'];
         final bool? invalid = t['invalid_selector'];
@@ -66,7 +65,7 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
               );
             });
           }
-          if ([values, paths, pointers, invalid].every((_) => _ == null)) {
+          if ([values, paths, pointers, invalid].every((v) => v == null)) {
             throw ArgumentError('No expectations found');
           }
         }, skip: skip);
