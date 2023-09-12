@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.5] - 2023-09-11
+### Fixed
+- Certain numbers were not parsed correctly
+
 ## [0.6.4] - 2023-08-26
 ### Changed
 - Bump dependencies versions
@@ -168,6 +172,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.6.5]: https://github.com/f3ath/jessie/compare/0.6.4...0.6.5
 [0.6.4]: https://github.com/f3ath/jessie/compare/0.6.3...0.6.4
 [0.6.3]: https://github.com/f3ath/jessie/compare/0.6.2...0.6.3
 [0.6.2]: https://github.com/f3ath/jessie/compare/0.6.1...0.6.2
