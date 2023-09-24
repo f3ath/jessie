@@ -69,7 +69,7 @@ void main() {
 ```
 
 ## Features and Limitations
-This library follows the [JsonPath] internet draft specification v11. Since the spec itself is 
+This library follows the [JsonPath] internet draft specification. Since the spec itself is 
 an evolving document, this implementation may lag behind, and some features may not be implemented in-full.
 Please refer to the tests (there are hundreds of them, including the [CTS]) to see what is supported.
 
