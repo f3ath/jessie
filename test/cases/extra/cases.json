@@ -47,6 +47,12 @@
       "selector" : "$[?is_boolean(@)]",
       "document" : [1, true, {}, [42], "foo", {"a": "b"}, false],
       "result": [true, false]
+    },
+    {
+      "name": "parens in functional args",
+      "selector" : "$[?xor((@.b), (@.a))]",
+      "document" : [{"a": 0}, {"a": 0, "b": 0}, {"b": 0}, {}],
+      "result": [{"a": 0}, {"b": 0}]
     }
   ]
 }

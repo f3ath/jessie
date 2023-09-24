@@ -63,6 +63,7 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
         literal,
         _filterPath(),
         ref0(_funExpr),
+        ref0(_logicalExpr),
       ].toChoiceParser().trim();
 
   Parser<T> _funCall<T>(T Function(FunCall) toFun) =>
