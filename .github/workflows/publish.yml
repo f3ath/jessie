@@ -1,4 +1,3 @@
-# https://dart.dev/tools/pub/automated-publishing
 name: Publish to pub.dev
 
 on:
@@ -8,7 +7,6 @@ on:
 
 jobs:
   publish:
-    needs: prepare
+    permissions:
+      id-token: write # Required for authentication using OIDC
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-  prepare:
-    uses: ./test.yml
