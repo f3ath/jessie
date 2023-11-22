@@ -92,7 +92,7 @@ functions of 1 and 2 arguments are supported.
 
 To create your own function:
 1. Import `package:json_path/fun_sdk.dart`.
-2. Create a class implementing either `Fun1` (1 argument) or `Fun2` (2 argument).
+2. Create a class implementing either `Fun1` (1 argument) or `Fun2` (2 arguments).
 
 To use it:
 1. Create a new JsonPathParser with your function: `final parser = JsonPathParser(functions: [MyFunction()]);`
