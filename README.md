@@ -86,7 +86,7 @@ and can be used to alter the referenced value. If you only need to manipulate JS
 check out my [JSON Pointer implementation].
 
 ## User-defined functions
-The JSONPath parser may be extended by user-defined functions. The user-defined functions
+The JSONPath parser may be extended with user-defined functions. The user-defined functions
 take precedence over the built-in ones specified by the standard. Currently, only
 functions of 1 and 2 arguments are supported. 
 
