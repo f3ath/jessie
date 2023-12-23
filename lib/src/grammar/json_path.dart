@@ -62,7 +62,9 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
   Parser<Expression> _funArgument() => [
         literal,
         _filterPath(),
-        ref0(_funExpr),
+        ref0(_valueFunExpr),
+        ref0(_logicalFunExpr),
+        ref0(_nodesFunExpr),
         ref0(_logicalExpr),
       ].toChoiceParser().trim();
 
@@ -71,16 +73,16 @@ class JsonPathGrammarDefinition extends GrammarDefinition<Expression<Nodes>> {
           .map((v) => FunCall(v[0], v[1]))
           .tryMap(toFun);
 
-  Parser<Expression> _funExpr() => _funCall(_fun.any);
+  Parser<Expression<Maybe>> _valueFunExpr() => _funCall(_fun.value);
 
-  Parser<Expression<Maybe>> _comparableFunExpr() => _funCall(_fun.comparable);
+  Parser<Expression<Nodes>> _nodesFunExpr() => _funCall(_fun.nodes);
 
   Parser<Expression<bool>> _logicalFunExpr() => _funCall(_fun.logical);
 
   Parser<Expression<Maybe>> _comparable() => [
         literal,
         _singularFilterPath().map((expr) => expr.map((v) => v.asValue)),
-        _comparableFunExpr(),
+        _valueFunExpr(),
       ].toChoiceParser();
 
   Parser<Expression<bool>> _logicalExpr() => _logicalOrExpr();
