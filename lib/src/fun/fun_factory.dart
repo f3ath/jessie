@@ -29,7 +29,7 @@ class FunFactory {
   Expression<bool> logical(FunCall call) => _any<bool>(call);
 
   /// Returns a nodes-type function.
-  Expression<Nodes> nodes(FunCall call) => _any<Nodes>(call);
+  Expression<NodeList> nodes(FunCall call) => _any<NodeList>(call);
 
   /// Returns a function to use as an argument for another function.
   Expression<T> _any<T extends Object>(FunCall call) {
@@ -87,5 +87,5 @@ class FunFactory {
 
   static bool _logical(v) => (v is bool) ? v : _nodes(v).asLogical;
 
-  static Nodes _nodes(v) => v as Nodes;
+  static NodeList _nodes(v) => v as NodeList;
 }

@@ -14,28 +14,28 @@ class FunValidator {
     if (f is Fun1) {
       if (f is! Fun1<bool, Object> &&
           f is! Fun1<Maybe, Object> &&
-          f is! Fun1<Nodes, Object>) {
+          f is! Fun1<NodeList, Object>) {
         yield 'Invalid return type in function ${f.name}';
       }
       if (f is! Fun1<Object, Maybe> &&
-          f is! Fun1<Object, Nodes> &&
+          f is! Fun1<Object, NodeList> &&
           f is! Fun1<Object, bool>) {
         yield 'Invalid type of the first argument in function ${f.name}';
       }
     } else if (f is Fun2) {
       if (f is! Fun2<bool, Object, Object> &&
           f is! Fun2<Maybe, Object, Object> &&
-          f is! Fun2<Nodes, Object, Object>) {
+          f is! Fun2<NodeList, Object, Object>) {
         yield 'Invalid return type in function ${f.name}';
       }
       if (f is! Fun2<Object, bool, Object> &&
           f is! Fun2<Object, Maybe, Object> &&
-          f is! Fun2<Object, Nodes, Object>) {
+          f is! Fun2<Object, NodeList, Object>) {
         yield 'Invalid type of the first argument in function ${f.name}';
       }
       if (f is! Fun2<Object, Object, bool> &&
           f is! Fun2<Object, Object, Maybe> &&
-          f is! Fun2<Object, Object, Nodes>) {
+          f is! Fun2<Object, Object, NodeList>) {
         yield 'Invalid type of the second argument in function ${f.name}';
       }
     } else {

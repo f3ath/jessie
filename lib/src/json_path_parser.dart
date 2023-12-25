@@ -21,7 +21,7 @@ class JsonPathParser {
   JsonPathParser._(Iterable<Fun> functions)
       : _parser =
             JsonPathGrammarDefinition(FunFactory([..._stdFun, ...functions]))
-                .build<Expression<Nodes>>();
+                .build<Expression<NodeList>>();
 
   /// The standard instance is pre-cached to speed up parsing when only
   /// the standard built-in functions are used.
@@ -36,7 +36,7 @@ class JsonPathParser {
     Value(),
   ];
 
-  final Parser<Expression<Nodes>> _parser;
+  final Parser<Expression<NodeList>> _parser;
 
   /// Parses the JSONPath from s string [expression].
   /// Returns an instance of [JsonPath] or throws a [FormatException].

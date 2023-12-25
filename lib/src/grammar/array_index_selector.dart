@@ -1,6 +1,5 @@
+import 'package:json_path/fun_sdk.dart';
 import 'package:json_path/src/selector.dart';
 
-Selector arrayIndexSelector(int offset) => (node) sync* {
-      final element = node.element(offset);
-      if (element != null) yield element;
-    };
+SingularSelector arrayIndexSelector(int offset) =>
+    (node) => SingularNodeList.from(node.element(offset));
