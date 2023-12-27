@@ -62,7 +62,8 @@ class JsonPathGrammarDefinition
 
   Parser<Expression> _funArgument() => [
         literal,
-        _filterPath(),
+        ref0(_singularFilterPath),
+        ref0(_filterPath),
         ref0(_valueFunExpr),
         ref0(_logicalFunExpr),
         ref0(_nodesFunExpr),
@@ -113,7 +114,7 @@ class JsonPathGrammarDefinition
         ref0(_absPath),
       ].toChoiceParser();
 
-  Parser<Expression<NodeList>> _singularFilterPath() => [
+  Parser<Expression<SingularNodeList>> _singularFilterPath() => [
         ref0(_singularRelPath),
         ref0(_singularAbsPath),
       ].toChoiceParser();
@@ -156,12 +157,13 @@ class JsonPathGrammarDefinition
 
   Parser<Expression<SingularNodeList>> _singularAbsPath() =>
       _singularSegmentSequence()
-          .skip(before: char(r'$'))
+          .skip(before: char(r'$'), after: _segment().not())
           .map((expr) => Expression((node) => expr.call(node.root)));
 
   Parser<Expression<NodeList>> _relPath() =>
       _segmentSequence().skip(before: char('@'));
 
   Parser<Expression<SingularNodeList>> _singularRelPath() =>
-      _singularSegmentSequence().skip(before: char('@'));
+      _singularSegmentSequence()
+          .skip(before: char('@'), after: _segment().not());
 }

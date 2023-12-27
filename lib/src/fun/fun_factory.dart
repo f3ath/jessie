@@ -48,17 +48,37 @@ class FunFactory {
 
   Expression<T> _any1<T extends Object>(String name, Expression a0) {
     final f = _getFun1<T>(name);
-    final cast0 = cast(value: f is Fun1<T, Maybe>, logical: f is Fun1<T, bool>);
-    return a0.map(cast0).map(f.call);
+    if (f is Fun1<T, Maybe>) {
+      if (a0 is Expression<Maybe>) {
+        return a0.map(f.call);
+      }
+      if (a0 is Expression<SingularNodeList>) {
+        return a0.map((v) => v.asValue).map(f.call);
+      }
+    }
+    if (f is Fun1<T, bool>) {
+      if (a0 is Expression<bool>) {
+        return a0.map(f.call);
+      }
+      if (a0 is Expression<SingularNodeList>) {
+        return a0.map((v) => v.asLogical).map(f.call);
+      }
+    }
+    if (f is Fun1<T, NodeList>) {
+      if (a0 is Expression<NodeList>) {
+        return a0.map(f.call);
+      }
+    }
+    throw Exception('Fun arg mismatch');
   }
 
   Expression<T> _any2<T extends Object>(
       String name, Expression a0, Expression a1) {
     final f = _getFun2<T>(name);
-    final cast0 = cast(
+    final cast0 = cast(a0,
         value: f is Fun2<T, Maybe, Object>,
         logical: f is Fun2<T, bool, Object>);
-    final cast1 = cast(
+    final cast1 = cast(a1,
         value: f is Fun2<T, Object, Maybe>,
         logical: f is Fun2<T, Object, bool>);
     return a0.map(cast0).merge(a1.map(cast1), f.call);
@@ -76,9 +96,14 @@ class FunFactory {
     throw StateError('Function "$name" of 2 arguments is not found');
   }
 
-  static Object Function(Object) cast(
+  static Object Function(Object) cast(Expression arg,
       {required bool value, required bool logical}) {
-    if (value) return _value;
+    if (value) {
+      if (arg is! Expression<Maybe> && arg is! Expression<SingularNodeList>) {
+        throw Exception('Arg type mismatch');
+      }
+      return _value;
+    }
     if (logical) return _logical;
     return _nodes;
   }
