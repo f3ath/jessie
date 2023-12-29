@@ -1,4 +1,3 @@
-import 'package:json_path/fun_sdk.dart';
 import 'package:json_path/src/expression/expression.dart';
 import 'package:json_path/src/expression/nodes.dart';
 import 'package:json_path/src/fun/fun.dart';
