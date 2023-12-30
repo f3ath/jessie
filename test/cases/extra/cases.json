@@ -53,6 +53,12 @@
       "selector" : "$[?xor((@.b), (@.a))]",
       "document" : [{"a": 0}, {"a": 0, "b": 0}, {"b": 0}, {}],
       "result": [{"a": 0}, {"b": 0}]
+    },
+    {
+      "name": "nodes to logical conversion in function arg",
+      "selector" : "$[?xor(@.*, @.*)]",
+      "document" : [{"a": 0}, {"a": 0, "b": 0}, {"b": 0}, {}],
+      "result": []
     }
   ]
 }
