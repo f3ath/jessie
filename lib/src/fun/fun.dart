@@ -8,7 +8,7 @@ abstract interface class Fun {
 /// The return type [R] and the argument type [T] must be one of the following:
 /// - [bool]
 /// - [Maybe]
-/// - [Nodes]
+/// - [NodeList]
 abstract interface class Fun1<R extends Object, T extends Object> extends Fun {
   /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
@@ -19,7 +19,7 @@ abstract interface class Fun1<R extends Object, T extends Object> extends Fun {
 /// The return type [R] and the argument types [T1], [T2] must be one of the following:
 /// - [bool]
 /// - [Maybe]
-/// - [Nodes]
+/// - [NodeList]
 abstract interface class Fun2<R extends Object, T1 extends Object,
     T2 extends Object> extends Fun {
   /// Applies the given arguments.

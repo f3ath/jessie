@@ -15,7 +15,7 @@ class SingularNodeList with NodeList {
   Iterator<Node<Object?>> get iterator => _nodes.iterator;
 }
 
-extension NodesExt on NodeList {
+extension NodeListExt on NodeList {
   Maybe get asValue => length == 1 ? Just(single.value) : const Nothing();
 
   bool get asLogical => isNotEmpty;
