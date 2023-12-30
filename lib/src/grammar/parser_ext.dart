@@ -10,9 +10,6 @@ extension ParserExt<R> on Parser<R> {
         skip(before: (separator ?? char(',')).trim()).star()
       ].toSequenceParser().map<List<R>>((v) => v.expand<R>((e) => e).toList());
 
-  /// Makes a list consisting of a single element.
-  Parser<List<R>> toSingularList() => map((v) => [v]);
-
   /// Same in parenthesis.
   Parser<R> inParens() => skip(before: char('('), after: char(')'));
 

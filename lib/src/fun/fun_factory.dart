@@ -22,67 +22,78 @@ class FunFactory {
   final _fun1 = <String, Fun1>{};
   final _fun2 = <String, Fun2>{};
 
-  /// Returns a function to use in comparable context.
-  Expression<Maybe> comparable(FunCall call) => any<Maybe>(call);
+  /// Returns a value-type function to use in comparable context.
+  Expression<Maybe> value(FunCall call) => _any<Maybe>(call);
 
-  /// Returns a function to use in logical context.
-  Expression<bool> logical(FunCall call) => any<bool>(call);
+  /// Returns a logical-type function to use in logical context.
+  Expression<bool> logical(FunCall call) => _any<bool>(call);
+
+  /// Returns a nodes-type function.
+  Expression<NodeList> nodes(FunCall call) => _any<NodeList>(call);
 
   /// Returns a function to use as an argument for another function.
-  Expression<T> any<T extends Object>(FunCall call) {
+  Expression<T> _any<T extends Object>(FunCall call) {
     final name = call.name;
     final args = call.args;
     try {
-      if (args.length == 1) return any1<T>(name, args[0]);
-      if (args.length == 2) return any2<T>(name, args[0], args[1]);
-    } on TypeError catch (e) {
-      throw FormatException('Invalid argument: $e');
+      if (args.length == 1) return _any1<T>(name, args[0]);
+      if (args.length == 2) return _any2<T>(name, args[0], args[1]);
     } on StateError catch (e) {
       throw FormatException(e.message);
     }
     throw Exception('Type mismatch');
   }
 
-  Expression<T> any1<T extends Object>(String name, Expression a0) {
-    final f = _get1<T>(name);
-    final cast0 = cast(value: f is Fun1<T, Maybe>, logical: f is Fun1<T, bool>);
-    return a0.map(cast0).map(f.call);
+  Expression<T> _any1<T extends Object>(String name, Expression a0) {
+    final f = _getFun1<T>(name);
+    final cast0 = cast(a0,
+        value: f is Fun1<T, Maybe>,
+        logical: f is Fun1<T, bool>,
+        nodes: f is Fun1<T, NodeList>);
+    return cast0.map(f.call);
   }
 
-  Expression<T> any2<T extends Object>(
+  Expression<T> _any2<T extends Object>(
       String name, Expression a0, Expression a1) {
-    final f = _get2<T>(name);
+    final f = _getFun2<T>(name);
     final cast0 = cast(
-        value: f is Fun2<T, Maybe, Object>,
-        logical: f is Fun2<T, bool, Object>);
+      a0,
+      value: f is Fun2<T, Maybe, Object>,
+      logical: f is Fun2<T, bool, Object>,
+      nodes: f is Fun2<T, NodeList, Object>,
+    );
     final cast1 = cast(
-        value: f is Fun2<T, Object, Maybe>,
-        logical: f is Fun2<T, Object, bool>);
-    return a0.map(cast0).merge(a1.map(cast1), f.call);
+      a1,
+      value: f is Fun2<T, Object, Maybe>,
+      logical: f is Fun2<T, Object, bool>,
+      nodes: f is Fun2<T, Object, NodeList>,
+    );
+    return cast0.merge(cast1, f.call);
   }
 
-  Fun1<T, Object> _get1<T extends Object>(String name) {
+  Fun1<T, Object> _getFun1<T extends Object>(String name) {
     final f = _fun1[name];
     if (f is Fun1<T, Object>) return f;
     throw StateError('Function "$name" of 1 argument is not found');
   }
 
-  Fun2<T, Object, Object> _get2<T extends Object>(String name) {
+  Fun2<T, Object, Object> _getFun2<T extends Object>(String name) {
     final f = _fun2[name];
     if (f is Fun2<T, Object, Object>) return f;
     throw StateError('Function "$name" of 2 arguments is not found');
   }
 
-  static Object Function(Object) cast(
-      {required bool value, required bool logical}) {
-    if (value) return _value;
-    if (logical) return _logical;
-    return _nodes;
+  static Expression cast(Expression arg,
+      {required bool value, required bool logical, required bool nodes}) {
+    if (value) {
+      if (arg is Expression<Maybe>) return arg;
+      if (arg is Expression<SingularNodeList>) return arg.map((v) => v.asValue);
+    }
+    if (logical) {
+      if (arg is Expression<bool>) return arg;
+      if (arg is Expression<NodeList>) return arg.map((v) => v.asLogical);
+    }
+    if (nodes && arg is Expression<NodeList>) return arg;
+    throw Exception('Arg type mismatch');
   }
-
-  static Maybe _value(v) => (v is Maybe) ? v : _nodes(v).asValue;
-
-  static bool _logical(v) => (v is bool) ? v : _nodes(v).asLogical;
-
-  static Nodes _nodes(v) => v as Nodes;
 }

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2023-12-29
+### Changed
+- Renamed `Nodes` to `NodeList`
+- Bumped the CTS to the latest version
+
 ## [0.6.6] - 2023-09-23
 ### Fixed
 - Logical expressions should be allowed in function arguments
@@ -176,6 +181,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.7.0]: https://github.com/f3ath/jessie/compare/0.6.6...0.7.0
 [0.6.6]: https://github.com/f3ath/jessie/compare/0.6.5...0.6.6
 [0.6.5]: https://github.com/f3ath/jessie/compare/0.6.4...0.6.5
 [0.6.4]: https://github.com/f3ath/jessie/compare/0.6.3...0.6.4

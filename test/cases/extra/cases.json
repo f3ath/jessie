@@ -1,31 +1,31 @@
 {
   "tests": [
     {
-      "name": "reverse()",
+      "name": "reverse(@)",
       "selector" : "$[?reverse(@)=='cba']",
       "document" : ["abc", "cba"],
       "result": ["abc"]
     },
     {
-      "name": "reverse(reverse())",
+      "name": "reverse(reverse(@))",
       "selector" : "$[?reverse(reverse(@))=='cba']",
       "document" : ["abc", "cba"],
       "result": ["cba"]
     },
     {
-      "name": "reverse(reverse())",
+      "name": "count(siblings(@))",
       "selector" : "$..[?count(siblings(@)) == 1]",
       "document" : {"a":  {"b":  "x", "d":  "x"}},
       "result": ["x", "x"]
     },
     {
-      "name": "is_object",
+      "name": "is_object(@)",
       "selector" : "$[?is_object(@)]",
       "document" : [1, true, {}, [42], "foo", {"a": "b"}],
       "result": [{}, {"a": "b"}]
     },
     {
-      "name": "is_array",
+      "name": "is_array(@)",
       "selector" : "$[?is_array(@)]",
       "document" : [1, true, {}, [42], "foo", {"a": "b"}],
       "result": [[42]]
@@ -53,6 +53,12 @@
       "selector" : "$[?xor((@.b), (@.a))]",
       "document" : [{"a": 0}, {"a": 0, "b": 0}, {"b": 0}, {}],
       "result": [{"a": 0}, {"b": 0}]
+    },
+    {
+      "name": "nodes to logical conversion in function arg",
+      "selector" : "$[?xor(@.*, @.*)]",
+      "document" : [{"a": 0}, {"a": 0, "b": 0}, {"b": 0}, {}],
+      "result": []
     }
   ]
 }
