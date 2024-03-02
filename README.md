@@ -1,4 +1,4 @@
-# [JSONPath] in Dart
+# RFC 9535 - [JSONPath]: Query Expressions for JSON in Dart
 [![Pub Package](https://img.shields.io/pub/v/json_path.svg)](https://pub.dev/packages/json_path)
 [![GitHub Issues](https://img.shields.io/github/issues/f3ath/jessie.svg)](https://github.com/f3ath/jessie/issues)
 [![GitHub Forks](https://img.shields.io/github/forks/f3ath/jessie.svg)](https://github.com/f3ath/jessie/network)
