@@ -31,12 +31,18 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
         final List? paths = t['paths'];
         final List? pointers = t['pointers'];
         final String? skip = t['skip'];
-        final List? values = t['result'];
+        final List? result = t['result'];
+        final List? results = t['results'];
         final bool? invalid = t['invalid_selector'];
         group(name ?? selector, () {
-          if (values is List) {
+          if (result is List) {
             test('values', () {
-              expect(jsonPath(selector).readValues(document), equals(values));
+              expect(jsonPath(selector).readValues(document), equals(result));
+            });
+          }
+          if (results is List) {
+            test('any of values', () {
+              expect(jsonPath(selector).readValues(document), anyOf(results));
             });
           }
           if (paths is List) {
@@ -65,7 +71,8 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
               );
             });
           }
-          if ([values, paths, pointers, invalid].every((v) => v == null)) {
+          if ([result, results, paths, pointers, invalid]
+              .every((v) => v == null)) {
             throw ArgumentError('No expectations found');
           }
         }, skip: skip);
@@ -82,5 +89,6 @@ const _knownKeys = {
   'selector',
   'skip',
   'result',
+  'results',
   'invalid_selector',
 };
