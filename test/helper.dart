@@ -71,8 +71,7 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
               );
             });
           }
-          if ([result, results, paths, pointers, invalid]
-              .every((v) => v == null)) {
+          if ((result ?? results ?? paths ?? pointers ?? invalid) == null) {
             throw ArgumentError('No expectations found');
           }
         }, skip: skip);
@@ -83,12 +82,12 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
 
 const _knownKeys = {
   'document',
+  'invalid_selector',
   'name',
   'paths',
   'pointers',
-  'selector',
-  'skip',
   'result',
   'results',
-  'invalid_selector',
+  'selector',
+  'skip',
 };
