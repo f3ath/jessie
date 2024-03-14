@@ -68,17 +68,8 @@ void main() {
 }
 ```
 
-## Features and Limitations
-This library follows the [JsonPath] internet draft specification. Since the spec itself is 
-an evolving document, this implementation may lag behind, and some features may not be implemented in-full.
-Please refer to the tests (there are hundreds of them, including the [CTS]) to see what is supported.
-
-Currently supported standard functions:
-- `length()`
-- `count()`
-- `match()`
-- `search()`
-- `value()`
+This library fully implements the RFC 9535 [JsonPath] specification. It also should pass the latest version
+of the [Compliance Test Suite]. If you find a missing or incorrectly implemented feature, please open an issue.
 
 ## Data manipulation
 Each `JsonPathMatch` produced by the `.read()` method contains the `.pointer` property which is a valid [JSON Pointer]
@@ -107,7 +98,7 @@ To use them, import `package:json_path/fun_extra.dart`.
 - [Standard development](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base)
 - [Feature comparison matrix](https://cburgmer.github.io/json-path-comparison/)
 
-[CTS]: https://github.com/jsonpath-standard/jsonpath-compliance-test-suite
-[JSONPath]: https://datatracker.ietf.org/wg/jsonpath/documents/
+[Compliance Test Suite]: https://github.com/jsonpath-standard/jsonpath-compliance-test-suite
+[JSONPath]: https://datatracker.ietf.org/doc/rfc9535/
 [JSON Pointer]: https://datatracker.ietf.org/doc/html/rfc6901
 [JSON Pointer implementation]: https://pub.dev/packages/rfc_6901
