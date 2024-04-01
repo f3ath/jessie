@@ -83,6 +83,6 @@ final _nameChar = digit() | _nameFirst;
 
 final quotedString = (_singleQuotedString | _doubleQuotedString).cast<String>();
 
-final memberNameShorthand = (_nameFirst & _nameChar.star())
+final memberNameShorthand = (_nameChar & _nameChar.star())
     .flatten('a member name shorthand expected')
     .map(childSelector);
