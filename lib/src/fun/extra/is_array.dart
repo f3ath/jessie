@@ -1,6 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 
-/// Checks if the value is a JSON array.
+/// Returns true if the value is a JSON array.
 class IsArray implements Fun1<bool, Maybe> {
   const IsArray();
 

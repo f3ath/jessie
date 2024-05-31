@@ -1,6 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 
-/// Checks if the value is a JSON string.
+/// Returns true if the value is a JSON string.
 class IsString implements Fun1<bool, Maybe> {
   const IsString();
 

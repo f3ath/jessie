@@ -1,6 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 
-/// Checks if the value is a JSON boolean.
+/// Returns true if the value is a JSON boolean.
 class IsBoolean implements Fun1<bool, Maybe> {
   const IsBoolean();
 

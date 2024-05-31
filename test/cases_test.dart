@@ -8,11 +8,13 @@ void main() {
   runTestsInDirectory('test/cases/standard');
   runTestsInDirectory('test/cases/extra',
       parser: JsonPathParser(functions: [
+        const Index(),
         const IsArray(),
         const IsBoolean(),
         const IsNumber(),
         const IsObject(),
         const IsString(),
+        const Key(),
         const Reverse(),
         const Siblings(),
         const Xor(),

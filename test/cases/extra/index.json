@@ -1,0 +1,21 @@
+{
+  "tests": [
+    {
+      "name": "index()",
+      "selector" : "$[?index(@) == 1]",
+      "document" : [ "A", "B"],
+      "result": ["B"]
+    },
+    {
+      "name": "index(), does not work on objects",
+      "selector" : "$[?index(@) == 0]",
+      "document" : {"0": "A", "1": "B"},
+      "result": []
+    },
+    {
+      "name": "index(), non singular",
+      "selector" : "$[?index(@.*) == 0]",
+      "invalid_selector": true
+    }
+  ]
+}

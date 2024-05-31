@@ -1,6 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 
-/// Checks if the value is a JSON object.
+/// Returns true if the value is a JSON object.
 class IsObject implements Fun1<bool, Maybe> {
   const IsObject();
 

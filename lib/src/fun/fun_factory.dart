@@ -46,10 +46,13 @@ class FunFactory {
 
   Expression<T> _any1<T extends Object>(String name, Expression a0) {
     final f = _getFun1<T>(name);
-    final cast0 = cast(a0,
-        value: f is Fun1<T, Maybe>,
-        logical: f is Fun1<T, bool>,
-        nodes: f is Fun1<T, NodeList>);
+    final cast0 = cast(
+      a0,
+      value: f is Fun1<T, Maybe>,
+      logical: f is Fun1<T, bool>,
+      node: f is Fun1<T, SingularNodeList>,
+      nodes: f is Fun1<T, NodeList>,
+    );
     return cast0.map(f.call);
   }
 
@@ -60,12 +63,14 @@ class FunFactory {
       a0,
       value: f is Fun2<T, Maybe, Object>,
       logical: f is Fun2<T, bool, Object>,
+      node: f is Fun2<T, SingularNodeList, Object>,
       nodes: f is Fun2<T, NodeList, Object>,
     );
     final cast1 = cast(
       a1,
       value: f is Fun2<T, Object, Maybe>,
       logical: f is Fun2<T, Object, bool>,
+      node: f is Fun2<T, Object, SingularNodeList>,
       nodes: f is Fun2<T, Object, NodeList>,
     );
     return cast0.merge(cast1, f.call);
@@ -84,16 +89,21 @@ class FunFactory {
   }
 
   static Expression cast(Expression arg,
-      {required bool value, required bool logical, required bool nodes}) {
+      {required bool value,
+      required bool logical,
+      required bool node,
+      required bool nodes}) {
     if (value) {
       if (arg is Expression<Maybe>) return arg;
       if (arg is Expression<SingularNodeList>) return arg.map((v) => v.asValue);
-    }
-    if (logical) {
+    } else if (logical) {
       if (arg is Expression<bool>) return arg;
       if (arg is Expression<NodeList>) return arg.map((v) => v.asLogical);
+    } else if (node) {
+      if (arg is Expression<SingularNodeList>) return arg;
+    } else if (nodes) {
+      if (arg is Expression<NodeList>) return arg;
     }
-    if (nodes && arg is Expression<NodeList>) return arg;
     throw Exception('Arg type mismatch');
   }
 }

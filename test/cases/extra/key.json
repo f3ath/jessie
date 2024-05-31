@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "key()",
+      "selector" : "$[?key(@) == 'a']",
+      "document" : {"a": "A", "b": "B"},
+      "result": ["A"]
+    },
+    {
+      "name": "key(), palindromic keys",
+      "selector" : "$[?key(@) == reverse(key(@))]",
+      "document" : {"foo": "FOO", "bar": "BAR", "bab":  "BAB", "": "", "a":  "A"},
+      "result": ["BAB","","A"]
+    },
+    {
+      "name": "key(), does not work on arrays",
+      "selector" : "$[?key(@) == 0]",
+      "document" : ["A", "B"],
+      "result": []
+    },
+    {
+      "name": "key(), non singular",
+      "selector" : "$[?key(@.*) == 'a']",
+      "invalid_selector": true
+    }
+  ]
+}

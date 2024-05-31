@@ -11,6 +11,8 @@ class SingularNodeList with NodeList {
 
   final NodeList _nodes;
 
+  Node? get node => length == 1 ? first : null;
+
   @override
   Iterator<Node<Object?>> get iterator => _nodes.iterator;
 }
