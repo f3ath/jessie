@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "reverse(@)",
+      "selector" : "$[?reverse(@)=='cba']",
+      "document" : ["abc", "cba"],
+      "result": ["abc"]
+    },
+    {
+      "name": "reverse(reverse(@))",
+      "selector" : "$[?reverse(reverse(@))=='cba']",
+      "document" : ["abc", "cba"],
+      "result": ["cba"]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "tests": [
+    {
+      "name": "is_boolean",
+      "selector" : "$[?is_boolean(@)]",
+      "document" : [1, true, {}, [42], "foo", {"a": "b"}, false],
+      "result": [true, false]
+    }
+  ]
+}

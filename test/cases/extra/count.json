@@ -1,0 +1,10 @@
+{
+  "tests": [
+    {
+      "name": "count(siblings(@))",
+      "selector" : "$..[?count(siblings(@)) == 1]",
+      "document" : {"a":  {"b":  "x", "d":  "x"}},
+      "result": ["x", "x"]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import 'package:json_path/fun_sdk.dart';
 
-/// Checks if the value is a JSON number.
+/// Returns true if the value is a JSON number.
 class IsNumber implements Fun1<bool, Maybe> {
   const IsNumber();
 

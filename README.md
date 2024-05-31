@@ -92,8 +92,26 @@ To use it:
 For more details see the included example.
 
 This package comes with some non-standard functions which you might find useful.
-To use them, import `package:json_path/fun_extra.dart`.
+- `count(<NodeList>)` - returns the number of nodes selected by the argument
+- `index(<SingularNodeList>)` - returns the index under which the array element is referenced by the parent array
+- `key(<SingularNodeList>)` - returns the key under which the object element is referenced by the parent object
+- `is_array(<Maybe>)` - returns true if the value is an array
+- `is_boolean(<Maybe>)` - returns true if the value is a boolean
+- `is_number(<Maybe>)` - returns true if the value is a number
+- `is_object(<Maybe>)` - returns true if the value is an object
+- `is_string(<Maybe>)` - returns true if the value is a string
+- `reverse(<Maybe>)` - reverses the string
+- `siblings(<NodeList>)` - returns the siblings for the nodes
+- `xor(<bool>, <bool>)` - returns the XOR of two booleans arguments
 
+To use them, import `package:json_path/fun_extra.dart` and supply them to the `JsonPath()` constructor:
+
+```dart
+final jsonPath = JsonPathParser(functions: [
+  const Key(),
+  const Reverse(),
+]).parse(r'$[?key(@) == reverse(key(@))]');
+```
 ## References
 - [Standard development](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base)
 - [Feature comparison matrix](https://cburgmer.github.io/json-path-comparison/)
