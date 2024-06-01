@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "https://github.com/f3ath/jessie/issues/103",
+        "selector" : "$[?match(key(@), 'Serial .*')]",
+      "document" : {
+        "ynid": "AX0086HHN",
+        "Serial Group": "009722918001826A",
+        "Serial Name": "foo",
+        "Serial Number": "bar",
+        "serial whatever": "baz"
+      },
+      "result": ["009722918001826A", "foo", "bar"]
+    }
+  ]
+}
