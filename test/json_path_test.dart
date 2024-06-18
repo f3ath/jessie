@@ -10,31 +10,31 @@ void main() {
   });
   group('Invalid expressions', () {
     for (final expr in [
-      [r"$(key,more)"],
-      [r"$."],
-      [r"$.[key]"],
-      [r"$['foo'bar']"],
-      [r"$['two'.'some']"],
-      [r"$[two.some]"],
-      [r'$$'],
-      [r'$....'],
-      [r'$...foo'],
-      [r'$["""]'],
-      [r'$["\"]'],
-      [r'$["\z"]'],
-      [r'$["]'],
-      [r'$["foo"bar"]'],
-      [r'$[1 1]'],
-      [r'$[1+2]'],
-      [r'$[1874509822062987436598726432519879857164397163046130756769274369]'],
-      [r'$[:::]'],
-      [r'$[]'],
-      [r''],
-      [r'.foo'],
+      r"$(key,more)",
+      r"$.",
+      r"$.[key]",
+      r"$['foo'bar']",
+      r"$['two'.'some']",
+      r"$[two.some]",
+      r'$$',
+      r'$....',
+      r'$...foo',
+      r'$["""]',
+      r'$["\"]',
+      r'$["\z"]',
+      r'$["]',
+      r'$["foo"bar"]',
+      r'$[1 1]',
+      r'$[1+2]',
+      r'$[1874509822062987436598726432519879857164397163046130756769274369]',
+      r'$[:::]',
+      r'$[]',
+      r'',
+      r'.foo',
     ]) {
       test(expr, () {
         try {
-          JsonPath(expr[0]);
+          JsonPath(expr);
           fail('Expected FormatException');
         } on FormatException catch (e) {
           expect(e.message, isNotEmpty);
