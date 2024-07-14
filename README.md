@@ -5,6 +5,14 @@
 [![GitHub Stars](https://img.shields.io/github/stars/f3ath/jessie.svg)](https://github.com/f3ath/jessie/stargazers)
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/f3ath/jessie/master/LICENSE)
 
+JSONPath defines a string syntax for selecting and extracting JSON (RFC 8259) values from within a given JSON value.
+
+This library is a Dart implementation of the RFC 9535 [JsonPath] specification. It is also expected to pass the latest version
+of the [Compliance Test Suite]. If you find a missing or incorrectly implemented feature, please open an issue.
+
+For installation instructions and a detailed API documentation, see the [pub.dev page](https://pub.dev/packages/json_path).
+
+### Usage example:
 ```dart
 import 'dart:convert';
 
@@ -68,8 +76,6 @@ void main() {
 }
 ```
 
-This library fully implements the RFC 9535 [JsonPath] specification. It also should pass the latest version
-of the [Compliance Test Suite]. If you find a missing or incorrectly implemented feature, please open an issue.
 
 ## Data manipulation
 Each `JsonPathMatch` produced by the `.read()` method contains the `.pointer` property which is a valid [JSON Pointer]
