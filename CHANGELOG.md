@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.3] - 2024-08-01
+### Changed
+- Updated CTS
+
+### Fixed
+- Invalid escape sequences were allowed in child selectors. See https://github.com/jsonpath-standard/jsonpath-compliance-test-suite/pull/87
+
 ## [0.7.2] - 2024-05-30
 ### Added
 - New functions: `key()` and `index()`
@@ -189,6 +196,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.7.3]: https://github.com/f3ath/jessie/compare/0.7.2...0.7.3
 [0.7.2]: https://github.com/f3ath/jessie/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/f3ath/jessie/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/f3ath/jessie/compare/0.6.6...0.7.0
