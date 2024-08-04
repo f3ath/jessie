@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.4] - 2024-08-03
+### Changed
+- CTS updated
+
+### Fixed
+- Uppercase "E" was not acceptable in floating point numbers
+- A digit before the decimal point was not enforced for floating point numbers
+- Integer literal bounds were not enforced
+
 ## [0.7.3] - 2024-08-01
 ### Changed
 - Updated CTS
@@ -196,6 +205,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.7.4]: https://github.com/f3ath/jessie/compare/0.7.3...0.7.4
 [0.7.3]: https://github.com/f3ath/jessie/compare/0.7.2...0.7.3
 [0.7.2]: https://github.com/f3ath/jessie/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/f3ath/jessie/compare/0.7.0...0.7.1
