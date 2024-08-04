@@ -90,4 +90,5 @@ const _knownKeys = {
   'results',
   'selector',
   'skip',
+  'tags',
 };
