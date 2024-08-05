@@ -7,16 +7,16 @@ void main() {
   runTestsInDirectory('test/cases/cts');
   runTestsInDirectory('test/cases/standard');
   runTestsInDirectory('test/cases/extra',
-      parser: JsonPathParser(functions: [
-        const Index(),
-        const IsArray(),
-        const IsBoolean(),
-        const IsNumber(),
-        const IsObject(),
-        const IsString(),
-        const Key(),
-        const Reverse(),
-        const Siblings(),
-        const Xor(),
+      parser: JsonPathParser(functions: const [
+        Index(),
+        IsArray(),
+        IsBoolean(),
+        IsNumber(),
+        IsObject(),
+        IsString(),
+        Key(),
+        Reverse(),
+        Siblings(),
+        Xor(),
       ]));
 }
