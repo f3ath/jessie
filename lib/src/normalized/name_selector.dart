@@ -8,7 +8,7 @@ class NameSelector {
   String toString() => "['${name.escaped}']";
 }
 
-extension _StringExt on String {
+extension on String {
   /// Returns a string with all characters escaped as unicode entities.
   String get unicodeEscaped =>
       codeUnits.map((c) => '\\u${c.toRadixString(16).padLeft(4, '0')}').join();

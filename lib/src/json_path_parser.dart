@@ -20,7 +20,7 @@ class JsonPathParser {
 
   JsonPathParser._(Iterable<Fun> functions)
       : _parser =
-            JsonPathGrammarDefinition(FunFactory([..._stdFun, ...functions]))
+            JsonPathGrammarDefinition(FunFactory(_stdFun.followedBy(functions)))
                 .build<Expression<NodeList>>();
 
   /// The standard instance is pre-cached to speed up parsing when only

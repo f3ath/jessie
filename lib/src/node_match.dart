@@ -20,7 +20,7 @@ class NodeMatch implements JsonPathMatch {
   final Object? value;
 }
 
-extension _NodeExt<T> on Node<T> {
+extension<T> on Node<T> {
   Iterable<Object> trace() sync* {
     if (key != null) {
       yield* parent!.trace();
@@ -35,7 +35,7 @@ extension _NodeExt<T> on Node<T> {
   JsonPointer pointer() => JsonPointer.build(trace().map((e) => e.toString()));
 
   String path() => r'$' + trace().map(_segment).join();
-}
 
-Object _segment(Object? v) =>
-    v is int ? IndexSelector(v) : NameSelector(v.toString());
+  Object _segment(Object? v) =>
+      v is int ? IndexSelector(v) : NameSelector(v.toString());
+}
