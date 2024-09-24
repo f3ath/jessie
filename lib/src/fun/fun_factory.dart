@@ -32,17 +32,11 @@ class FunFactory {
   Expression<NodeList> nodes(FunCall call) => _any<NodeList>(call);
 
   /// Returns a function to use as an argument for another function.
-  Expression<T> _any<T extends Object>(FunCall call) {
-    final name = call.name;
-    final args = call.args;
-    try {
-      if (args.length == 1) return _any1<T>(name, args[0]);
-      if (args.length == 2) return _any2<T>(name, args[0], args[1]);
-    } on StateError catch (e) {
-      throw FormatException(e.message);
-    }
-    throw Exception('Type mismatch');
-  }
+  Expression<T> _any<T extends Object>(FunCall call) => switch (call.args) {
+        [var a] => _any1<T>(call.name, a),
+        [var a, var b] => _any2<T>(call.name, a, b),
+        _ => throw Exception('Invalid number of args for ${call.name}()'),
+      };
 
   Expression<T> _any1<T extends Object>(String name, Expression a0) {
     final f = _getFun1<T>(name);
@@ -79,13 +73,13 @@ class FunFactory {
   Fun1<T, Object> _getFun1<T extends Object>(String name) {
     final f = _fun1[name];
     if (f is Fun1<T, Object>) return f;
-    throw StateError('Function "$name" of 1 argument is not found');
+    throw FormatException('Function "$name" of 1 argument is not found');
   }
 
   Fun2<T, Object, Object> _getFun2<T extends Object>(String name) {
     final f = _fun2[name];
     if (f is Fun2<T, Object, Object>) return f;
-    throw StateError('Function "$name" of 2 arguments is not found');
+    throw FormatException('Function "$name" of 2 arguments is not found');
   }
 
   static Expression cast(Expression arg,

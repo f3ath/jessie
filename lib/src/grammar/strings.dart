@@ -26,9 +26,7 @@ final _escapedControl = [
   _escapedTab
 ].toChoiceParser();
 
-// The parser does not seem to support Unicode 6.0 boundary (0x10FFFF).
-// We're limiting ourselves to Unicode 1.0 boundary (0xFFFF).
-// TODO: work around by using surrogate pairs
+// The highest unicode character
 final _unicodeBoundary = String.fromCharCode(0xFFFF);
 
 // Exclude double quote '"' and back slash '\'
