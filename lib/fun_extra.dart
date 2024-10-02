@@ -1,5 +1,5 @@
 /// A collection of semi-useful non-standard functions for JSONPath.
-library fun_extra;
+library;
 
 export 'package:json_path/src/fun/extra/index.dart';
 export 'package:json_path/src/fun/extra/is_array.dart';
