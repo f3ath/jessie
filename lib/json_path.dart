@@ -1,5 +1,5 @@
 /// JSONPath for Dart
-library json_path;
+library;
 
 export 'package:json_path/src/json_path.dart';
 export 'package:json_path/src/json_path_match.dart';

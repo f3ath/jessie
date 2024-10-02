@@ -1,5 +1,5 @@
 /// An SDK for building custom functions for JSONPath.
-library fun_sdk;
+library;
 
 export 'package:json_path/src/expression/nodes.dart';
 export 'package:json_path/src/fun/fun.dart';
