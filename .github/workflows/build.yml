@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image:  dart:stable
+    strategy:
+      matrix:
+        install_dependencies: [ "pub get", "pub downgrade" ]
     steps:
       - uses: actions/checkout@v2
       - name: Update submodules
@@ -17,7 +20,7 @@ jobs:
       - name: Print Dart version
         run: dart --version
       - name: Install dependencies
-        run: dart pub get
+        run: dart ${{ matrix.install_dependencies }}
       - name: Formatter
         run: dart format --output none --set-exit-if-changed example lib test
       - name: Analyzer
