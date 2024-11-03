@@ -82,11 +82,13 @@ class FunFactory {
     throw FormatException('Function "$name" of 2 arguments is not found');
   }
 
-  static Expression cast(Expression arg,
-      {required bool value,
-      required bool logical,
-      required bool node,
-      required bool nodes}) {
+  static Expression cast(
+    Expression arg, {
+    required bool value,
+    required bool logical,
+    required bool node,
+    required bool nodes,
+  }) {
     if (value) {
       if (arg is Expression<Maybe>) return arg;
       if (arg is Expression<SingularNodeList>) return arg.map((v) => v.asValue);

@@ -62,7 +62,7 @@ class JsonPathGrammarDefinition
         arrayIndex,
         wildcard,
         quotedString.map(childSelector),
-        _expressionFilter()
+        _expressionFilter(),
       ].toChoiceParser().trim();
 
   Parser<Selector> _expressionFilter() =>
