@@ -41,7 +41,7 @@ void main() {
             }
           }
         }
-        t['result_paths'] = paths;
+        t['results_paths'] = paths;
       }
     }
     file.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(cases));
