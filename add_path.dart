@@ -7,7 +7,7 @@ void main() {
   const repo = '../jsonpath-compliance-test-suite/tests/';
 
   Directory(repo)
-      .listSync()
+      .listSync(recursive: true)
       .whereType<File>()
       .where((file) =>
           file.path.endsWith('.json') && !file.path.endsWith('.schema.json'))
@@ -38,6 +38,7 @@ void main() {
             if (eq(permute(myResult, p), r)) {
               print('Perm: $p');
               paths.add(permute(myPaths, p));
+              break;
             }
           }
         }
