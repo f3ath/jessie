@@ -24,7 +24,7 @@
         "'": "single quote/apostrophe",
         "\\": "backslash"
       },
-      "paths": [
+      "result_paths": [
         "$['\\u0000']",
         "$['\\u0001']",
         "$['\\u0002']",
@@ -55,7 +55,7 @@
         "\ud83d\ude00": "smiley face",
         "\u10FFFF": "0x10FFFF"
       },
-      "paths": [
+      "result_paths": [
         "$['\"']",
         "$['[]']",
         "$['\uD83D\uDE00']",

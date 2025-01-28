@@ -5,15 +5,15 @@
       "selector": "$",
       "document": ["first", "second"],
       "result": [["first", "second"]],
-      "paths": ["$"],
-      "pointers": [""]
+      "result_paths": ["$"],
+      "result_pointers": [""]
     }, {
       "name": "dot field on object",
       "selector": "$.a",
       "document": {"a": "A", "b": "B"},
       "result": ["A"],
-      "paths": ["$['a']"],
-      "pointers": ["/a"]
+      "result_paths": ["$['a']"],
+      "result_pointers": ["/a"]
     }, {
       "name": "dot field on array",
       "selector": "$.a",
@@ -24,8 +24,8 @@
       "selector": "$.*",
       "document": {"a": "A", "b": "B"},
       "result": ["A", "B"],
-      "paths": ["$['a']", "$['b']"],
-      "pointers": ["/a", "/b"]
+      "result_paths": ["$['a']", "$['b']"],
+      "result_pointers": ["/a", "/b"]
     }, {
       "name": "union wildcard on array",
       "selector": "$[*]",
@@ -41,8 +41,8 @@
       "selector": "$[*]",
       "document": {"a": "A", "b": "B"},
       "result": ["A", "B"],
-      "paths": ["$['a']", "$['b']"],
-      "pointers": ["/a", "/b"]
+      "result_paths": ["$['a']", "$['b']"],
+      "result_pointers": ["/a", "/b"]
     }, {
       "name": "union wildcard on object, twice",
       "selector": "$[*, *]",
@@ -53,36 +53,36 @@
       "selector": "$.*",
       "document": ["A", "B"],
       "result": ["A", "B"],
-      "paths": ["$[0]", "$[1]"],
-      "pointers": ["/0", "/1"]
+      "result_paths": ["$[0]", "$[1]"],
+      "result_pointers": ["/0", "/1"]
     }, {
       "name": "dot wildcard dot field",
       "selector": "$.*.a",
       "document": {"x": {"a": "Ax", "b": "Bx"}, "y": {"a": "Ay", "b": "By"}},
       "result": ["Ax", "Ay"],
-      "paths": ["$['x']['a']", "$['y']['a']"],
-      "pointers": ["/x/a", "/y/a"]
+      "result_paths": ["$['x']['a']", "$['y']['a']"],
+      "result_pointers": ["/x/a", "/y/a"]
     }, {
       "name": "union sq field on object",
       "selector": "$['a']",
       "document": {"a": "A", "b": "B"},
       "result": ["A"],
-      "paths": ["$['a']"],
-      "pointers": ["/a"]
+      "result_paths": ["$['a']"],
+      "result_pointers": ["/a"]
     }, {
       "name": "union sq field on object (2 result)",
       "selector": "$['a', 'c']",
       "document": {"a": "A", "b": "B", "c": "C"},
       "result": ["A", "C"],
-      "paths": ["$['a']", "$['c']"],
-      "pointers": ["/a", "/c"]
+      "result_paths": ["$['a']", "$['c']"],
+      "result_pointers": ["/a", "/c"]
     }, {
       "name": "union sq field on object (numeric key)",
       "selector": "$['1']",
       "document": {"0": "A", "1": "B"},
       "result": ["B"],
-      "paths": ["$['1']"],
-      "pointers": ["/1"]
+      "result_paths": ["$['1']"],
+      "result_pointers": ["/1"]
     }, {
       "name": "union sq field on array",
       "selector": "$['a']",
@@ -93,22 +93,22 @@
       "selector": "$[\"a\"]",
       "document": {"a": "A", "b": "B"},
       "result": ["A"],
-      "paths": ["$['a']"],
-      "pointers": ["/a"]
+      "result_paths": ["$['a']"],
+      "result_pointers": ["/a"]
     }, {
       "name": "union dq field on object (2 result)",
       "selector": "$[\"a\", \"c\"]",
       "document": {"a": "A", "b": "B", "c": "C"},
       "result": ["A", "C"],
-      "paths": ["$['a']", "$['c']"],
-      "pointers": ["/a", "/c"]
+      "result_paths": ["$['a']", "$['c']"],
+      "result_pointers": ["/a", "/c"]
     }, {
       "name": "union dq field on object (numeric key)",
       "selector": "$[\"1\"]",
       "document": {"0": "A", "1": "B"},
       "result": ["B"],
-      "paths": ["$['1']"],
-      "pointers": ["/1"]
+      "result_paths": ["$['1']"],
+      "result_pointers": ["/1"]
     }, {
       "name": "union dq field on array",
       "selector": "$[\"a\"]",
@@ -119,8 +119,8 @@
       "selector": "$[1]",
       "document": ["A", "B"],
       "result": ["B"],
-      "paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_paths": ["$[1]"],
+      "result_pointers": ["/1"]
     }, {
       "name": "union index on object",
       "selector": "$[1]",
@@ -131,29 +131,29 @@
       "selector": "$[\"0\", 1, 'a']",
       "document": {"a": "A", "b": "B", "0": "Zero", "1": "One"},
       "result": ["Zero", "A"],
-      "paths": ["$['0']", "$['a']"],
-      "pointers": ["/0", "/a"]
+      "result_paths": ["$['0']", "$['a']"],
+      "result_pointers": ["/0", "/a"]
     }, {
       "name": "union index and field on array",
       "selector": "$[1, 'a', '1']",
       "document": ["A", "B"],
       "result": ["B"],
-      "paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_paths": ["$[1]"],
+      "result_pointers": ["/1"]
     }, {
       "name": "union array slice on array [15:-7:-3]",
       "selector": "$[15:-7:-3]",
       "document": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       "result": [9, 6],
-      "paths": ["$[9]", "$[6]"],
-      "pointers": ["/9", "/6"]
+      "result_paths": ["$[9]", "$[6]"],
+      "result_pointers": ["/9", "/6"]
     }, {
       "name": "union array slice on array [:]",
       "selector": "$[:]",
       "document": [0, 1, 2],
       "result": [0, 1, 2],
-      "paths": ["$[0]", "$[1]", "$[2]"],
-      "pointers": ["/0", "/1", "/2"]
+      "result_paths": ["$[0]", "$[1]", "$[2]"],
+      "result_pointers": ["/0", "/1", "/2"]
     }, {
       "name": "test [:]",
       "selector": "$.Table1[:]",
@@ -164,22 +164,22 @@
       "selector": "$[:10000000000:]",
       "document": [0, 1, 2],
       "result": [0, 1, 2],
-      "paths": ["$[0]", "$[1]", "$[2]"],
-      "pointers": ["/0", "/1", "/2"]
+      "result_paths": ["$[0]", "$[1]", "$[2]"],
+      "result_pointers": ["/0", "/1", "/2"]
     }, {
       "name": "recursion wildcard",
       "selector": "$..*",
       "document": {"a": {"foo": "bar"}, "b": [42]},
       "result": [{"foo": "bar"}, [42], "bar", 42],
-      "paths": ["$['a']", "$['b']", "$['a']['foo']", "$['b'][0]"],
-      "pointers": ["/a", "/b", "/a/foo", "/b/0"]
+      "result_paths": ["$['a']", "$['b']", "$['a']['foo']", "$['b'][0]"],
+      "result_pointers": ["/a", "/b", "/a/foo", "/b/0"]
     }, {
       "name": "recursion union",
       "selector": "$..[0]",
       "document": {"a": {"foo": "bar"}, "b": [42]},
       "result": [42],
-      "paths": ["$['b'][0]"],
-      "pointers": ["/b/0"]
+      "result_paths": ["$['b'][0]"],
+      "result_pointers": ["/b/0"]
     }
   ]
 }

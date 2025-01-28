@@ -25,53 +25,69 @@ void runTestsInDirectory(String dirName, {JsonPathParser? parser}) {
         }
 
         final String selector = t['selector'];
-
         final document = t['document'];
         final String? name = t['name'];
-        final List? paths = t['paths'];
-        final List? pointers = t['pointers'];
+        final List? resultPaths = t['result_paths'];
+        final List? resultsPaths = t['results_paths'];
+        final List? pointers = t['result_pointers'];
         final String? skip = t['skip'];
         final List? result = t['result'];
         final List? results = t['results'];
         final bool? invalid = t['invalid_selector'];
         group(name ?? selector, () {
           if (result is List) {
-            test('values', () {
-              expect(jsonPath(selector).readValues(document), equals(result));
-            });
+            test(
+                'values',
+                () => expect(
+                    jsonPath(selector).readValues(document), equals(result)));
           }
           if (results is List) {
-            test('any of values', () {
-              expect(jsonPath(selector).readValues(document), anyOf(results));
-            });
+            test(
+                'any of values',
+                () => expect(
+                    jsonPath(selector).readValues(document), anyOf(results)));
           }
-          if (paths is List) {
-            test('paths', () {
-              final actual =
-                  jsonPath(selector).read(document).map((e) => e.path).toList();
-              expect(actual, equals(paths));
-            });
+          if (resultPaths is List) {
+            test(
+                'result_paths',
+                () => expect(
+                    jsonPath(selector)
+                        .read(document)
+                        .map((e) => e.path)
+                        .toList(),
+                    equals(resultPaths)));
+          }
+          if (resultsPaths is List) {
+            test(
+                'results_paths',
+                () => expect(
+                    jsonPath(selector)
+                        .read(document)
+                        .map((e) => e.path)
+                        .toList(),
+                    anyOf(resultsPaths)));
           }
           if (pointers is List) {
-            test('pointers', () {
-              expect(
-                jsonPath(selector)
-                    .read(document)
-                    .map((e) => e.pointer.toString())
-                    .toList(),
-                equals(pointers),
-              );
-            });
+            test(
+                'result_pointers',
+                () => expect(
+                      jsonPath(selector)
+                          .read(document)
+                          .map((e) => e.pointer.toString())
+                          .toList(),
+                      equals(pointers),
+                    ));
           }
           if (invalid == true) {
-            test('invalid', () {
-              expect(
-                () => jsonPath(selector),
-                throwsFormatException,
-              );
-            });
+            test(
+                'invalid',
+                () => expect(
+                      () => jsonPath(selector),
+                      throwsFormatException,
+                    ));
           }
-          if ((result ?? results ?? paths ?? pointers ?? invalid) == null) {
+          if ((result ?? results ?? resultPaths ?? pointers ?? invalid) ==
+              null) {
             throw ArgumentError('No expectations found');
           }
         }, skip: skip);
@@ -84,8 +100,9 @@ const _knownKeys = {
   'document',
   'invalid_selector',
   'name',
-  'paths',
-  'pointers',
+  'result_paths',
+  'results_paths',
+  'result_pointers',
   'result',
   'results',
   'selector',
