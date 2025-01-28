@@ -6,7 +6,7 @@
       "document": [42],
       "result": [42],
       "result_paths": ["$[0]"],
-      "pointers": ["/0"]
+      "result_pointers": ["/0"]
     }, {
       "name": "object itself",
       "selector": "$[?(@ == 1)]",
@@ -18,77 +18,77 @@
       "document": [["a", "b"], ["x", "y"]],
       "result": [["a", "b"]],
       "result_paths": ["$[0]"],
-      "pointers": ["/0"]
+      "result_pointers": ["/0"]
     }, {
       "name": "array index with odd spacing",
       "selector": "$[?(@ [1] =='b')]",
       "document": [["a", "b"], ["x", "y"]],
       "result": [["a", "b"]],
       "result_paths": ["$[0]"],
-      "pointers": ["/0"]
+      "result_pointers": ["/0"]
     }, {
       "name": "object child, single quote",
       "selector": "$[?(@['key'] == 'b')]",
       "document": [{"key": "a"}, {"key": "b"}, {}],
       "result": [{"key": "b"}],
       "result_paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_pointers": ["/1"]
     }, {
       "name": "object child, single quote, odd spacing",
       "selector": "$[?(@ ['key']=='b')]",
       "document": [{"key": "a"}, {"key": "b"}, {}],
       "result": [{"key": "b"}],
       "result_paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_pointers": ["/1"]
     }, {
       "name": "object child, double quote",
       "selector": "$[?(@[\"key\"] == 'b')]",
       "document": [{"key": "a"}, {"key": "b"}, {}],
       "result": [{"key": "b"}],
       "result_paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_pointers": ["/1"]
     }, {
       "name": "object child, dot-notation",
       "selector": "$[?(@.key=='b')]",
       "document": [{"key": "a"}, {"key": "b"}, {}],
       "result": [{"key": "b"}],
       "result_paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_pointers": ["/1"]
     }, {
       "name": "object child, dot-notation, depth 2",
       "selector": "$[?(@.foo.bar=='b')]",
       "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": "b"} ,{}],
       "result": [{"foo": {"bar": "b"}}],
       "result_paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_pointers": ["/1"]
     }, {
       "name": "object child, dot-notation, depth 2, odd spacing",
       "selector": "$[?(@ \t  .foo\n .bar== 'b')]",
       "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": "b"} ,{}],
       "result": [{"foo": {"bar": "b"}}],
       "result_paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_pointers": ["/1"]
     }, {
       "name": "object child, dot-notation, int value",
       "selector": "$[?(@.id==42)].name",
       "document": [{"id": 42, "name": "forty-two"}, {"id": 1, "name": "one"}],
       "result": ["forty-two"],
       "result_paths": ["$[0]['name']"],
-      "pointers": ["/0/name"]
+      "result_pointers": ["/0/name"]
     }, {
       "name": "object child, combined",
       "selector": "$[?(@.foo['bar'] == 'b')]",
       "document": [{"foo": {"bar": "a"}}, {"foo": {"bar": "b"}}, {"foo": {"moo": 42}}, {}],
       "result": [{"foo": {"bar": "b"}}],
       "result_paths": ["$[1]"],
-      "pointers": ["/1"]
+      "result_pointers": ["/1"]
     }, {
       "name": "equal props",
       "selector": "$[?(@.foo == @.bar)]",
       "document": [{"foo": 1, "bar": 2}, {"foo": 42, "bar": 42}, {"foo": 1, "bro": 1}, {}],
       "result": [{"foo": 42, "bar": 42}, {}],
       "result_paths": ["$[1]", "$[3]"],
-      "pointers": ["/1", "/3"]
+      "result_pointers": ["/1", "/3"]
     }, {
       "selector": "$[?(1!=1)]",
       "document": [42],
