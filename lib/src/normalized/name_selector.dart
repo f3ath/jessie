@@ -14,7 +14,6 @@ extension on String {
       codeUnits.map((c) => '\\u${c.toRadixString(16).padLeft(4, '0')}').join();
 
   String get escaped => const {
-        r'/': r'\/',
         r'\': r'\\',
         '\b': r'\b',
         '\f': r'\f',

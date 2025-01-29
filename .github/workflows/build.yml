@@ -26,3 +26,15 @@ jobs:
         run: dart test --coverage=.coverage
       - name: Coverage
         run: dart run coverage:format_coverage -l -c -i .coverage --report-on=lib --packages=.dart_tool/package_config.json | dart run check_coverage:check_coverage
+  downgrade:
+    runs-on: ubuntu-latest
+    container:
+      image:  dart:stable
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: dart pub get
+      - name: Downgrade
+        run: dart pub downgrade
+      - name: Analyzer
+        run: dart analyze --fatal-infos --fatal-warnings
