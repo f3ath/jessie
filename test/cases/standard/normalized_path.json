@@ -24,6 +24,27 @@
         "'": "single quote/apostrophe",
         "\\": "backslash"
       },
+      "result": [
+        "NUL",
+        "SOH",
+        "STX",
+        "ETX",
+        "EOT",
+        "ENQ",
+        "ACK",
+        "nul",
+        "BS, backspace",
+        "HT, tab",
+        "LF, new line",
+        "VT",
+        "FF, form feed",
+        "CR, carriage return",
+        "SO",
+        "SI",
+        "US",
+        "single quote/apostrophe",
+        "backslash"
+      ],
       "result_paths": [
         "$['\\u0000']",
         "$['\\u0001']",
@@ -51,12 +72,21 @@
       "selector": "$[*]",
       "document": {
         "\"": "double quote",
+        "/": "slash",
         "[]": "[]",
         "\ud83d\ude00": "smiley face",
         "\u10FFFF": "0x10FFFF"
       },
+      "result": [
+        "double quote",
+        "slash",
+        "[]",
+        "smiley face",
+        "0x10FFFF"
+      ],
       "result_paths": [
         "$['\"']",
+        "$['/']",
         "$['[]']",
         "$['\uD83D\uDE00']",
         "$['\u10FFFF']"
