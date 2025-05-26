@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.6] - 2025-05-26
+### Changed
+- Bumped dependencies and CTS
+
 ## [0.7.5] - 2025-01-28
 ### Changed
 - Minor performance improvements
@@ -213,6 +217,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.7.6]: https://github.com/f3ath/jessie/compare/0.7.5...0.7.6
 [0.7.5]: https://github.com/f3ath/jessie/compare/0.7.4...0.7.5
 [0.7.4]: https://github.com/f3ath/jessie/compare/0.7.3...0.7.4
 [0.7.3]: https://github.com/f3ath/jessie/compare/0.7.2...0.7.3
