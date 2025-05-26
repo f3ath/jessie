@@ -10,8 +10,8 @@ abstract interface class JsonPath {
   factory JsonPath(String expression) => JsonPathParser().parse(expression);
 
   /// Reads the given [json] object returning an Iterable of all matches found.
-  Iterable<JsonPathMatch> read(json);
+  Iterable<JsonPathMatch> read(dynamic json);
 
   /// Reads the given [json] object returning an Iterable of all values found.
-  Iterable<Object?> readValues(json);
+  Iterable<Object?> readValues(dynamic json);
 }

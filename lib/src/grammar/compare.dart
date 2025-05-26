@@ -6,7 +6,7 @@ bool _eq(Maybe a, Maybe b) =>
     a.merge(b, _eqRaw).orGet(() => a is Nothing && b is Nothing);
 
 /// Deep equality of primitives, lists, maps.
-bool _eqRaw(a, b) =>
+bool _eqRaw(dynamic a, dynamic b) =>
     (a == b) ||
     (a is List &&
         b is List &&
