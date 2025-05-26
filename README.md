@@ -93,11 +93,11 @@ To create your own function:
 
 To use it:
 1. Create a new JsonPathParser with your function: `final parser = JsonPathParser(functions: [MyFunction()]);`
-2. Use it to parse you expression: `final jsonPath = parser.parse(r'$[?my_function(@)]');`
+2. Parse the expression: `final jsonPath = parser.parse(r'$[?my_function(@)]');`
 
 For more details see the included example.
 
-This package comes with some non-standard functions which you might find useful.
+This package comes with a few non-standard functions which you might find useful.
 - `count(<NodeList>)` - returns the number of nodes selected by the argument
 - `index(<SingularNodeList>)` - returns the index under which the array element is referenced by the parent array
 - `key(<SingularNodeList>)` - returns the key under which the object element is referenced by the parent object
@@ -106,11 +106,11 @@ This package comes with some non-standard functions which you might find useful.
 - `is_number(<Maybe>)` - returns true if the value is a number
 - `is_object(<Maybe>)` - returns true if the value is an object
 - `is_string(<Maybe>)` - returns true if the value is a string
-- `reverse(<Maybe>)` - reverses the string
+- `reverse(<Maybe>)` - returns the reversed string
 - `siblings(<NodeList>)` - returns the siblings for the nodes
 - `xor(<bool>, <bool>)` - returns the XOR of two booleans arguments
 
-To use them, import `package:json_path/fun_extra.dart` and supply them to the `JsonPath()` constructor:
+To use them, import `package:json_path/fun_extra.dart` and pass the functions to the `JsonPath()` constructor:
 
 ```dart
 final jsonPath = JsonPathParser(functions: [
