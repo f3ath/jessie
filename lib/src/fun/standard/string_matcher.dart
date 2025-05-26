@@ -14,7 +14,7 @@ abstract class StringMatcher implements Fun2<bool, Maybe, Maybe> {
   bool call(Maybe value, Maybe regex) =>
       value.merge(regex, _typeSafeMatch).or(false);
 
-  bool _typeSafeMatch(value, regex) {
+  bool _typeSafeMatch(dynamic value, dynamic regex) {
     if (value is! String || regex is! String) return false;
     try {
       return _match(value, IRegexp(regex));
@@ -23,6 +23,6 @@ abstract class StringMatcher implements Fun2<bool, Maybe, Maybe> {
     }
   }
 
-  bool _match(String value, IRegexp iregexp) =>
-      allowSubstring ? iregexp.matchesSubstring(value) : iregexp.matches(value);
+  bool _match(String value, IRegexp regex) =>
+      allowSubstring ? regex.matchesSubstring(value) : regex.matches(value);
 }
