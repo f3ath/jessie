@@ -6,9 +6,9 @@ import 'package:rfc_6901/rfc_6901.dart';
 
 class NodeMatch implements JsonPathMatch {
   NodeMatch(Node node)
-      : value = node.value,
-        path = node.path(),
-        pointer = node.pointer();
+    : value = node.value,
+      path = node.path(),
+      pointer = node.pointer();
 
   @override
   final String path;

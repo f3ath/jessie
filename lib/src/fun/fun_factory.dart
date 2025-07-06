@@ -33,10 +33,10 @@ class FunFactory {
 
   /// Returns a function to use as an argument for another function.
   Expression<T> _any<T extends Object>(FunCall call) => switch (call.args) {
-        [var a] => _any1<T>(call.name, a),
-        [var a, var b] => _any2<T>(call.name, a, b),
-        _ => throw Exception('Invalid number of args for ${call.name}()'),
-      };
+    [var a] => _any1<T>(call.name, a),
+    [var a, var b] => _any2<T>(call.name, a, b),
+    _ => throw Exception('Invalid number of args for ${call.name}()'),
+  };
 
   Expression<T> _any1<T extends Object>(String name, Expression a0) {
     final f = _getFun1<T>(name);
@@ -51,7 +51,10 @@ class FunFactory {
   }
 
   Expression<T> _any2<T extends Object>(
-      String name, Expression a0, Expression a1) {
+    String name,
+    Expression a0,
+    Expression a1,
+  ) {
     final f = _getFun2<T>(name);
     final cast0 = cast(
       a0,
@@ -82,11 +85,13 @@ class FunFactory {
     throw FormatException('Function "$name" of 2 arguments is not found');
   }
 
-  static Expression cast(Expression arg,
-      {required bool value,
-      required bool logical,
-      required bool node,
-      required bool nodes}) {
+  static Expression cast(
+    Expression arg, {
+    required bool value,
+    required bool logical,
+    required bool node,
+    required bool nodes,
+  }) {
     if (value) {
       if (arg is Expression<Maybe>) return arg;
       if (arg is Expression<SingularNodeList>) return arg.map((v) => v.asValue);

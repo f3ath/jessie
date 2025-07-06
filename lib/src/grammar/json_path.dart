@@ -39,61 +39,59 @@ class JsonPathGrammarDefinition
       _segment().star().map(sequenceSelector).map(Expression.new);
 
   Parser<Selector> _segment() => [
-        dotName,
-        wildcard.skip(before: char('.')),
-        ref0(_union),
-        ref0(_recursion),
-      ].toChoiceParser().trim();
+    dotName,
+    wildcard.skip(before: char('.')),
+    ref0(_union),
+    ref0(_recursion),
+  ].toChoiceParser().trim();
 
   Parser<Selector> _union() =>
       _unionElement().toList().inBrackets().map(unionSelector);
 
-  Parser<Selector> _recursion() => [
-        wildcard,
-        _union(),
-        memberNameShorthand,
-      ]
-          .toChoiceParser()
-          .skip(before: string('..'))
-          .map((value) => sequenceSelector([selectAllRecursively, value]));
+  Parser<Selector> _recursion() => [wildcard, _union(), memberNameShorthand]
+      .toChoiceParser()
+      .skip(before: string('..'))
+      .map((value) => sequenceSelector([selectAllRecursively, value]));
 
   Parser<Selector> _unionElement() => [
-        arraySlice,
-        arrayIndex,
-        wildcard,
-        quotedString.map(childSelector),
-        _expressionFilter()
-      ].toChoiceParser().trim();
+    arraySlice,
+    arrayIndex,
+    wildcard,
+    quotedString.map(childSelector),
+    _expressionFilter(),
+  ].toChoiceParser().trim();
 
   Parser<Selector> _expressionFilter() =>
       _logicalExpr().skip(before: string('?').trim()).map(filterSelector);
 
-  Parser<Expression<bool>> _logicalExpr() => _logicalOrSequence()
-      .map((list) => list.reduce((a, b) => a.merge(b, (a, b) => a || b)));
+  Parser<Expression<bool>> _logicalExpr() => _logicalOrSequence().map(
+    (list) => list.reduce((a, b) => a.merge(b, (a, b) => a || b)),
+  );
 
   Parser<List<Expression<bool>>> _logicalOrSequence() =>
       _logicalAndExpr().toList(string('||'));
 
-  Parser<Expression<bool>> _logicalAndExpr() => _logicalAndSequence()
-      .map((list) => list.reduce((a, b) => a.merge(b, (a, b) => a && b)));
+  Parser<Expression<bool>> _logicalAndExpr() => _logicalAndSequence().map(
+    (list) => list.reduce((a, b) => a.merge(b, (a, b) => a && b)),
+  );
 
   Parser<List<Expression<bool>>> _logicalAndSequence() =>
       _basicExpr().toList(string('&&'));
 
-  Parser<Expression<bool>> _basicExpr() => [
+  Parser<Expression<bool>> _basicExpr() =>
+      [
         ref0(_parenExpr),
         comparisonExpression(_comparable()),
         _testExpr(),
       ].toChoiceParser(
-          failureJoiner: (a, b) =>
-              Failure(a.buffer, a.position, 'Expression expected'));
+        failureJoiner: (a, b) =>
+            Failure(a.buffer, a.position, 'Expression expected'),
+      );
 
   Parser<Expression<bool>> _parenExpr() => negatable(_logicalExpr().inParens());
 
-  Parser<Expression<bool>> _testExpr() => negatable([
-        _existenceTest(),
-        _logicalFunExpr(),
-      ].toChoiceParser());
+  Parser<Expression<bool>> _testExpr() =>
+      negatable([_existenceTest(), _logicalFunExpr()].toChoiceParser());
 
   Parser<Expression<bool>> _existenceTest() =>
       _filterPath().map((value) => value.map((v) => v.asLogical));
@@ -106,34 +104,30 @@ class JsonPathGrammarDefinition
           .tryMap(toFun);
 
   Parser<Expression> _funArgument() => [
-        literal,
-        _singularFilterPath(),
-        _filterPath(),
-        ref0(_valueFunExpr),
-        ref0(_logicalFunExpr),
-        ref0(_nodesFunExpr),
-        ref0(_logicalExpr),
-      ].toChoiceParser().trim();
+    literal,
+    _singularFilterPath(),
+    _filterPath(),
+    ref0(_valueFunExpr),
+    ref0(_logicalFunExpr),
+    ref0(_nodesFunExpr),
+    ref0(_logicalExpr),
+  ].toChoiceParser().trim();
 
-  Parser<Expression<SingularNodeList>> _singularFilterPath() => [
-        ref0(_singularRelPath),
-        ref0(_singularAbsPath),
-      ].toChoiceParser();
+  Parser<Expression<SingularNodeList>> _singularFilterPath() =>
+      [ref0(_singularRelPath), ref0(_singularAbsPath)].toChoiceParser();
 
   Parser<Expression<Maybe>> _valueFunExpr() => _funCall(_fun.value);
 
   Parser<Expression<NodeList>> _nodesFunExpr() => _funCall(_fun.nodes);
 
   Parser<Expression<Maybe>> _comparable() => [
-        literal,
-        _singularFilterPath().map((expr) => expr.map((v) => v.asValue)),
-        _valueFunExpr(),
-      ].toChoiceParser();
+    literal,
+    _singularFilterPath().map((expr) => expr.map((v) => v.asValue)),
+    _valueFunExpr(),
+  ].toChoiceParser();
 
-  Parser<Expression<NodeList>> _filterPath() => [
-        ref0(_relPath),
-        ref0(_absPath),
-      ].toChoiceParser();
+  Parser<Expression<NodeList>> _filterPath() =>
+      [ref0(_relPath), ref0(_absPath)].toChoiceParser();
 
   Parser<Expression<SingularNodeList>> _singularAbsPath() =>
       singularSegmentSequence

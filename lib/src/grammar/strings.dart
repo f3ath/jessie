@@ -23,7 +23,7 @@ final _escapedControl = [
   _escapedFormFeed,
   _escapedNewLine,
   _escapedReturn,
-  _escapedTab
+  _escapedTab,
 ].toChoiceParser();
 
 // The highest unicode character
@@ -33,13 +33,14 @@ final _unicodeBoundary = String.fromCharCode(0xFFFF);
 final _doubleUnescaped = [
   range(' ', '!'),
   range('#', '['),
-  range(']', _unicodeBoundary)
+  range(']', _unicodeBoundary),
 ].toChoiceParser();
 
 final _hexDigit = anyOf('0123456789ABCDEFabcdef');
 
-final _unicodeSymbol = (string(r'\u') & _hexDigit.timesString(4))
-    .map((value) => String.fromCharCode(int.parse(value.last, radix: 16)));
+final _unicodeSymbol = (string(r'\u') & _hexDigit.timesString(4)).map(
+  (value) => String.fromCharCode(int.parse(value.last, radix: 16)),
+);
 
 final _escapedDoubleQuote = (_escape & _doubleQuote).map((_) => '"');
 
@@ -47,14 +48,14 @@ final _doubleInner = [
   _doubleUnescaped,
   _escapedDoubleQuote,
   _escapedControl,
-  _unicodeSymbol
+  _unicodeSymbol,
 ].toChoiceParser().star().join();
 
 // Exclude single quote "'" and back slash "\"
 final _singleUnescaped = [
   range(' ', '&'),
   range('(', '['),
-  range(']', _unicodeBoundary)
+  range(']', _unicodeBoundary),
 ].toChoiceParser();
 
 final _escapedSingleQuote = (_escape & _singleQuote).map((_) => "'");
@@ -63,24 +64,28 @@ final _singleInner = [
   _singleUnescaped,
   _escapedSingleQuote,
   _escapedControl,
-  _unicodeSymbol
+  _unicodeSymbol,
 ].toChoiceParser().star().join();
 
-final _doubleQuotedString =
-    _doubleInner.skip(before: _doubleQuote, after: _doubleQuote);
+final _doubleQuotedString = _doubleInner.skip(
+  before: _doubleQuote,
+  after: _doubleQuote,
+);
 
-final _singleQuotedString =
-    _singleInner.skip(before: _singleQuote, after: _singleQuote);
+final _singleQuotedString = _singleInner.skip(
+  before: _singleQuote,
+  after: _singleQuote,
+);
 
 final _nameFirst =
     (char('_') | letter() | range(String.fromCharCode(0x80), _unicodeBoundary))
         .plus()
-        .flatten('a correct member name expected');
+        .flatten(message: 'a correct member name expected');
 
 final _nameChar = digit() | _nameFirst;
 
 final quotedString = (_singleQuotedString | _doubleQuotedString).cast<String>();
 
 final memberNameShorthand = (_nameFirst & _nameChar.star())
-    .flatten('a member name shorthand expected')
+    .flatten(message: 'a member name shorthand expected')
     .map(childSelector);

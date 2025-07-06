@@ -5,10 +5,6 @@ import 'package:petitparser/parser.dart';
 
 Parser<Expression<bool>> comparisonExpression(Parser<Expression<Maybe>> val) =>
     (val & cmpOperator & val).map((v) {
-      final [
-        Expression<Maybe> left,
-        String op,
-        Expression<Maybe> right,
-      ] = v;
+      final [Expression<Maybe> left, String op, Expression<Maybe> right] = v;
       return left.merge(right, (l, r) => compare(op, l, r));
     });

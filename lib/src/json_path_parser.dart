@@ -19,22 +19,16 @@ class JsonPathParser {
       functions.isEmpty ? _standard : JsonPathParser._(functions);
 
   JsonPathParser._(Iterable<Fun> functions)
-      : _parser =
-            JsonPathGrammarDefinition(FunFactory(_stdFun.followedBy(functions)))
-                .build<Expression<NodeList>>();
+    : _parser = JsonPathGrammarDefinition(
+        FunFactory(_stdFun.followedBy(functions)),
+      ).build();
 
   /// The standard instance is pre-cached to speed up parsing when only
   /// the standard built-in functions are used.
   static final _standard = JsonPathParser._(_stdFun);
 
   /// Standard functions
-  static const _stdFun = <Fun>[
-    Count(),
-    Length(),
-    Match(),
-    Search(),
-    Value(),
-  ];
+  static const _stdFun = <Fun>[Count(), Length(), Match(), Search(), Value()];
 
   final Parser<Expression<NodeList>> _parser;
 

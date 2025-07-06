@@ -7,19 +7,18 @@ import 'package:test/test.dart';
 
 void main() {
   final store = jsonDecode(File('test/store.json').readAsStringSync());
-  final parser = JsonPathParser(functions: [
-    const Reverse(),
-    const Siblings(),
-    const Xor(),
-  ]);
+  final parser = JsonPathParser(
+    functions: [const Reverse(), const Siblings(), const Xor()],
+  );
   group('User-defined functions', () {
     test('Fun<Nodes> in Nodes context', () {
       expect(
-          parser
-              .parse(r'$..[?count(siblings(siblings(@))) > 4]')
-              .readValues(store)
-              .length,
-          equals(22));
+        parser
+            .parse(r'$..[?count(siblings(siblings(@))) > 4]')
+            .readValues(store)
+            .length,
+        equals(22),
+      );
     });
   });
 

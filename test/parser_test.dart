@@ -12,13 +12,15 @@ import 'package:petitparser/reflection.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final parser = JsonPathGrammarDefinition(FunFactory(<Fun>[
-    const Length(),
-    const Count(),
-    const Match(),
-    const Search(),
-    const Value(),
-  ])).build();
+  final parser = JsonPathGrammarDefinition(
+    FunFactory(<Fun>[
+      const Length(),
+      const Count(),
+      const Match(),
+      const Search(),
+      const Value(),
+    ]),
+  ).build();
 
   group('Parser', () {
     test('Linter is happy', () {

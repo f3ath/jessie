@@ -6,9 +6,9 @@ extension ParserExt<R> on Parser<R> {
 
   /// Makes a list of this elements separated by [separator] (a comma by default).
   Parser<List<R>> toList([Parser? separator]) => [
-        map((v) => [v]),
-        skip(before: (separator ?? char(',')).trim()).star()
-      ].toSequenceParser().map<List<R>>((v) => v.expand<R>((e) => e).toList());
+    map((v) => [v]),
+    skip(before: (separator ?? char(',')).trim()).star(),
+  ].toSequenceParser().map<List<R>>((v) => v.expand<R>((e) => e).toList());
 
   /// Same in parenthesis.
   Parser<R> inParens() => skip(before: char('('), after: char(')'));

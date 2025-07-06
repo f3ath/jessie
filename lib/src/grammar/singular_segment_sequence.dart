@@ -14,10 +14,9 @@ final _singularUnionElement = [
 
 final _singularUnion = _singularUnionElement.inBrackets();
 
-final _singularSegment = [
-  dotName,
-  _singularUnion,
-].toChoiceParser().trim();
+final _singularSegment = [dotName, _singularUnion].toChoiceParser().trim();
 
-final singularSegmentSequence =
-    _singularSegment.star().map(singularSequenceSelector).map(Expression.new);
+final singularSegmentSequence = _singularSegment
+    .star()
+    .map(singularSequenceSelector)
+    .map(Expression.new);

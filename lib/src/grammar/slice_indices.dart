@@ -23,14 +23,14 @@ Iterable<int> _backward(int length, int? start, int? stop, int step) sync* {
 
 /// exclusive
 int _low(int? stop, int length) => switch (stop) {
-      null => -1,
-      < 0 => max(length + stop, -1),
-      _ => stop,
-    };
+  null => -1,
+  < 0 => max(length + stop, -1),
+  _ => stop,
+};
 
 /// inclusive
 int _high(int? start, int length) => switch (start) {
-      null => length - 1,
-      < 0 => length + start,
-      _ => min(start, length - 1),
-    };
+  null => length - 1,
+  < 0 => length + start,
+  _ => min(start, length - 1),
+};

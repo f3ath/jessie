@@ -58,25 +58,25 @@ void main() {
   JsonPath(r'$..price').readValues(document).forEach(print);
 
   print('\nBooks under 10:');
-  JsonPath(r'$.store.book[?@.price < 10].title')
-      .readValues(document)
-      .forEach(print);
+  JsonPath(
+    r'$.store.book[?@.price < 10].title',
+  ).readValues(document).forEach(print);
 
   print('\nBooks with ISBN:');
   JsonPath(r'$.store.book[?@.isbn].title').readValues(document).forEach(print);
 
   print('\nBooks under 10 with ISBN:');
-  JsonPath(r'$.store.book[?@.price < 10 && @.isbn].title')
-      .readValues(document)
-      .forEach(print);
+  JsonPath(
+    r'$.store.book[?@.price < 10 && @.isbn].title',
+  ).readValues(document).forEach(print);
 
   print('\nBooks with "the" in the title:');
-  JsonPath(r'$.store.book[?search(@.title, "the")].title')
-      .readValues(document)
-      .forEach(print);
+  JsonPath(
+    r'$.store.book[?search(@.title, "the")].title',
+  ).readValues(document).forEach(print);
 
   print('\nBooks with the same category as the last one:');
-  JsonPath(r'$.store.book[?@.category == $.store.book[-1].category].title')
-      .readValues(document)
-      .forEach(print);
+  JsonPath(
+    r'$.store.book[?@.category == $.store.book[-1].category].title',
+  ).readValues(document).forEach(print);
 }
