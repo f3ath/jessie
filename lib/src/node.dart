@@ -3,10 +3,7 @@ import 'package:json_path/src/grammar/slice_indices.dart';
 /// A JSON document node.
 class Node<T extends Object?> {
   /// Creates an instance of the root node of the JSON document [value].
-  Node(this.value)
-      : parent = null,
-        key = null,
-        index = null;
+  Node(this.value) : parent = null, key = null, index = null;
 
   /// Creates an instance of a child node.
   Node._(this.value, this.parent, {this.key, this.index});
@@ -33,8 +30,12 @@ class Node<T extends Object?> {
   Iterable<Node>? slice({int? start, int? stop, int? step}) {
     final v = value;
     if (v is List) {
-      return sliceIndices(v.length, start, stop, step ?? 1)
-          .map((index) => _element(v, index));
+      return sliceIndices(
+        v.length,
+        start,
+        stop,
+        step ?? 1,
+      ).map((index) => _element(v, index));
     }
     return null;
   }

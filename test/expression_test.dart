@@ -16,10 +16,11 @@ void main() {
       });
       test('merge() with non-static', () {
         expect(
-            s
-                .merge(d, (v, m) => v.merge(m, (a, b) => '$a$b').or('oops'))
-                .call(node),
-            'barfoo');
+          s
+              .merge(d, (v, m) => v.merge(m, (a, b) => '$a$b').or('oops'))
+              .call(node),
+          'barfoo',
+        );
       });
     });
   });

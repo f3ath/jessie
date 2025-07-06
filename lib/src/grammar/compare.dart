@@ -29,10 +29,11 @@ bool _le(Maybe a, Maybe b) => _lt(a, b) || _eq(a, b);
 /// True if [a] is strictly less than [b].
 bool _lt(Maybe a, Maybe b) => a
     .merge(
-        b,
-        (x, y) =>
-            (x is num && y is num && x < y) ||
-            (x is String && y is String && x.compareTo(y) < 0))
+      b,
+      (x, y) =>
+          (x is num && y is num && x < y) ||
+          (x is String && y is String && x.compareTo(y) < 0),
+    )
     .or(false);
 
 /// True if [a] is not equal to [b].

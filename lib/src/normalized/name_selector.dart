@@ -13,17 +13,19 @@ extension on String {
   String get unicodeEscaped =>
       codeUnits.map((c) => '\\u${c.toRadixString(16).padLeft(4, '0')}').join();
 
-  String get escaped => const {
-        r'\': r'\\',
-        '\b': r'\b',
-        '\f': r'\f',
-        '\n': r'\n',
-        '\r': r'\r',
-        '\t': r'\t',
-        "'": r"\'",
-      }
-          .entries
+  String get escaped =>
+      const {
+            r'\': r'\\',
+            '\b': r'\b',
+            '\f': r'\f',
+            '\n': r'\n',
+            '\r': r'\r',
+            '\t': r'\t',
+            "'": r"\'",
+          }.entries
           .fold(this, (s, e) => s.replaceAll(e.key, e.value))
           .replaceAllMapped(
-              RegExp(r'[\u0000-\u001f]'), (s) => s[0]!.unicodeEscaped);
+            RegExp(r'[\u0000-\u001f]'),
+            (s) => s[0]!.unicodeEscaped,
+          );
 }

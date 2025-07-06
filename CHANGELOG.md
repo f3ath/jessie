@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2025-07-06
+### Changed
+- Bumped petitparser to 7.0
+- Bumped SDK to ^3.8
+
 ## [0.7.6] - 2025-05-26
 ### Changed
 - Bumped dependencies and CTS
@@ -217,6 +222,7 @@ Previously, no modification would be made and no errors/exceptions thrown.
 ### Added
 - Basic design draft
 
+[0.8.0]: https://github.com/f3ath/jessie/compare/0.7.6...0.8.0
 [0.7.6]: https://github.com/f3ath/jessie/compare/0.7.5...0.7.6
 [0.7.5]: https://github.com/f3ath/jessie/compare/0.7.4...0.7.5
 [0.7.4]: https://github.com/f3ath/jessie/compare/0.7.3...0.7.4

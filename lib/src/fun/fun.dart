@@ -20,8 +20,12 @@ abstract interface class Fun1<R extends Object, T extends Object> extends Fun {
 /// - [bool]
 /// - [Maybe]
 /// - [NodeList]
-abstract interface class Fun2<R extends Object, T1 extends Object,
-    T2 extends Object> extends Fun {
+abstract interface class Fun2<
+  R extends Object,
+  T1 extends Object,
+  T2 extends Object
+>
+    extends Fun {
   /// Applies the given arguments.
   /// This method MUST throw an [Exception] on invalid args.
   R call(T1 first, T2 second);

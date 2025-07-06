@@ -18,6 +18,7 @@ class Expression<T extends Object> {
   /// [merger] function. The [merger] function is applied to the values
   /// produced by this an the [other] [Expression].
   Expression<R> merge<R extends Object, M extends Object>(
-          Expression<M> other, R Function(T a, M b) merger) =>
-      Expression((node) => merger(call(node), other.call(node)));
+    Expression<M> other,
+    R Function(T a, M b) merger,
+  ) => Expression((node) => merger(call(node), other.call(node)));
 }

@@ -12,8 +12,9 @@ class StaticExpression<T extends Object> extends Expression<T> {
 
   @override
   Expression<R> merge<R extends Object, M extends Object>(
-          Expression<M> other, R Function(T v, M m) merger) =>
-      other is StaticExpression<M>
-          ? StaticExpression(merger(value, other.value))
-          : super.merge(other, merger);
+    Expression<M> other,
+    R Function(T v, M m) merger,
+  ) => other is StaticExpression<M>
+      ? StaticExpression(merger(value, other.value))
+      : super.merge(other, merger);
 }

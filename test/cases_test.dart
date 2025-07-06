@@ -6,8 +6,10 @@ import 'helper.dart';
 void main() {
   runTestsInDirectory('test/cases/cts');
   runTestsInDirectory('test/cases/standard');
-  runTestsInDirectory('test/cases/extra',
-      parser: JsonPathParser(functions: const [
+  runTestsInDirectory(
+    'test/cases/extra',
+    parser: JsonPathParser(
+      functions: const [
         Index(),
         IsArray(),
         IsBoolean(),
@@ -18,5 +20,7 @@ void main() {
         Reverse(),
         Siblings(),
         Xor(),
-      ]));
+      ],
+    ),
+  );
 }

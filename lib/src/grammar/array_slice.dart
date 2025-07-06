@@ -6,8 +6,14 @@ final _colon = char(':').trim();
 
 final _optionalInt = integer.optional();
 
-final arraySlice = (_optionalInt &
-        _optionalInt.skip(before: _colon) &
-        _optionalInt.skip(before: _colon).optional())
-    .map((value) =>
-        arraySliceSelector(start: value[0], stop: value[1], step: value[2]));
+final arraySlice =
+    (_optionalInt &
+            _optionalInt.skip(before: _colon) &
+            _optionalInt.skip(before: _colon).optional())
+        .map(
+          (value) => arraySliceSelector(
+            start: value[0],
+            stop: value[1],
+            step: value[2],
+          ),
+        );

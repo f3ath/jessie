@@ -3,16 +3,19 @@ import 'package:json_path/src/selector.dart';
 
 Selector sequenceSelector(Iterable<Selector> selectors) =>
     (node) => selectors.fold<_Filter>(
-        (v) => v,
-        (filter, selector) =>
-            (nodes) => filter(nodes).expand(selector))([node]);
+      (v) => v,
+      (filter, selector) =>
+          (nodes) => filter(nodes).expand(selector),
+    )([node]);
 
 SingularSelector singularSequenceSelector(
-        Iterable<SingularSelector> selectors) =>
+  Iterable<SingularSelector> selectors,
+) =>
     (node) => selectors.fold<_SingularFilter>(
-        SingularNodeList.new,
-        (filter, selector) => (nodes) =>
-            SingularNodeList(filter(nodes).expand(selector)))([node]);
+      SingularNodeList.new,
+      (filter, selector) =>
+          (nodes) => SingularNodeList(filter(nodes).expand(selector)),
+    )([node]);
 
 typedef _Filter = NodeList Function(NodeList nodes);
 

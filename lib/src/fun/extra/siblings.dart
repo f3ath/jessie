@@ -8,6 +8,7 @@ class Siblings implements Fun1<NodeList, NodeList> {
   final name = 'siblings';
 
   @override
-  NodeList call(NodeList nodes) => nodes
-      .expand((node) => node.parent?.children.where((it) => node != it) ?? []);
+  NodeList call(NodeList nodes) => nodes.expand(
+    (node) => node.parent?.children.where((it) => node != it) ?? [],
+  );
 }
