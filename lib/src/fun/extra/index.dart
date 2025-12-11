@@ -11,5 +11,6 @@ class Index implements Fun1<Maybe<int>, SingularNodeList> {
   final name = 'index';
 
   @override
-  Maybe<int> call(SingularNodeList nodes) => Just(nodes.node?.index).type<int>();
+  Maybe<int> call(SingularNodeList nodes) =>
+      Just(nodes.node?.index).type<int>();
 }
