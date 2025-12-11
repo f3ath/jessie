@@ -7,7 +7,7 @@ class SingularNodeList with NodeList {
   SingularNodeList(this._nodes);
 
   SingularNodeList.from(Node? node)
-    : this(node != null ? [node] : const Iterable.empty());
+    : this(node != null ? [node] : const .empty());
 
   final NodeList _nodes;
 
