@@ -1,14 +1,14 @@
 name: json_path
-version: 0.8.0
+version: 0.9.0
 description: "Implementation of RFC 9535 - JSONPath: Query Expressions for JSON. Reads and writes values in parsed JSON objects using queries like `$.store.book[2].price`."
 homepage: "https://github.com/f3ath/jessie"
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.10.0
 
 dependencies:
   iregexp: ^0.2.0
-  maybe_just_nothing: ^0.5.2
+  maybe_just_nothing: ^0.6.0
   petitparser: ^7.0.0
   rfc_6901: ^0.2.0
 

@@ -5,5 +5,5 @@ final _funNameChar = [char('_'), digit(), lowercase()].toChoiceParser();
 
 /// Function name.
 final funName = (_funNameFirst & _funNameChar.star()).flatten(
-  message: 'a function name expected',
+  message: 'function name expected',
 );
